@@ -30,27 +30,28 @@ func main() {
 
 	tftpSrv := tftp.NewServer(
 		func(filename string, rf io.ReaderFrom) error {
+			// Get remote IP
+			raddr := rf.(tftp.OutgoingTransfer).RemoteAddr()
+
 			// Prevent accessing any parent directories
+			fullFilename := filepath.Join(*workingDir, filename)
 			if strings.Contains(filename, "..") {
-				msg := errors.New("blocked request by client to access parent directory" + filename)
+				log.Printf(`could not send file: get request to file "%v" by client "%v" blocked because it is located outside the working directory "%v"`, fullFilename, raddr.String(), *workingDir)
 
-				log.Println(msg)
-
-				return msg
+				return errors.New("unauthorized: tried to access file outside working directory")
 			}
 
 			// Open file to send
-			fullFilename := filepath.Join(*workingDir, filename)
 			file, err := os.Open(fullFilename)
 			if err != nil {
-				log.Println("could not open file", err)
+				log.Printf(`could not open file "%v" for client "%v": %v`, fullFilename, raddr.String(), err)
 
 				return err
 			}
 
 			// Send the file to the client
 			n, err := rf.ReadFrom(file)
-			log.Printf("sent %v (%v bytes)", fullFilename, n)
+			log.Printf(`sent file "%v" (%v bytes) to client "%v"`, fullFilename, n, raddr.String())
 
 			return err
 		},
