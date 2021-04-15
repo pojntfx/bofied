@@ -17,6 +17,7 @@ import (
 func main() {
 	// Parse flags
 	webDAVListenAddress := flag.String("webDAVListenAddress", "localhost:15256", "Listen address for the WebDAV server")
+	httpListenAddress := flag.String("httpListenAddress", ":15257", "Listen address for the HTTP server")
 	tftpListenAddress := flag.String("tftpListenAddress", ":69", "Listen address for the TFTP server")
 	workingDir := flag.String("workingDir", ".", "Directory to store data in")
 
@@ -58,10 +59,17 @@ func main() {
 		nil,
 	)
 
+	httpSrv := http.FileServer(http.Dir(*workingDir))
+
 	// Start servers
-	http.Handle("/", webdavSrv)
 	go func() {
 		if err := http.ListenAndServe(*webDAVListenAddress, webdavSrv); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	go func() {
+		if err := http.ListenAndServe(*httpListenAddress, httpSrv); err != nil {
 			log.Fatal(err)
 		}
 	}()
