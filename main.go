@@ -11,6 +11,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/google/gopacket"
+	"github.com/google/gopacket/layers"
 	"github.com/pin/tftp"
 	"golang.org/x/net/webdav"
 )
@@ -93,16 +95,26 @@ func main() {
 			buf := make([]byte, 1024)
 			length, raddr, err := conn.ReadFromUDP(buf)
 			if err != nil {
-				log.Printf(`could not read UDP datagram from client "%v": %v`, raddr.String(), err)
-
-				continue
+				log.Fatal(err)
 			}
 
-			go func(b []byte, n int) {
-				packet := b[:n]
+			go func(rawPacket []byte) {
+				packet := gopacket.NewPacket(rawPacket, layers.LayerTypeUDP, gopacket.Default)
 
-				log.Println(packet, raddr)
-			}(buf, length)
+				udpLayer := packet.Layer(layers.LayerTypeUDP)
+				if udpLayer == nil {
+					log.Fatal("received a non-UDP layer")
+
+					return
+				}
+
+				udp, ok := udpLayer.(*layers.UDP)
+				if !ok {
+					log.Fatal("received invalid UDP layer")
+				}
+
+				log.Println(raddr, udp.SrcPort, udp.DstPort, udp.Contents)
+			}(buf[:length])
 		}
 	}()
 
