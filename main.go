@@ -5,6 +5,7 @@ import (
 	"flag"
 	"io"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -18,6 +19,7 @@ func main() {
 	// Parse flags
 	webDAVListenAddress := flag.String("webDAVListenAddress", "localhost:15256", "Listen address for the WebDAV server")
 	httpListenAddress := flag.String("httpListenAddress", ":15257", "Listen address for the HTTP server")
+	dhcpListenAddress := flag.String("dhcpListenAddress", ":67", "Listen address for the DHCP server")
 	tftpListenAddress := flag.String("tftpListenAddress", ":69", "Listen address for the TFTP server")
 	workingDir := flag.String("workingDir", ".", "Directory to store data in")
 
@@ -28,6 +30,8 @@ func main() {
 		FileSystem: webdav.Dir(*workingDir),
 		LockSystem: webdav.NewMemLS(),
 	}
+
+	httpSrv := http.FileServer(http.Dir(*workingDir))
 
 	tftpSrv := tftp.NewServer(
 		func(filename string, rf io.ReaderFrom) error {
@@ -59,8 +63,6 @@ func main() {
 		nil,
 	)
 
-	httpSrv := http.FileServer(http.Dir(*workingDir))
-
 	// Start servers
 	go func() {
 		if err := http.ListenAndServe(*webDAVListenAddress, webdavSrv); err != nil {
@@ -71,6 +73,36 @@ func main() {
 	go func() {
 		if err := http.ListenAndServe(*httpListenAddress, httpSrv); err != nil {
 			log.Fatal(err)
+		}
+	}()
+
+	go func() {
+		// Create the server
+		laddr, err := net.ResolveUDPAddr("udp", *dhcpListenAddress)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		conn, err := net.ListenUDP("udp", laddr)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Read UDP datagrams
+		for {
+			buf := make([]byte, 1024)
+			length, raddr, err := conn.ReadFromUDP(buf)
+			if err != nil {
+				log.Printf(`could not read UDP datagram from client "%v": %v`, raddr.String(), err)
+
+				continue
+			}
+
+			go func(b []byte, n int) {
+				packet := b[:n]
+
+				log.Println(packet, raddr)
+			}(buf, length)
 		}
 	}()
 
