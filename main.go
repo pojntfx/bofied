@@ -99,21 +99,21 @@ func main() {
 			}
 
 			go func(rawPacket []byte) {
-				packet := gopacket.NewPacket(rawPacket, layers.LayerTypeUDP, gopacket.Default)
+				packet := gopacket.NewPacket(rawPacket, layers.LayerTypeDHCPv4, gopacket.Default)
 
-				udpLayer := packet.Layer(layers.LayerTypeUDP)
-				if udpLayer == nil {
-					log.Fatal("received a non-UDP layer")
+				dhcpLayer := packet.Layer(layers.LayerTypeDHCPv4)
+				if dhcpLayer == nil {
+					log.Fatal("received a non-DHCP layer")
 
 					return
 				}
 
-				udp, ok := udpLayer.(*layers.UDP)
+				dhcpPacket, ok := dhcpLayer.(*layers.DHCPv4)
 				if !ok {
 					log.Fatal("received invalid UDP layer")
 				}
 
-				log.Println(raddr, udp.SrcPort, udp.DstPort, udp.Contents)
+				log.Println(raddr, dhcpPacket)
 			}(buf[:length])
 		}
 	}()
