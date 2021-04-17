@@ -194,7 +194,9 @@ func main() {
 					outBuf := gopacket.NewSerializeBuffer()
 					gopacket.SerializeLayers(
 						outBuf,
-						gopacket.SerializeOptions{},
+						gopacket.SerializeOptions{
+							FixLengths: true,
+						},
 						&layers.DHCPv4{
 							Operation:    layers.DHCPOpReply,
 							HardwareType: layers.LinkTypeEthernet,
@@ -235,8 +237,6 @@ func main() {
 					if err != nil {
 						log.Fatal(err)
 					}
-
-					log.Println(outBuf.Bytes())
 
 					log.Printf(`sent %v bytes to client "%v"`, n, outAddr)
 				}
