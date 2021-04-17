@@ -29,12 +29,12 @@ func main() {
 	dhcpListenAddress := flag.String("dhcpListenAddress", ":67", "Listen address for the DHCP server")
 	tftpListenAddress := flag.String("tftpListenAddress", ":69", "Listen address for the TFTP server")
 	workingDir := flag.String("workingDir", ".", "Directory to store data in")
-	advertisedIPFlag := flag.String("advertiseIP", "100.64.154.246", "IP address to advertise in proxyDHCP")
+	advertisedIPFlag := flag.String("advertisedIP", "100.64.154.246", "IP address to advertise in proxyDHCP")
 
 	flag.Parse()
 
 	// Process flags
-	advertisedIP := net.ParseIP(*advertisedIPFlag)
+	advertisedIP := net.ParseIP(*advertisedIPFlag).To4()
 
 	// Create servers
 	webdavSrv := &webdav.Handler{
@@ -203,7 +203,7 @@ func main() {
 							YourClientIP: r.IP,
 							NextServerIP: r.IP,
 							RelayAgentIP: r.IP,
-							ClientHWAddr: dhcpPacket.ClientHWAddr,
+							ClientHWAddr: dhcpPacket.ClientHWAddr, // TODO: This seems to be nil for some reason
 							Options: layers.DHCPOptions{
 								layers.NewDHCPOption(
 									layers.DHCPOptMessageType,
