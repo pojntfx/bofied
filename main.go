@@ -4,6 +4,7 @@ import (
 	"errors"
 	"flag"
 	"io"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -15,12 +16,15 @@ import (
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/pin/tftp"
+	"github.com/traefik/yaegi/interp"
 	"golang.org/x/net/webdav"
 )
 
 const (
 	DHCPOptUUIDGUIDClientIdentifier = 97 // Option: (97) UUID/GUID-based Client Identifier
 	EFIArch                         = 7  // X86-64_EFI
+	ConfigFileName                  = "config.go"
+	ConfigFunctionName              = "config.GetFileName"
 )
 
 func main() {
@@ -187,7 +191,7 @@ func main() {
 
 				if !isEFI {
 					// Create DHCP suboptions
-					bootMenuDescription := "Boot iPXE (BIOS)"
+					bootMenuDescription := "Boot from bofied (BIOS)"
 					subOptions := []layers.DHCPOption{
 						layers.NewDHCPOption(
 							6,                        // Option 43 Suboption: (6) PXE discovery control
@@ -309,20 +313,16 @@ func main() {
 
 				// Process DHCP options
 				isPXE := false
-				isEFI := false
+				arch := 0
+				undi := 0
 				clientIdentifierOpt := layers.DHCPOption{}
 				if dhcpPacket.Operation == layers.DHCPOpRequest {
 					for _, option := range dhcpPacket.Options {
 						switch option.Type {
 						case layers.DHCPOptClassID:
-							pxe, arch, _, err := parsePXEClassIdentifier(string(option.Data))
+							isPXE, arch, undi, err = parsePXEClassIdentifier(string(option.Data))
 							if err != nil {
 								log.Fatal(err)
-							}
-
-							isPXE = pxe
-							if arch == EFIArch {
-								isEFI = true
 							}
 						case DHCPOptUUIDGUIDClientIdentifier:
 							clientIdentifierOpt = option
@@ -360,9 +360,15 @@ func main() {
 
 				// Serialize the outgoing packet
 				outBuf := gopacket.NewSerializeBuffer()
-				bootFileName := "ipxe.efi"
-				if !isEFI {
-					bootFileName = "ipxe.kpxe"
+				bootFileName, err := GetFileName(
+					filepath.Join(*workingDir, ConfigFileName),
+					r.IP.String(),
+					dhcpPacket.ClientHWAddr.String(),
+					arch,
+					undi,
+				)
+				if err != nil {
+					log.Fatal(err)
 				}
 				gopacket.SerializeLayers(
 					outBuf,
@@ -443,4 +449,45 @@ func parsePXEClassIdentifier(classID string) (isPXE bool, arch int, undi int, er
 	}
 
 	return
+}
+
+func GetFileName(
+	configFileLocation string,
+	ip string,
+	macAddress string,
+	arch int,
+	undi int,
+) (string, error) {
+	i := interp.New(interp.Options{})
+
+	src, err := ioutil.ReadFile(configFileLocation)
+	if err != nil {
+		return "", err
+	}
+
+	if _, err := i.Eval(string(src)); err != nil {
+		return "", err
+	}
+
+	v, err := i.Eval(ConfigFunctionName)
+	if err != nil {
+		return "", err
+	}
+
+	getFileName, ok := v.Interface().(func(
+		ip string,
+		macAddress string,
+		arch int,
+		undi int,
+	) string)
+	if !ok {
+		return "", errors.New("invalid config function signature")
+	}
+
+	return getFileName(
+		ip,
+		macAddress,
+		arch,
+		undi,
+	), nil
 }
