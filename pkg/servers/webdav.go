@@ -7,14 +7,15 @@ import (
 )
 
 type WebDAVServer struct {
-	workingDir    string
-	listenAddress string
+	FileServer
 }
 
 func NewWebDAVServer(workingDir string, listenAddress string) *WebDAVServer {
 	return &WebDAVServer{
-		workingDir:    workingDir,
-		listenAddress: listenAddress,
+		FileServer: FileServer{
+			workingDir:    workingDir,
+			listenAddress: listenAddress,
+		},
 	}
 }
 
