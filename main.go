@@ -29,7 +29,7 @@ func main() {
 	dhcpListenAddress := flag.String("dhcpListenAddress", ":67", "Listen address for the DHCP server")
 	tftpListenAddress := flag.String("tftpListenAddress", ":69", "Listen address for the TFTP server")
 	workingDir := flag.String("workingDir", ".", "Directory to store data in")
-	advertisedIPFlag := flag.String("advertiseIP", "100.64.154.242", "IP address to advertise in proxyDHCP")
+	advertisedIPFlag := flag.String("advertiseIP", "100.64.154.246", "IP address to advertise in proxyDHCP")
 
 	flag.Parse()
 
@@ -139,6 +139,58 @@ func main() {
 				}
 
 				if isPXE {
+					description := "Boot iPXE (BIOS)"
+					vendorOptions := []byte{}
+
+					subOptions := []layers.DHCPOption{
+						layers.NewDHCPOption(
+							6,                        // Option 43 Suboption: (6) PXE discovery control
+							[]byte{byte(0x00000003)}, // discovery control: 0x03, Disable Broadcast, Disable Multicast
+						),
+						layers.NewDHCPOption(
+							10, // Option 43 Suboption: (10) PXE menu prompt
+							append( // menu prompt: 00505845
+								[]byte{
+									0x00, // Timeout: 0
+								},
+								[]byte("PXE")..., // Prompt: PXE
+							),
+						),
+						layers.NewDHCPOption(
+							8, // Option 43 Suboption: (8) PXE boot servers
+							append( // boot servers: 80000164409af2
+								[]byte{
+									0x80, 0x00, // Type: Unknown (32768)
+									0x01, // IP count: 1
+								},
+								advertisedIP..., // IP: 100.64.154.246
+							),
+						),
+						layers.NewDHCPOption(
+							9, // Option 43 Suboption: (9) PXE boot menu
+							append(
+								[]byte{
+									0x80, 0x00, // Type: Unknown (32768)
+									byte(len(description)), // Length: 16
+								},
+								[]byte(description)..., // Description: Boot iPXE (BIOS)
+							),
+						),
+					}
+
+					for _, subOption := range subOptions {
+						vendorOptions = append(
+							vendorOptions,
+							append(
+								[]byte{
+									byte(subOption.Type),
+									subOption.Length,
+								},
+								subOption.Data...,
+							)...,
+						)
+					}
+
 					outBuf := gopacket.NewSerializeBuffer()
 					gopacket.SerializeLayers(
 						outBuf,
@@ -166,14 +218,27 @@ func main() {
 									[]byte("PXEClient"),
 								),
 								clientIdentifierOpt,
-								// TODO: Add Option: (43) Vendor-Specific Information (PXEClient)
 								layers.NewDHCPOption(
-									layers.DHCPOptEnd,
-									nil,
+									layers.DHCPOptVendorOption,
+									vendorOptions,
 								),
 							},
 						},
 					)
+
+					outAddr, err := net.ResolveUDPAddr("udp", "255.255.255.255:68")
+					if err != nil {
+						log.Fatal(err)
+					}
+
+					n, err := conn.WriteToUDP(outBuf.Bytes(), outAddr)
+					if err != nil {
+						log.Fatal(err)
+					}
+
+					log.Println(outBuf.Bytes())
+
+					log.Printf(`sent %v bytes to client "%v"`, n, outAddr)
 				}
 			}(raddr, buf[:length])
 		}
