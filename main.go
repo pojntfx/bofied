@@ -205,7 +205,8 @@ func main() {
 							YourClientIP: r.IP,
 							NextServerIP: r.IP,
 							RelayAgentIP: r.IP,
-							ClientHWAddr: dhcpPacket.ClientHWAddr, // TODO: This seems to be nil for some reason
+							Xid:          dhcpPacket.Xid,
+							ClientHWAddr: dhcpPacket.ClientHWAddr,
 							Options: layers.DHCPOptions{
 								layers.NewDHCPOption(
 									layers.DHCPOptMessageType,
