@@ -213,12 +213,12 @@ func main() {
 					&layers.DHCPv4{
 						Operation:    layers.DHCPOpReply,
 						HardwareType: layers.LinkTypeEthernet,
-						HardwareLen:  0,
+						HardwareLen:  uint8(len(dhcpPacket.ClientHWAddr)),
+						Xid:          dhcpPacket.Xid,
 						ClientIP:     r.IP,
 						YourClientIP: r.IP,
 						NextServerIP: r.IP,
 						RelayAgentIP: r.IP,
-						Xid:          dhcpPacket.Xid,
 						ClientHWAddr: dhcpPacket.ClientHWAddr,
 						Options: layers.DHCPOptions{
 							layers.NewDHCPOption(
@@ -311,7 +311,77 @@ func main() {
 					return
 				}
 
-				log.Println(clientIdentifierOpt, r, dhcpPacket)
+				// Create DHCP suboptions
+				subOption :=
+					layers.NewDHCPOption(
+						71, // Option 43 Suboption: (71) PXE boot item
+						[]byte{ // boot item: 80000000
+							0x80, 0x00, // Type: 32768
+							0x00, 0x00, // Layer: 0000
+						},
+					)
+
+				// Serialize suboptions
+				serializedSubOptions :=
+					append(
+						append(
+							[]byte{
+								byte(subOption.Type),
+								subOption.Length,
+							},
+							subOption.Data...,
+						),
+						byte(0xff),
+					)
+
+				// Serialize the outgoing packet
+				outBuf := gopacket.NewSerializeBuffer()
+				bootFileName := "ipxe.kpxe"
+				gopacket.SerializeLayers(
+					outBuf,
+					gopacket.SerializeOptions{
+						FixLengths: true,
+					},
+					&layers.DHCPv4{
+						Operation:    layers.DHCPOpReply,
+						HardwareType: layers.LinkTypeEthernet,
+						HardwareLen:  uint8(len(dhcpPacket.ClientHWAddr)),
+						Xid:          dhcpPacket.Xid,
+						ClientIP:     net.ParseIP("0.0.0.0").To4(),
+						YourClientIP: r.IP,
+						NextServerIP: advertisedIP,
+						RelayAgentIP: net.ParseIP("0.0.0.0").To4(),
+						ClientHWAddr: dhcpPacket.ClientHWAddr,
+						File:         []byte(bootFileName),
+						Options: layers.DHCPOptions{
+							layers.NewDHCPOption(
+								layers.DHCPOptMessageType,
+								[]byte{byte(layers.DHCPMsgTypeAck)},
+							),
+							layers.NewDHCPOption(
+								layers.DHCPOptServerID,
+								advertisedIP,
+							),
+							layers.NewDHCPOption(
+								layers.DHCPOptClassID,
+								[]byte("PXEClient"),
+							),
+							clientIdentifierOpt,
+							layers.NewDHCPOption(
+								layers.DHCPOptVendorOption,
+								serializedSubOptions,
+							),
+						},
+					},
+				)
+
+				// Send the packet to the client
+				n, err := conn.WriteToUDP(outBuf.Bytes(), r)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				log.Printf(`sent %v bytes of proxyDHCP packets to client "%v"`, n, r)
 			}(raddr, buf[:length])
 		}
 	}()
