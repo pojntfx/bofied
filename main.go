@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/google/gopacket"
@@ -93,7 +94,7 @@ func main() {
 		// Read UDP datagrams
 		for {
 			buf := make([]byte, 1024)
-			length, raddr, err := conn.ReadFromUDP(buf)
+			length, _, err := conn.ReadFromUDP(buf)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -113,7 +114,20 @@ func main() {
 					log.Fatal("received invalid UDP layer")
 				}
 
-				log.Println(raddr, dhcpPacket)
+				if dhcpPacket.Operation == layers.DHCPOpRequest {
+					for _, option := range dhcpPacket.Options {
+						if option.Type == layers.DHCPOptClassID {
+							isPXE, arch, undi, err := parsePXEClassIdentifier(string(option.Data))
+							if err != nil {
+								log.Fatal(err)
+							}
+
+							log.Println(isPXE, arch, undi)
+
+							break
+						}
+					}
+				}
 			}(buf[:length])
 		}
 	}()
@@ -121,4 +135,31 @@ func main() {
 	if err := tftpSrv.ListenAndServe(*tftpListenAddress); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func parsePXEClassIdentifier(classID string) (isPXE bool, arch int, undi int, err error) {
+	parts := strings.Split(classID, ":")
+
+	for i, part := range parts {
+		switch part {
+		case "PXEClient":
+			isPXE = true
+		case "Arch":
+			if len(parts) > i {
+				arch, err = strconv.Atoi(parts[i+1])
+				if err != nil {
+					return
+				}
+			}
+		case "UNDI":
+			if len(parts) > i {
+				undi, err = strconv.Atoi(parts[i+1])
+				if err != nil {
+					return
+				}
+			}
+		}
+	}
+
+	return
 }
