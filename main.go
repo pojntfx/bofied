@@ -20,6 +20,7 @@ import (
 
 const (
 	DHCPOptUUIDGUIDClientIdentifier = 97 // Option: (97) UUID/GUID-based Client Identifier
+	EFIArch                         = 7  // X86-64_EFI
 )
 
 func main() {
@@ -130,14 +131,20 @@ func main() {
 
 				// Process DHCP options
 				isPXE := false
+				isEFI := false
 				clientIdentifierOpt := layers.DHCPOption{}
 				if dhcpPacket.Operation == layers.DHCPOpRequest {
 					for _, option := range dhcpPacket.Options {
 						switch option.Type {
 						case layers.DHCPOptClassID:
-							isPXE, _, _, err = parsePXEClassIdentifier(string(option.Data))
+							pxe, arch, _, err := parsePXEClassIdentifier(string(option.Data))
 							if err != nil {
 								log.Fatal(err)
+							}
+
+							isPXE = pxe
+							if arch == EFIArch {
+								isEFI = true
 							}
 						case DHCPOptUUIDGUIDClientIdentifier:
 							clientIdentifierOpt = option
@@ -150,57 +157,97 @@ func main() {
 					return
 				}
 
-				// Create DHCP suboptions
-				bootMenuDescription := "Boot iPXE (BIOS)"
-				subOptions := []layers.DHCPOption{
-					layers.NewDHCPOption(
-						6,                        // Option 43 Suboption: (6) PXE discovery control
-						[]byte{byte(0x00000003)}, // discovery control: 0x03, Disable Broadcast, Disable Multicast
-					),
-					layers.NewDHCPOption(
-						10, // Option 43 Suboption: (10) PXE menu prompt
-						append( // menu prompt: 00505845
-							[]byte{
-								0x00, // Timeout: 0
-							},
-							[]byte("PXE")..., // Prompt: PXE
+				// Create the outgoing packet
+				outPacket := &layers.DHCPv4{
+					Operation:    layers.DHCPOpReply,
+					HardwareType: layers.LinkTypeEthernet,
+					HardwareLen:  uint8(len(dhcpPacket.ClientHWAddr)),
+					Xid:          dhcpPacket.Xid,
+					ClientIP:     r.IP,
+					YourClientIP: r.IP,
+					NextServerIP: advertisedIP,
+					RelayAgentIP: r.IP,
+					ClientHWAddr: dhcpPacket.ClientHWAddr,
+					Options: layers.DHCPOptions{
+						layers.NewDHCPOption(
+							layers.DHCPOptMessageType,
+							[]byte{byte(layers.DHCPMsgTypeOffer)},
 						),
-					),
-					layers.NewDHCPOption(
-						8, // Option 43 Suboption: (8) PXE boot servers
-						append( // boot servers: 80000164409af2
-							[]byte{
-								0x80, 0x00, // Type: Unknown (32768)
-								0x01, // IP count: 1
-							},
-							advertisedIP..., // IP: 100.64.154.246
+						layers.NewDHCPOption(
+							layers.DHCPOptServerID,
+							advertisedIP,
 						),
-					),
-					layers.NewDHCPOption(
-						9, // Option 43 Suboption: (9) PXE boot menu
-						append(
-							[]byte{
-								0x80, 0x00, // Type: Unknown (32768)
-								byte(len(bootMenuDescription)), // Length: 16
-							},
-							[]byte(bootMenuDescription)..., // Description: Boot iPXE (BIOS)
+						layers.NewDHCPOption(
+							layers.DHCPOptClassID,
+							[]byte("PXEClient"),
 						),
-					),
+						clientIdentifierOpt,
+					},
 				}
 
-				// Serialize suboptions
-				serializedSubOptions := []byte{}
-				for _, subOption := range subOptions {
-					serializedSubOptions = append(
-						serializedSubOptions,
-						append(
-							[]byte{
-								byte(subOption.Type),
-								subOption.Length,
-							},
-							subOption.Data...,
-						)...,
+				if !isEFI {
+					// Create DHCP suboptions
+					bootMenuDescription := "Boot iPXE (BIOS)"
+					subOptions := []layers.DHCPOption{
+						layers.NewDHCPOption(
+							6,                        // Option 43 Suboption: (6) PXE discovery control
+							[]byte{byte(0x00000003)}, // discovery control: 0x03, Disable Broadcast, Disable Multicast
+						),
+						layers.NewDHCPOption(
+							10, // Option 43 Suboption: (10) PXE menu prompt
+							append( // menu prompt: 00505845
+								[]byte{
+									0x00, // Timeout: 0
+								},
+								[]byte("PXE")..., // Prompt: PXE
+							),
+						),
+						layers.NewDHCPOption(
+							8, // Option 43 Suboption: (8) PXE boot servers
+							append( // boot servers: 80000164409af2
+								[]byte{
+									0x80, 0x00, // Type: Unknown (32768)
+									0x01, // IP count: 1
+								},
+								advertisedIP..., // IP: 100.64.154.246
+							),
+						),
+						layers.NewDHCPOption(
+							9, // Option 43 Suboption: (9) PXE boot menu
+							append(
+								[]byte{
+									0x80, 0x00, // Type: Unknown (32768)
+									byte(len(bootMenuDescription)), // Length: 16
+								},
+								[]byte(bootMenuDescription)..., // Description: Boot iPXE (BIOS)
+							),
+						),
+					}
+
+					// Serialize suboptions
+					serializedSubOptions := []byte{}
+					for _, subOption := range subOptions {
+						serializedSubOptions = append(
+							serializedSubOptions,
+							append(
+								[]byte{
+									byte(subOption.Type),
+									subOption.Length,
+								},
+								subOption.Data...,
+							)...,
+						)
+					}
+
+					// Add the subOptions and set the next server IP to 0.0.0.0
+					outPacket.Options = append(
+						outPacket.Options,
+						layers.NewDHCPOption(
+							layers.DHCPOptVendorOption,
+							serializedSubOptions,
+						),
 					)
+					outPacket.NextServerIP = r.IP
 				}
 
 				// Serialize the outgoing packet
@@ -210,36 +257,7 @@ func main() {
 					gopacket.SerializeOptions{
 						FixLengths: true,
 					},
-					&layers.DHCPv4{
-						Operation:    layers.DHCPOpReply,
-						HardwareType: layers.LinkTypeEthernet,
-						HardwareLen:  uint8(len(dhcpPacket.ClientHWAddr)),
-						Xid:          dhcpPacket.Xid,
-						ClientIP:     r.IP,
-						YourClientIP: r.IP,
-						NextServerIP: r.IP,
-						RelayAgentIP: r.IP,
-						ClientHWAddr: dhcpPacket.ClientHWAddr,
-						Options: layers.DHCPOptions{
-							layers.NewDHCPOption(
-								layers.DHCPOptMessageType,
-								[]byte{byte(layers.DHCPMsgTypeOffer)},
-							),
-							layers.NewDHCPOption(
-								layers.DHCPOptServerID,
-								advertisedIP,
-							),
-							layers.NewDHCPOption(
-								layers.DHCPOptClassID,
-								[]byte("PXEClient"),
-							),
-							clientIdentifierOpt,
-							layers.NewDHCPOption(
-								layers.DHCPOptVendorOption,
-								serializedSubOptions,
-							),
-						},
-					},
+					outPacket,
 				)
 
 				// Broadcast the packet
@@ -291,14 +309,20 @@ func main() {
 
 				// Process DHCP options
 				isPXE := false
+				isEFI := false
 				clientIdentifierOpt := layers.DHCPOption{}
 				if dhcpPacket.Operation == layers.DHCPOpRequest {
 					for _, option := range dhcpPacket.Options {
 						switch option.Type {
 						case layers.DHCPOptClassID:
-							isPXE, _, _, err = parsePXEClassIdentifier(string(option.Data))
+							pxe, arch, _, err := parsePXEClassIdentifier(string(option.Data))
 							if err != nil {
 								log.Fatal(err)
+							}
+
+							isPXE = pxe
+							if arch == EFIArch {
+								isEFI = true
 							}
 						case DHCPOptUUIDGUIDClientIdentifier:
 							clientIdentifierOpt = option
@@ -336,7 +360,10 @@ func main() {
 
 				// Serialize the outgoing packet
 				outBuf := gopacket.NewSerializeBuffer()
-				bootFileName := "ipxe.kpxe"
+				bootFileName := "ipxe.efi"
+				if !isEFI {
+					bootFileName = "ipxe.kpxe"
+				}
 				gopacket.SerializeLayers(
 					outBuf,
 					gopacket.SerializeOptions{
