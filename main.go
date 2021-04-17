@@ -18,6 +18,10 @@ import (
 	"golang.org/x/net/webdav"
 )
 
+const (
+	DHCPOptUUIDGUIDClientIdentifier = 97 // Option: (97) UUID/GUID-based Client Identifier
+)
+
 func main() {
 	// Parse flags
 	webDAVListenAddress := flag.String("webDAVListenAddress", "localhost:15256", "Listen address for the WebDAV server")
@@ -25,8 +29,12 @@ func main() {
 	dhcpListenAddress := flag.String("dhcpListenAddress", ":67", "Listen address for the DHCP server")
 	tftpListenAddress := flag.String("tftpListenAddress", ":69", "Listen address for the TFTP server")
 	workingDir := flag.String("workingDir", ".", "Directory to store data in")
+	advertisedIPFlag := flag.String("advertiseIP", "100.64.154.242", "IP address to advertise in proxyDHCP")
 
 	flag.Parse()
+
+	// Process flags
+	advertisedIP := net.ParseIP(*advertisedIPFlag)
 
 	// Create servers
 	webdavSrv := &webdav.Handler{
@@ -94,12 +102,12 @@ func main() {
 		// Read UDP datagrams
 		for {
 			buf := make([]byte, 1024)
-			length, _, err := conn.ReadFromUDP(buf)
+			length, raddr, err := conn.ReadFromUDP(buf)
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			go func(rawPacket []byte) {
+			go func(r *net.UDPAddr, rawPacket []byte) {
 				packet := gopacket.NewPacket(rawPacket, layers.LayerTypeDHCPv4, gopacket.Default)
 
 				dhcpLayer := packet.Layer(layers.LayerTypeDHCPv4)
@@ -114,21 +122,60 @@ func main() {
 					log.Fatal("received invalid UDP layer")
 				}
 
+				isPXE := false
+				clientIdentifierOpt := layers.DHCPOption{}
 				if dhcpPacket.Operation == layers.DHCPOpRequest {
 					for _, option := range dhcpPacket.Options {
-						if option.Type == layers.DHCPOptClassID {
-							isPXE, arch, undi, err := parsePXEClassIdentifier(string(option.Data))
+						switch option.Type {
+						case layers.DHCPOptClassID:
+							isPXE, _, _, err = parsePXEClassIdentifier(string(option.Data))
 							if err != nil {
 								log.Fatal(err)
 							}
-
-							log.Println(isPXE, arch, undi)
-
-							break
+						case DHCPOptUUIDGUIDClientIdentifier:
+							clientIdentifierOpt = option
 						}
 					}
 				}
-			}(buf[:length])
+
+				if isPXE {
+					outBuf := gopacket.NewSerializeBuffer()
+					gopacket.SerializeLayers(
+						outBuf,
+						gopacket.SerializeOptions{},
+						&layers.DHCPv4{
+							Operation:    layers.DHCPOpReply,
+							HardwareType: layers.LinkTypeEthernet,
+							HardwareLen:  0,
+							ClientIP:     r.IP,
+							YourClientIP: r.IP,
+							NextServerIP: r.IP,
+							RelayAgentIP: r.IP,
+							ClientHWAddr: dhcpPacket.ClientHWAddr,
+							Options: layers.DHCPOptions{
+								layers.NewDHCPOption(
+									layers.DHCPOptMessageType,
+									[]byte{byte(layers.DHCPMsgTypeOffer)},
+								),
+								layers.NewDHCPOption(
+									layers.DHCPOptServerID,
+									advertisedIP,
+								),
+								layers.NewDHCPOption(
+									layers.DHCPOptClassID,
+									[]byte("PXEClient"),
+								),
+								clientIdentifierOpt,
+								// TODO: Add Option: (43) Vendor-Specific Information (PXEClient)
+								layers.NewDHCPOption(
+									layers.DHCPOptEnd,
+									nil,
+								),
+							},
+						},
+					)
+				}
+			}(raddr, buf[:length])
 		}
 	}()
 
