@@ -5,8 +5,10 @@ import "github.com/maxence-charriere/go-app/v8/pkg/app"
 type DataShell struct {
 	app.Compo
 
-	GetAuthorizedWebDAVURL func() string
-	GetConfigFile          func() string
+	AuthorizedWebDAVURL string
+	ConfigFile          string
+
+	ValidateConfigFile func(string)
 
 	Error   error
 	Recover func()
@@ -34,10 +36,16 @@ func (c *DataShell) Render() app.UI {
 	return app.Div().Body(
 		app.Input().
 			Value(
-				c.GetAuthorizedWebDAVURL(),
+				c.AuthorizedWebDAVURL,
 			),
 		app.Textarea().Text(
-			c.GetConfigFile(),
+			c.ConfigFile,
 		),
+		app.Button().
+			OnClick(func(ctx app.Context, e app.Event) {
+				// TODO: Use local value of textarea, this doesn't change yet
+				c.ValidateConfigFile(c.ConfigFile)
+			}).
+			Text("Validate"),
 	)
 }
