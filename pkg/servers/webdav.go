@@ -4,13 +4,13 @@ import (
 	"net/http"
 
 	"github.com/pojntfx/bofied/pkg/authorization"
+	"github.com/pojntfx/bofied/pkg/constants"
 	"github.com/pojntfx/liwasc/pkg/validators"
 	"golang.org/x/net/webdav"
 )
 
 const (
-	WebDAVUser             = "user"
-	WebDAVRealmDescription = "bofied protected area. Please enter `" + WebDAVUser + "` as the username and a OpenID Connect token (i.e. from the frontend) as the password"
+	WebDAVRealmDescription = "bofied protected area. Please enter `" + constants.OIDCOverBasicAuthUsername + "` as the username and a OpenID Connect token (i.e. from the frontend) as the password"
 )
 
 type WebDAVServer struct {
@@ -40,7 +40,7 @@ func (s *WebDAVServer) ListenAndServe() error {
 		s.listenAddress,
 		authorization.OIDCOverBasicAuth(
 			h,
-			WebDAVUser,
+			constants.OIDCOverBasicAuthUsername,
 			s.oidcValidator,
 			WebDAVRealmDescription,
 		),
