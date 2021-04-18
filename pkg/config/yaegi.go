@@ -3,9 +3,28 @@ package config
 import (
 	"errors"
 	"io/ioutil"
+	"os"
+	"path/filepath"
 
 	"github.com/traefik/yaegi/interp"
 )
+
+const initialConfigFileContent = `package config
+
+func GetFileName(
+	ip string,
+	macAddress string,
+	arch int,
+	undi int,
+) string {
+	switch arch {
+	case 7:
+		return "ipxe.efi"
+	default:
+		return "undionly.kpxe"
+	}
+}
+`
 
 func GetFileName(
 	configFunctionIdentifier string,
@@ -53,4 +72,29 @@ func GetFileName(
 		arch,
 		undi,
 	), nil
+}
+
+func CreateConfigIfNotExists(configFileLocation string) error {
+	// If config file does not exist, create and write to it
+	if _, err := os.Stat(configFileLocation); os.IsNotExist(err) {
+		// Create leading directories
+		leadingDir, _ := filepath.Split(configFileLocation)
+		if err := os.MkdirAll(leadingDir, os.ModePerm); err != nil {
+			return err
+		}
+
+		// Create file
+		out, err := os.Create(configFileLocation)
+		if err != nil {
+			return err
+		}
+		defer out.Close()
+
+		// Write to file
+		if err := ioutil.WriteFile(configFileLocation, []byte(initialConfigFileContent), os.ModePerm); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

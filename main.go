@@ -3,14 +3,23 @@ package main
 import (
 	"flag"
 	"log"
+	"os"
 	"path/filepath"
 
+	"github.com/pojntfx/bofied/pkg/config"
 	"github.com/pojntfx/bofied/pkg/servers"
 )
 
 func main() {
+	// Get default working dir
+	home, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatal("could not get home directory", err)
+	}
+	workingDirDefault := filepath.Join(home, ".local", "share", "bofied", "var", "lib", "bofied")
+
 	// Parse flags
-	workingDir := flag.String("workingDir", ".", "Working directory")
+	workingDir := flag.String("workingDir", workingDirDefault, "Working directory")
 	configFileName := flag.String("configFileName", "config.go", "Name of the config file (in the working directory)")
 	advertisedIP := flag.String("advertisedIP", "100.64.154.246", "IP to advertise for DHCP clients")
 	dhcpListenAddress := flag.String("dhcpListenAddress", ":67", "Listen address for DHCP server")
@@ -20,6 +29,11 @@ func main() {
 	httpListenAddress := flag.String("httpListenAddress", ":15257", "Listen address for HTTP server")
 
 	flag.Parse()
+
+	// Initialize the working directory
+	if err := config.CreateConfigIfNotExists(filepath.Join(*workingDir, *configFileName)); err != nil {
+		log.Fatal(err)
+	}
 
 	// Create servers
 	dhcpServer := servers.NewDHCPServer(*dhcpListenAddress, *advertisedIP)
