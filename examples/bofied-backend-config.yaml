@@ -6,3 +6,5 @@ proxyDHCPListenAddress: ":4011"
 tftpListenAddress: ":69"
 webDAVListenAddress: ":15256"
 httpListenAddress: ":15257"
+oidcClientID: myoidcclientid
+oidcIssuer: https://pojntfx.eu.auth0.com/

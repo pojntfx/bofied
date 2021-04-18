@@ -7,6 +7,7 @@ import (
 
 	"github.com/pojntfx/bofied/pkg/config"
 	"github.com/pojntfx/bofied/pkg/servers"
+	"github.com/pojntfx/liwasc/pkg/validators"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -21,6 +22,8 @@ const (
 	tftpListenAddressKey      = "tftpListenAddress"
 	webDAVListenAddressKey    = "webDAVListenAddress"
 	httpListenAddressKey      = "httpListenAddress"
+	oidcIssuerKey             = "oidcIssuer"
+	oidcClientIDKey           = "oidcClientID"
 )
 
 func main() {
@@ -46,6 +49,12 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 				log.Fatal(err)
 			}
 
+			// Create auth utilities
+			oidcValidator := validators.NewOIDCValidator(viper.GetString(oidcIssuerKey), viper.GetString(oidcClientIDKey))
+			if err := oidcValidator.Open(); err != nil {
+				log.Fatal(err)
+			}
+
 			// Create servers
 			dhcpServer := servers.NewDHCPServer(viper.GetString(dhcpListenAddressKey), viper.GetString(advertisedIPKey))
 			proxyDHCPServer := servers.NewProxyDHCPServer(
@@ -54,7 +63,7 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 				filepath.Join(viper.GetString(workingDirKey), viper.GetString(bootConfigFileNameKey)),
 			)
 			tftpServer := servers.NewTFTPServer(viper.GetString(workingDirKey), viper.GetString(tftpListenAddressKey))
-			webDAVServer := servers.NewWebDAVServer(viper.GetString(workingDirKey), viper.GetString(webDAVListenAddressKey))
+			webDAVServer := servers.NewWebDAVServer(viper.GetString(workingDirKey), viper.GetString(webDAVListenAddressKey), oidcValidator)
 			httpServer := servers.NewHTTPServer(viper.GetString(workingDirKey), viper.GetString(httpListenAddressKey))
 
 			// Start servers
@@ -105,6 +114,9 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 	cmd.PersistentFlags().String(tftpListenAddressKey, ":69", "Listen address for TFTP server")
 	cmd.PersistentFlags().String(webDAVListenAddressKey, ":15256", "Listen address for WebDAV server")
 	cmd.PersistentFlags().String(httpListenAddressKey, ":15257", "Listen address for HTTP server")
+
+	cmd.PersistentFlags().StringP(oidcIssuerKey, "i", "https://pojntfx.eu.auth0.com/", "OIDC issuer")
+	cmd.PersistentFlags().StringP(oidcClientIDKey, "t", "myoidcclientid", "OIDC client ID")
 
 	// Bind env variables
 	if err := viper.BindPFlags(cmd.PersistentFlags()); err != nil {

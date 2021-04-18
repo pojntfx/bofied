@@ -3,19 +3,30 @@ package servers
 import (
 	"net/http"
 
+	"github.com/pojntfx/bofied/pkg/authorization"
+	"github.com/pojntfx/liwasc/pkg/validators"
 	"golang.org/x/net/webdav"
+)
+
+const (
+	WebDAVUser             = "user"
+	WebDAVRealmDescription = "bofied protected area. Please enter `" + WebDAVUser + "` as the username and a OpenID Connect token (i.e. from the frontend) as the password"
 )
 
 type WebDAVServer struct {
 	FileServer
+
+	oidcValidator *validators.OIDCValidator
 }
 
-func NewWebDAVServer(workingDir string, listenAddress string) *WebDAVServer {
+func NewWebDAVServer(workingDir string, listenAddress string, oidcValidator *validators.OIDCValidator) *WebDAVServer {
 	return &WebDAVServer{
 		FileServer: FileServer{
 			workingDir:    workingDir,
 			listenAddress: listenAddress,
 		},
+
+		oidcValidator: oidcValidator,
 	}
 }
 
@@ -25,5 +36,13 @@ func (s *WebDAVServer) ListenAndServe() error {
 		LockSystem: webdav.NewMemLS(),
 	}
 
-	return http.ListenAndServe(s.listenAddress, h)
+	return http.ListenAndServe(
+		s.listenAddress,
+		authorization.OIDCOverBasicAuth(
+			h,
+			WebDAVUser,
+			s.oidcValidator,
+			WebDAVRealmDescription,
+		),
+	)
 }
