@@ -2,6 +2,7 @@ package components
 
 import (
 	"github.com/maxence-charriere/go-app/v8/pkg/app"
+	"github.com/pojntfx/bofied/pkg/constants"
 	"github.com/pojntfx/bofied/pkg/providers"
 	"github.com/pojntfx/liwasc/pkg/components"
 	metaproviders "github.com/pojntfx/liwasc/pkg/providers"
@@ -68,16 +69,21 @@ func (c *Home) Render() app.UI {
 								}
 
 								// WebDAV Client
-								webDAVClient := gowebdav.NewClient(cpcp.BackendURL, "", "")
+								webDAVClient := gowebdav.NewClient(cpcp.BackendURL, constants.OIDCOverBasicAuthUsername, ipcp.IDToken)
 
 								// Data provider
 								return &providers.DataProvider{
+									BackendURL:   cpcp.BackendURL,
 									IDToken:      ipcp.IDToken,
 									WebDAVClient: webDAVClient,
 									Children: func(dpcp providers.DataProviderChildrenProps) app.UI {
 										// Data shell
 										return &DataShell{
-											GetIDToken: dpcp.GetIDToken,
+											GetAuthorizedWebDAVURL: dpcp.GetAuthorizedWebDAVURL,
+
+											Error:   dpcp.Error,
+											Recover: dpcp.Recover,
+											Ignore:  dpcp.Ignore,
 										}
 									},
 								}
