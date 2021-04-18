@@ -1,16 +1,83 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/pojntfx/bofied/pkg/config"
 	"github.com/pojntfx/bofied/pkg/servers"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+)
+
+const (
+	configFileKey             = "configFile"
+	workingDirKey             = "workingDir"
+	bootConfigFileNameKey     = "bootConfigFileName"
+	advertisedIPKey           = "advertisedIP"
+	dhcpListenAddressKey      = "dhcpListenAddress"
+	proxyDHCPListenAddressKey = "proxyDHCPListenAddress"
+	tftpListenAddressKey      = "tftpListenAddress"
+	webDAVListenAddressKey    = "webDAVListenAddress"
+	httpListenAddressKey      = "httpListenAddress"
 )
 
 func main() {
+	// Create command
+	cmd := &cobra.Command{
+		Use:   "bofied-backend",
+		Short: "Network boot nodes in a network.",
+		Long: `bofied is a network boot server. It provides everything you need to PXE boot a node, from a (proxy)DHCP server for PXE service to a TFTP and HTTP server to serve boot files.
+
+For more information, please visit https://github.com/pojntfx/bofied.`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			// Bind config file
+			if !(viper.GetString(configFileKey) == "") {
+				viper.SetConfigFile(viper.GetString(configFileKey))
+
+				if err := viper.ReadInConfig(); err != nil {
+					return err
+				}
+			}
+
+			// Initialize the working directory
+			if err := config.CreateConfigIfNotExists(filepath.Join(viper.GetString(workingDirKey), viper.GetString(bootConfigFileNameKey))); err != nil {
+				log.Fatal(err)
+			}
+
+			// Create servers
+			dhcpServer := servers.NewDHCPServer(viper.GetString(dhcpListenAddressKey), viper.GetString(advertisedIPKey))
+			proxyDHCPServer := servers.NewProxyDHCPServer(
+				viper.GetString(proxyDHCPListenAddressKey),
+				viper.GetString(advertisedIPKey),
+				filepath.Join(viper.GetString(workingDirKey), viper.GetString(bootConfigFileNameKey)),
+			)
+			tftpServer := servers.NewTFTPServer(viper.GetString(workingDirKey), viper.GetString(tftpListenAddressKey))
+			webDAVServer := servers.NewWebDAVServer(viper.GetString(workingDirKey), viper.GetString(webDAVListenAddressKey))
+			httpServer := servers.NewHTTPServer(viper.GetString(workingDirKey), viper.GetString(httpListenAddressKey))
+
+			// Start servers
+			go func() {
+				log.Fatal(dhcpServer.ListenAndServe())
+			}()
+
+			go func() {
+				log.Fatal(proxyDHCPServer.ListenAndServe())
+			}()
+
+			go func() {
+				log.Fatal(tftpServer.ListenAndServe())
+			}()
+
+			go func() {
+				log.Fatal(webDAVServer.ListenAndServe())
+			}()
+
+			return httpServer.ListenAndServe()
+		},
+	}
+
 	// Get default working dir
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -18,50 +85,27 @@ func main() {
 	}
 	workingDirDefault := filepath.Join(home, ".local", "share", "bofied", "var", "lib", "bofied")
 
-	// Parse flags
-	workingDir := flag.String("workingDir", workingDirDefault, "Working directory")
-	configFileName := flag.String("configFileName", "config.go", "Name of the config file (in the working directory)")
-	advertisedIP := flag.String("advertisedIP", "100.64.154.246", "IP to advertise for DHCP clients")
-	dhcpListenAddress := flag.String("dhcpListenAddress", ":67", "Listen address for DHCP server")
-	proxyDHCPListenAddress := flag.String("proxyDHCPListenAddress", ":4011", "Listen address for proxyDHCP server")
-	tftpListenAddress := flag.String("tftpListenAddress", ":69", "Listen address for TFTP server")
-	webDAVListenAddress := flag.String("webDAVListenAddress", ":15256", "Listen address for WebDAV server")
-	httpListenAddress := flag.String("httpListenAddress", ":15257", "Listen address for HTTP server")
+	// Bind flags
+	cmd.PersistentFlags().StringP(configFileKey, "c", "", "Config file to use")
+	cmd.PersistentFlags().StringP(workingDirKey, "d", workingDirDefault, "Working directory")
+	cmd.PersistentFlags().String(bootConfigFileNameKey, "config.go", "Name of the boot config file (in the working directory)")
+	cmd.PersistentFlags().String(advertisedIPKey, "100.64.154.246", "IP to advertise for DHCP clients")
 
-	flag.Parse()
+	cmd.PersistentFlags().String(dhcpListenAddressKey, ":67", "Listen address for DHCP server")
+	cmd.PersistentFlags().String(proxyDHCPListenAddressKey, ":4011", "Listen address for proxyDHCP server")
+	cmd.PersistentFlags().String(tftpListenAddressKey, ":69", "Listen address for TFTP server")
+	cmd.PersistentFlags().String(webDAVListenAddressKey, ":15256", "Listen address for WebDAV server")
+	cmd.PersistentFlags().String(httpListenAddressKey, ":15257", "Listen address for HTTP server")
 
-	// Initialize the working directory
-	if err := config.CreateConfigIfNotExists(filepath.Join(*workingDir, *configFileName)); err != nil {
+	// Bind env variables
+	if err := viper.BindPFlags(cmd.PersistentFlags()); err != nil {
 		log.Fatal(err)
 	}
+	viper.SetEnvPrefix("bofied_backend")
+	viper.AutomaticEnv()
 
-	// Create servers
-	dhcpServer := servers.NewDHCPServer(*dhcpListenAddress, *advertisedIP)
-	proxyDHCPServer := servers.NewProxyDHCPServer(
-		*proxyDHCPListenAddress,
-		*advertisedIP,
-		filepath.Join(*workingDir, *configFileName),
-	)
-	tftpServer := servers.NewTFTPServer(*workingDir, *tftpListenAddress)
-	webDAVServer := servers.NewWebDAVServer(*workingDir, *webDAVListenAddress)
-	httpServer := servers.NewHTTPServer(*workingDir, *httpListenAddress)
-
-	// Start servers
-	go func() {
-		log.Fatal(dhcpServer.ListenAndServe())
-	}()
-
-	go func() {
-		log.Fatal(proxyDHCPServer.ListenAndServe())
-	}()
-
-	go func() {
-		log.Fatal(tftpServer.ListenAndServe())
-	}()
-
-	go func() {
-		log.Fatal(webDAVServer.ListenAndServe())
-	}()
-
-	log.Fatal(httpServer.ListenAndServe())
+	// Run command
+	if err := cmd.Execute(); err != nil {
+		log.Fatal(err)
+	}
 }
