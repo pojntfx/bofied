@@ -82,8 +82,10 @@ func (c *Home) Render() app.UI {
 									Children: func(dpcp providers.DataProviderChildrenProps) app.UI {
 										// Data shell
 										return &DataShell{
-											GetAuthorizedWebDAVURL: dpcp.GetAuthorizedWebDAVURL,
-											GetConfigFile:          dpcp.GetConfigFile,
+											AuthorizedWebDAVURL: dpcp.AuthorizedWebDAVURL,
+											ConfigFile:          dpcp.ConfigFile,
+
+											ValidateConfigFile: dpcp.ValidateConfigFile,
 
 											Error:   dpcp.Error,
 											Recover: dpcp.Recover,
