@@ -14,10 +14,12 @@ import (
 type DataProviderChildrenProps struct {
 	AuthorizedWebDAVURL string
 	ConfigFile          string
+	Index               []os.FileInfo
 
 	SetConfigFile      func(string)
 	ValidateConfigFile func()
 	SaveConfigFile     func()
+	Refresh            func()
 
 	Error   error
 	Recover func()
@@ -33,6 +35,7 @@ type DataProvider struct {
 	Children     func(dpcp DataProviderChildrenProps) app.UI
 
 	configFile string
+	index      []os.FileInfo
 
 	err error
 }
@@ -41,10 +44,12 @@ func (c *DataProvider) Render() app.UI {
 	return c.Children(DataProviderChildrenProps{
 		AuthorizedWebDAVURL: c.getAuthorizedWebDAVURL(),
 		ConfigFile:          c.configFile,
+		Index:               c.index,
 
 		SetConfigFile:      c.setConfigFile,
 		ValidateConfigFile: c.validateConfigFile,
 		SaveConfigFile:     c.saveConfigFile,
+		Refresh:            c.refresh,
 
 		Error:   c.err,
 		Recover: c.recover,
@@ -53,11 +58,14 @@ func (c *DataProvider) Render() app.UI {
 }
 
 func (c *DataProvider) OnMount(ctx app.Context) {
-	ctx.Dispatch(func() {
-		c.configFile = c.getConfigFile()
+	c.refresh()
+}
 
-		c.Update()
-	})
+func (c *DataProvider) refresh() {
+	c.configFile = c.getConfigFile()
+	c.index = c.getIndex()
+
+	c.Update()
 }
 
 func (c *DataProvider) getAuthorizedWebDAVURL() string {
@@ -91,6 +99,24 @@ func (c *DataProvider) getConfigFile() string {
 	}
 
 	return string(content)
+}
+
+func (c *DataProvider) getIndex() []os.FileInfo {
+	rawDirs, err := c.WebDAVClient.ReadDir(".")
+	if err != nil {
+		c.panic(err)
+
+		return []os.FileInfo{}
+	}
+
+	filteredDirs := []os.FileInfo{}
+	for _, dir := range rawDirs {
+		if dir.Name() != constants.BootConfigFileName {
+			filteredDirs = append(filteredDirs, dir)
+		}
+	}
+
+	return filteredDirs
 }
 
 func (c *DataProvider) setConfigFile(s string) {
