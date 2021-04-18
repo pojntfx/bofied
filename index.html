@@ -5,10 +5,10 @@
 <meta httpequiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="author" content="Felicitas Pojtinger">
 <meta name="description" content="Network boot nodes in a network.">
-<meta name="keywords" content="pxe-boot, ipxe, netboot, network-boot, http-server, dhcp-server, pxe, webdav-server, tftp-server, proxy-dhcp">
+<meta content="pxe-boot, ipxe, netboot, network-boot, http-server, dhcp-server, pxe, webdav-server, tftp-server, proxy-dhcp" name="keywords">
 <meta name="theme-color" content="#151515">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
-<meta property="og:url" content="http://127.0.0.1:33771/">
+<meta property="og:url" content="http://127.0.0.1:38595/">
 <meta property="og:title" content="bofied">
 <meta property="og:description" content="Network boot nodes in a network.">
 <meta property="og:type" content="website">
@@ -22,9 +22,9 @@ bofied
 <link type="text/css" rel="stylesheet" href="/bofied/app.css">
 <script defer src="/bofied/wasm_exec.js"></script>
 <script defer src="/bofied/app.js"></script>
-<link href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly.css" type="text/css" rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly.css">
 <link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly-addons.css">
-<link type="text/css" rel="stylesheet" href="/bofied/web/index.css">
+<link rel="stylesheet" href="/bofied/web/index.css" type="text/css">
 <meta property="og:url" content="https://pojntfx.github.io/bofied/">
 <meta property="og:title" content="bofied">
 <meta property="og:description" content="Network boot nodes in a network.">
@@ -33,7 +33,7 @@ bofied
 <body>
 <div>
 <div id="app-pre-render">
-<div tabindex="-1" class="pf-x-ws-router">
+<div class="pf-x-ws-router" tabindex="-1">
 <div class="pf-u-h-100">
 <div class="pf-c-background-image">
 <svg
@@ -96,7 +96,7 @@ Backend URL
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input placeholder="ws://localhost:15124" class="pf-c-form-control" aria-invalid="false" name="backendURLName" id="backendURLName" type="url" required>
+<input required placeholder="ws://localhost:15124" class="pf-c-form-control" aria-invalid="false" name="backendURLName" id="backendURLName" type="url">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -111,7 +111,7 @@ OIDC Issuer
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input id="oidcIssuer" type="url" required placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false" name="oidcIssuer">
+<input aria-invalid="false" name="oidcIssuer" id="oidcIssuer" type="url" required placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -121,7 +121,7 @@ OIDC Issuer
 OIDC Client ID
 </span>
 </label>
-<span aria-hidden="true" class="pf-c-form__label-required">
+<span class="pf-c-form__label-required" aria-hidden="true">
 *
 </span>
 </div>
@@ -136,16 +136,16 @@ OIDC Client ID
 OIDC Redirect URL
 </span>
 </label>
-<span class="pf-c-form__label-required" aria-hidden="true">
+<span aria-hidden="true" class="pf-c-form__label-required">
 *
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input id="oidcRedirectURL" type="url" required placeholder="http://localhost:15125/" class="pf-c-form-control" aria-invalid="false" name="oidcRedirectURL">
+<input placeholder="http://localhost:15125/" class="pf-c-form-control" aria-invalid="false" name="oidcRedirectURL" id="oidcRedirectURL" type="url" required>
 </div>
 </div>
 <div class="pf-c-form__group pf-m-action">
-<button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+<button class="pf-c-button pf-m-primary pf-m-block" type="submit">
 Log in
 </button>
 </div>
@@ -190,7 +190,7 @@ Source Code
 </div>
 </div>
 <div id="app-wasm-loader" class="goapp-app-info">
-<img src="/bofied/web/icon.png" id="app-wasm-loader-icon" class="goapp-logo goapp-spin">
+<img id="app-wasm-loader-icon" class="goapp-logo goapp-spin" src="/bofied/web/icon.png">
 <p id="app-wasm-loader-label" class="goapp-label">
 Network boot nodes in a network.
 </p>
