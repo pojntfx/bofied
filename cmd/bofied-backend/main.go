@@ -58,6 +58,15 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 			httpServer := servers.NewHTTPServer(viper.GetString(workingDirKey), viper.GetString(httpListenAddressKey))
 
 			// Start servers
+			log.Printf(
+				"bofied backend listening on %v (DHCP), %v (proxyDHCP), %v (TFTP), %v (WebDAV) and %v (HTTP)\n",
+				viper.GetString(dhcpListenAddressKey),
+				viper.GetString(proxyDHCPListenAddressKey),
+				viper.GetString(tftpListenAddressKey),
+				viper.GetString(webDAVListenAddressKey),
+				viper.GetString(httpListenAddressKey),
+			)
+
 			go func() {
 				log.Fatal(dhcpServer.ListenAndServe())
 			}()
