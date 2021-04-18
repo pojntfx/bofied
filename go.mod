@@ -9,6 +9,7 @@ require (
 	github.com/pin/tftp v2.1.0+incompatible
 	github.com/pojntfx/go-app-grpc-chat-frontend-web v0.0.0-20200914214440-b28bb959fef9
 	github.com/pojntfx/liwasc v0.0.0-20210418112916-18ce29ed848d
+	github.com/rs/cors v1.7.0
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/viper v1.7.1
 	github.com/studio-b12/gowebdav v0.0.0-20210203212356-8244b5a5f51a

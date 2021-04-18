@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/pojntfx/bofied/pkg/config"
+	"github.com/pojntfx/bofied/pkg/constants"
 	"github.com/pojntfx/bofied/pkg/servers"
 	"github.com/pojntfx/liwasc/pkg/validators"
 	"github.com/spf13/cobra"
@@ -15,7 +16,6 @@ import (
 const (
 	configFileKey             = "configFile"
 	workingDirKey             = "workingDir"
-	bootConfigFileNameKey     = "bootConfigFileName"
 	advertisedIPKey           = "advertisedIP"
 	dhcpListenAddressKey      = "dhcpListenAddress"
 	proxyDHCPListenAddressKey = "proxyDHCPListenAddress"
@@ -45,7 +45,7 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 			}
 
 			// Initialize the working directory
-			if err := config.CreateConfigIfNotExists(filepath.Join(viper.GetString(workingDirKey), viper.GetString(bootConfigFileNameKey))); err != nil {
+			if err := config.CreateConfigIfNotExists(filepath.Join(viper.GetString(workingDirKey), constants.BootConfigFileName)); err != nil {
 				log.Fatal(err)
 			}
 
@@ -60,7 +60,7 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 			proxyDHCPServer := servers.NewProxyDHCPServer(
 				viper.GetString(proxyDHCPListenAddressKey),
 				viper.GetString(advertisedIPKey),
-				filepath.Join(viper.GetString(workingDirKey), viper.GetString(bootConfigFileNameKey)),
+				filepath.Join(viper.GetString(workingDirKey), constants.BootConfigFileName),
 			)
 			tftpServer := servers.NewTFTPServer(viper.GetString(workingDirKey), viper.GetString(tftpListenAddressKey))
 			webDAVServer := servers.NewWebDAVServer(viper.GetString(workingDirKey), viper.GetString(webDAVListenAddressKey), oidcValidator)
@@ -106,7 +106,6 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 	// Bind flags
 	cmd.PersistentFlags().StringP(configFileKey, "c", "", "Config file to use")
 	cmd.PersistentFlags().StringP(workingDirKey, "d", workingDirDefault, "Working directory")
-	cmd.PersistentFlags().String(bootConfigFileNameKey, "config.go", "Name of the boot config file (in the working directory)")
 	cmd.PersistentFlags().String(advertisedIPKey, "100.64.154.246", "IP to advertise for DHCP clients")
 
 	cmd.PersistentFlags().String(dhcpListenAddressKey, ":67", "Listen address for DHCP server")

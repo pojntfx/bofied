@@ -6,6 +6,7 @@ import (
 	"github.com/pojntfx/bofied/pkg/authorization"
 	"github.com/pojntfx/bofied/pkg/constants"
 	"github.com/pojntfx/liwasc/pkg/validators"
+	"github.com/rs/cors"
 	"golang.org/x/net/webdav"
 )
 
@@ -38,11 +39,13 @@ func (s *WebDAVServer) ListenAndServe() error {
 
 	return http.ListenAndServe(
 		s.listenAddress,
-		authorization.OIDCOverBasicAuth(
-			h,
-			constants.OIDCOverBasicAuthUsername,
-			s.oidcValidator,
-			WebDAVRealmDescription,
+		cors.AllowAll().Handler(
+			authorization.OIDCOverBasicAuth(
+				h,
+				constants.OIDCOverBasicAuthUsername,
+				s.oidcValidator,
+				WebDAVRealmDescription,
+			),
 		),
 	)
 }
