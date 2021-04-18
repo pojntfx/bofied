@@ -39,7 +39,19 @@ func (s *WebDAVServer) ListenAndServe() error {
 
 	return http.ListenAndServe(
 		s.listenAddress,
-		cors.AllowAll().Handler(
+		cors.New(cors.Options{
+			AllowedMethods: []string{
+				"GET",
+				"PUT",
+				"PROPFIND",
+			},
+			AllowCredentials: true,
+			AllowedHeaders: []string{
+				"Authorization",
+				"Content-Type",
+				"Depth",
+			},
+		}).Handler(
 			authorization.OIDCOverBasicAuth(
 				h,
 				constants.OIDCOverBasicAuthUsername,

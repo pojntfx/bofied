@@ -84,10 +84,12 @@ func (c *Home) Render() app.UI {
 										return &DataShell{
 											AuthorizedWebDAVURL: dpcp.AuthorizedWebDAVURL,
 											ConfigFile:          dpcp.ConfigFile,
+											Index:               dpcp.Index,
 
 											SetConfigFile:      dpcp.SetConfigFile,
 											ValidateConfigFile: dpcp.ValidateConfigFile,
 											SaveConfigFile:     dpcp.SaveConfigFile,
+											Refresh:            dpcp.Refresh,
 
 											Error:   dpcp.Error,
 											Recover: dpcp.Recover,
