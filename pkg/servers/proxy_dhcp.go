@@ -5,7 +5,7 @@ import (
 	"net"
 
 	"github.com/pojntfx/bofied/pkg/config"
-	"github.com/pojntfx/bofied/transcoding"
+	"github.com/pojntfx/bofied/pkg/transcoding"
 )
 
 const (

@@ -4,7 +4,7 @@ import (
 	"log"
 	"net"
 
-	"github.com/pojntfx/bofied/transcoding"
+	"github.com/pojntfx/bofied/pkg/transcoding"
 )
 
 const (
