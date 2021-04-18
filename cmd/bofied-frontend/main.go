@@ -7,21 +7,14 @@ import (
 
 	"github.com/kataras/compress"
 	"github.com/maxence-charriere/go-app/v8/pkg/app"
+	"github.com/pojntfx/bofied/pkg/components"
 )
-
-type Home struct {
-	app.Compo
-}
-
-func (c *Home) Render() app.UI {
-	return app.H1().Text("bofied")
-}
 
 func main() {
 	// Client-side code
 	{
 		// Define the routes
-		app.Route("/", &Home{})
+		app.Route("/", &components.Home{})
 
 		// Start the app
 		app.RunWhenOnBrowser()
