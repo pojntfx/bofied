@@ -30,7 +30,7 @@ release-frontend-github-pages: frontend
 release: release-backend release-frontend release-frontend-github-pages
 
 install: release-backend
-	sudo install out/release/bofied-backend/bofied-backend.linux-$$(uname -m) /usr/local/bin
+	sudo install out/release/bofied-backend/bofied-backend.linux-$$(uname -m) /usr/local/bin/bofied-backend
 	sudo setcap cap_net_bind_service+ep /usr/local/bin/bofied-backend
 	
 dev:
