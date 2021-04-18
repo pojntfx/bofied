@@ -1,0 +1,43 @@
+name: hydrun CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Set up hydrun
+        run: |
+          curl -L -o /tmp/hydrun https://github.com/pojntfx/hydrun/releases/download/latest/hydrun.linux-$(uname -m)
+          sudo install /tmp/hydrun /usr/local/bin
+      - name: Build backend with hydrun
+        run: hydrun -a amd64,arm64 ./Hydrunfile
+      - name: Build frontend with hydrun
+        run: hydrun "./Hydrunfile frontend"
+      - name: Publish to GitHub releases
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          files: |
+            out/release/bofied-backend/*
+            out/release/bofied-frontend/*
+      - name: Publish to GitHub pages
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: JamesIves/github-pages-deploy-action@4.1.0
+        with:
+          branch: gh-pages
+          folder: out/release/bofied-frontend-github-pages
+          git-config-name: GitHub Pages Bot
+          git-config-email: bot@example.com

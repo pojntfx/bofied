@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Install native dependencies
+apt update
+apt install -y curl make sudo build-essential
+
+# Install Go
+VERSION=1.16
+FILE=/tmp/go.tar.gz
+if [ "$(uname -m)" = 'x86_64' ]; then
+    curl -L -o ${FILE} https://golang.org/dl/go${VERSION}.linux-amd64.tar.gz
+else
+    curl -L -o ${FILE} https://golang.org/dl/go${VERSION}.linux-arm64.tar.gz
+fi
+tar -C /usr/local -xzf ${FILE}
+export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
+
+# Install dependencies
+USER=root make depend
+
+# Make release
+if [ "$1" = 'frontend' ]; then
+    make release-frontend release-frontend-github-pages
+else
+    make release-backend
+fi
