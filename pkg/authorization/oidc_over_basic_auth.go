@@ -1,6 +1,7 @@
 package authorization
 
 import (
+	"encoding/base64"
 	"fmt"
 	"log"
 	"net/http"
@@ -14,7 +15,7 @@ func OIDCOverBasicAuth(next http.Handler, username string, oidcValidator *valida
 		user, pass, ok := r.BasicAuth()
 		if _, err := oidcValidator.Validate(pass); err != nil || !ok || user != username {
 			// Unauthorized, log and redirect
-			log.Println("could not authorized user, redirecting")
+			log.Println("could not authorize user, redirecting")
 
 			rw.Header().Set("WWW-Authenticate", fmt.Sprintf(`Basic realm="%v"`, description))
 			rw.WriteHeader(401)
@@ -26,4 +27,12 @@ func OIDCOverBasicAuth(next http.Handler, username string, oidcValidator *valida
 		// Authorized, continue
 		next.ServeHTTP(rw, r)
 	})
+}
+
+func GetOIDCOverBasicAuthHeader(username string, idToken string) (key string, value string) {
+	key = "Authorization"
+
+	value = "Basic " + base64.StdEncoding.EncodeToString([]byte(username+":"+idToken))
+
+	return
 }

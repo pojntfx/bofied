@@ -11,6 +11,7 @@ import (
 
 type DataProviderChildrenProps struct {
 	GetAuthorizedWebDAVURL func() string
+	GetConfigFile          func() string
 
 	Error   error
 	Recover func()
@@ -35,6 +36,8 @@ func (c *DataProvider) Render() app.UI {
 			u, err := url.Parse(c.BackendURL)
 			if err != nil {
 				c.panic(err)
+
+				return ""
 			}
 
 			// Make it a WebDAV URL
@@ -48,6 +51,16 @@ func (c *DataProvider) Render() app.UI {
 			u.User = url.UserPassword(constants.OIDCOverBasicAuthUsername, c.IDToken)
 
 			return u.String()
+		},
+		GetConfigFile: func() string {
+			content, err := c.WebDAVClient.Read(constants.BootConfigFileName)
+			if err != nil {
+				c.panic(err)
+
+				return ""
+			}
+
+			return string(content)
 		},
 
 		Error:   c.err,

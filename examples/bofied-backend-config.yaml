@@ -1,5 +1,4 @@
 workingDir: /home/pojntfx/.local/share/bofied/var/lib/bofied
-bootConfigFileName: config.go
 advertisedIP: "100.64.154.246"
 dhcpListenAddress: ":67"
 proxyDHCPListenAddress: ":4011"
