@@ -2,6 +2,7 @@ package providers
 
 import (
 	"net/url"
+	"os"
 
 	"github.com/maxence-charriere/go-app/v8/pkg/app"
 	"github.com/pojntfx/bofied/pkg/constants"
@@ -14,7 +15,9 @@ type DataProviderChildrenProps struct {
 	AuthorizedWebDAVURL string
 	ConfigFile          string
 
-	ValidateConfigFile func(string)
+	SetConfigFile      func(string)
+	ValidateConfigFile func()
+	SaveConfigFile     func()
 
 	Error   error
 	Recover func()
@@ -39,13 +42,9 @@ func (c *DataProvider) Render() app.UI {
 		AuthorizedWebDAVURL: c.getAuthorizedWebDAVURL(),
 		ConfigFile:          c.configFile,
 
-		ValidateConfigFile: func(s string) {
-			if err := validators.CheckGoSyntax(s); err != nil {
-				c.panic(err)
-
-				return
-			}
-		},
+		SetConfigFile:      c.setConfigFile,
+		ValidateConfigFile: c.validateConfigFile,
+		SaveConfigFile:     c.saveConfigFile,
 
 		Error:   c.err,
 		Recover: c.recover,
@@ -92,6 +91,34 @@ func (c *DataProvider) getConfigFile() string {
 	}
 
 	return string(content)
+}
+
+func (c *DataProvider) setConfigFile(s string) {
+	c.configFile = s
+
+	c.Update()
+}
+
+func (c *DataProvider) validateConfigFile() {
+	if err := validators.CheckGoSyntax(c.configFile); err != nil {
+		c.panic(err)
+
+		return
+	}
+}
+
+func (c *DataProvider) saveConfigFile() {
+	if err := validators.CheckGoSyntax(c.configFile); err != nil {
+		c.panic(err)
+
+		return
+	}
+
+	if err := c.WebDAVClient.Write(constants.BootConfigFileName, []byte(c.configFile), os.ModePerm); err != nil {
+		c.panic(err)
+
+		return
+	}
 }
 
 func (c *DataProvider) recover() {

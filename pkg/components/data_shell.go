@@ -1,6 +1,9 @@
 package components
 
-import "github.com/maxence-charriere/go-app/v8/pkg/app"
+import (
+	"github.com/maxence-charriere/go-app/v8/pkg/app"
+	"github.com/pojntfx/liwasc/pkg/components"
+)
 
 type DataShell struct {
 	app.Compo
@@ -8,7 +11,9 @@ type DataShell struct {
 	AuthorizedWebDAVURL string
 	ConfigFile          string
 
-	ValidateConfigFile func(string)
+	SetConfigFile      func(string)
+	ValidateConfigFile func()
+	SaveConfigFile     func()
 
 	Error   error
 	Recover func()
@@ -35,17 +40,31 @@ func (c *DataShell) Render() app.UI {
 
 	return app.Div().Body(
 		app.Input().
+			ReadOnly(true).
 			Value(
 				c.AuthorizedWebDAVURL,
 			),
-		app.Textarea().Text(
-			c.ConfigFile,
-		),
+		&components.Controlled{
+			Component: app.Textarea().
+				OnInput(func(ctx app.Context, e app.Event) {
+					c.SetConfigFile(ctx.JSSrc.Get("value").String())
+				}).
+				Text(
+					c.ConfigFile,
+				),
+			Properties: map[string]interface{}{
+				"value": c.ConfigFile,
+			},
+		},
 		app.Button().
 			OnClick(func(ctx app.Context, e app.Event) {
-				// TODO: Use local value of textarea, this doesn't change yet
-				c.ValidateConfigFile(c.ConfigFile)
+				c.ValidateConfigFile()
 			}).
 			Text("Validate"),
+		app.Button().
+			OnClick(func(ctx app.Context, e app.Event) {
+				c.SaveConfigFile()
+			}).
+			Text("Save"),
 	)
 }
