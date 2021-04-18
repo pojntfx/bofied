@@ -1,0 +1,21 @@
+{
+  "short_name": "bofied",
+  "name": "bofied",
+  "icons": [
+    {
+      "src": "/bofied/web/icon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "scope": "/bofied/",
+  "start_url": "/bofied/",
+  "background_color": "#151515",
+  "theme_color": "#151515",
+  "display": "standalone"
+}
