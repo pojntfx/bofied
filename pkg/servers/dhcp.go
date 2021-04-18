@@ -20,56 +20,21 @@ const (
 )
 
 type DHCPServer struct {
-	listenAddress string
-	advertisedIP  net.IP
+	UDPServer
 }
 
 func NewDHCPServer(listenAddress string, advertisedIP string) *DHCPServer {
 	return &DHCPServer{
-		listenAddress: listenAddress,
-		advertisedIP:  net.ParseIP(advertisedIP).To4(),
+		UDPServer: UDPServer{
+			listenAddress: listenAddress,
+			handlePacket: func(conn *net.UDPConn, _ *net.UDPAddr, braddr *net.UDPAddr, rawIncomingUDPPacket []byte) (int, error) {
+				return handleDHCPPacket(conn, braddr, rawIncomingUDPPacket, net.ParseIP(advertisedIP).To4())
+			},
+		},
 	}
 }
 
-func (s *DHCPServer) ListenAndServe() error {
-	// Parse the addresses
-	laddr, err := net.ResolveUDPAddr("udp", s.listenAddress)
-	if err != nil {
-		return err
-	}
-	braddr, err := net.ResolveUDPAddr("udp", "255.255.255.255:68")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Listen
-	conn, err := net.ListenUDP("udp", laddr)
-	if err != nil {
-		return err
-	}
-
-	// Loop over packets
-	for {
-		// Read packet into buffer
-		buf := make([]byte, DHCPServerReadBufSize)
-		length, _, err := conn.ReadFromUDP(buf)
-		if err != nil {
-			return err
-		}
-
-		// Handle the read packet
-		go func() {
-			n, err := s.handlePacket(conn, braddr, buf[:length])
-			if err != nil {
-				log.Println("could not handle packet:", err)
-			}
-
-			log.Printf(`sent %v bytes of DHCP packets to client "%v"`, n, braddr)
-		}()
-	}
-}
-
-func (s *DHCPServer) handlePacket(conn *net.UDPConn, braddr *net.UDPAddr, rawIncomingUDPPacket []byte) (int, error) {
+func handleDHCPPacket(conn *net.UDPConn, braddr *net.UDPAddr, rawIncomingUDPPacket []byte, advertisedIP net.IP) (int, error) {
 	// Decode and parse packet
 	incomingUDPPacket := gopacket.NewPacket(rawIncomingUDPPacket, layers.LayerTypeDHCPv4, gopacket.Default)
 
@@ -117,7 +82,7 @@ func (s *DHCPServer) handlePacket(conn *net.UDPConn, braddr *net.UDPAddr, rawInc
 		Xid:          incomingDHCPPacket.Xid,
 		ClientIP:     net.ParseIP("0.0.0.0").To4(),
 		YourClientIP: net.ParseIP("0.0.0.0").To4(),
-		NextServerIP: s.advertisedIP,
+		NextServerIP: advertisedIP,
 		RelayAgentIP: net.ParseIP("0.0.0.0").To4(),
 		ClientHWAddr: incomingDHCPPacket.ClientHWAddr,
 		Options: layers.DHCPOptions{
@@ -127,7 +92,7 @@ func (s *DHCPServer) handlePacket(conn *net.UDPConn, braddr *net.UDPAddr, rawInc
 			),
 			layers.NewDHCPOption(
 				layers.DHCPOptServerID,
-				s.advertisedIP,
+				advertisedIP,
 			),
 			layers.NewDHCPOption(
 				layers.DHCPOptClassID,
@@ -161,7 +126,7 @@ func (s *DHCPServer) handlePacket(conn *net.UDPConn, braddr *net.UDPAddr, rawInc
 						0x80, 0x00, // Type: Unknown (32768)
 						0x01, // IP count: 1
 					},
-					s.advertisedIP..., // IP: 100.64.154.246
+					advertisedIP..., // IP: 100.64.154.246
 				),
 			),
 			layers.NewDHCPOption(
@@ -211,6 +176,8 @@ func (s *DHCPServer) handlePacket(conn *net.UDPConn, braddr *net.UDPAddr, rawInc
 		},
 		outgoingDHCPPacket,
 	)
+
+	log.Printf(`sending %v bytes of DHCP packets to client "%v"`, len(buf.Bytes()), braddr)
 
 	// Broadcast the packet
 	return conn.WriteToUDP(buf.Bytes(), braddr)
