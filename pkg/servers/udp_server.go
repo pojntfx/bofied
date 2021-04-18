@@ -5,6 +5,10 @@ import (
 	"net"
 )
 
+const (
+	UDPServerReadBufSize = 1024
+)
+
 type UDPServer struct {
 	listenAddress string
 	handlePacket  func(conn *net.UDPConn, raddr *net.UDPAddr, braddr *net.UDPAddr, rawIncomingUDPPacket []byte) (int, error)
@@ -30,7 +34,7 @@ func (s *UDPServer) ListenAndServe() error {
 	// Loop over packets
 	for {
 		// Read packet into buffer
-		buf := make([]byte, DHCPServerReadBufSize)
+		buf := make([]byte, UDPServerReadBufSize)
 		length, raddr, err := conn.ReadFromUDP(buf)
 		if err != nil {
 			return err
