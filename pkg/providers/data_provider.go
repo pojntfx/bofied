@@ -20,6 +20,7 @@ type DataProviderChildrenProps struct {
 
 	SetConfigFile      func(string)
 	ValidateConfigFile func()
+	FormatConfigFile   func()
 	SaveConfigFile     func()
 	SetCurrentDir      func(string, app.Context)
 	UploadFile         func(string, []byte)
@@ -54,6 +55,7 @@ func (c *DataProvider) Render() app.UI {
 
 		SetConfigFile:      c.setConfigFile,
 		ValidateConfigFile: c.validateConfigFile,
+		FormatConfigFile:   c.formatConfigFile,
 		SaveConfigFile:     c.saveConfigFile,
 		SetCurrentDir:      c.setCurrentDir,
 		UploadFile:         c.uploadFile,
@@ -149,6 +151,19 @@ func (c *DataProvider) validateConfigFile() {
 
 		return
 	}
+}
+
+func (c *DataProvider) formatConfigFile() {
+	formattedConfigFile, err := validators.FormatGoSrc(c.configFile)
+	if err != nil {
+		c.panic(err)
+
+		return
+	}
+
+	c.configFile = formattedConfigFile
+
+	c.Update()
 }
 
 func (c *DataProvider) saveConfigFile() {
