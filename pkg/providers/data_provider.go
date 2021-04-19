@@ -3,6 +3,7 @@ package providers
 import (
 	"net/url"
 	"os"
+	"path/filepath"
 
 	"github.com/maxence-charriere/go-app/v8/pkg/app"
 	"github.com/pojntfx/bofied/pkg/constants"
@@ -15,12 +16,14 @@ type DataProviderChildrenProps struct {
 	AuthorizedWebDAVURL string
 	ConfigFile          string
 	Index               []os.FileInfo
+	CurrentDir          string
 
 	SetConfigFile      func(string)
 	ValidateConfigFile func()
 	SaveConfigFile     func()
+	SetCurrentDir      func(string, app.Context)
 	UploadFile         func(string, []byte)
-	Refresh            func()
+	Refresh            func(app.Context)
 
 	Error   error
 	Recover func()
@@ -37,6 +40,7 @@ type DataProvider struct {
 
 	configFile string
 	index      []os.FileInfo
+	currentDir string
 
 	err error
 }
@@ -46,10 +50,12 @@ func (c *DataProvider) Render() app.UI {
 		AuthorizedWebDAVURL: c.getAuthorizedWebDAVURL(),
 		ConfigFile:          c.configFile,
 		Index:               c.index,
+		CurrentDir:          c.currentDir,
 
 		SetConfigFile:      c.setConfigFile,
 		ValidateConfigFile: c.validateConfigFile,
 		SaveConfigFile:     c.saveConfigFile,
+		SetCurrentDir:      c.setCurrentDir,
 		UploadFile:         c.uploadFile,
 		Refresh:            c.refresh,
 
@@ -60,12 +66,17 @@ func (c *DataProvider) Render() app.UI {
 }
 
 func (c *DataProvider) OnMount(ctx app.Context) {
-	c.refresh()
+	c.refresh(ctx)
 }
 
-func (c *DataProvider) refresh() {
+func (c *DataProvider) refresh(ctx app.Context) {
 	c.configFile = c.getConfigFile()
-	c.index = c.getIndex()
+
+	// On initial render, render the working directory
+	if c.currentDir == "" {
+		c.currentDir = "."
+	}
+	c.setCurrentDir(c.currentDir, ctx)
 
 	c.Update()
 }
@@ -103,12 +114,12 @@ func (c *DataProvider) getConfigFile() string {
 	return string(content)
 }
 
-func (c *DataProvider) getIndex() []os.FileInfo {
-	rawDirs, err := c.WebDAVClient.ReadDir(".")
+func (c *DataProvider) setCurrentDir(dir string, ctx app.Context) {
+	rawDirs, err := c.WebDAVClient.ReadDir(dir)
 	if err != nil {
 		c.panic(err)
 
-		return []os.FileInfo{}
+		return
 	}
 
 	filteredDirs := []os.FileInfo{}
@@ -118,7 +129,12 @@ func (c *DataProvider) getIndex() []os.FileInfo {
 		}
 	}
 
-	return filteredDirs
+	ctx.Dispatch(func() {
+		c.currentDir = dir
+		c.index = filteredDirs
+
+		c.Update()
+	})
 }
 
 func (c *DataProvider) setConfigFile(s string) {
@@ -149,8 +165,8 @@ func (c *DataProvider) saveConfigFile() {
 	}
 }
 
-func (c *DataProvider) uploadFile(path string, content []byte) {
-	if err := c.WebDAVClient.Write(path, content, os.ModePerm); err != nil {
+func (c *DataProvider) uploadFile(name string, content []byte) {
+	if err := c.WebDAVClient.Write(filepath.Join(c.currentDir, name), content, os.ModePerm); err != nil {
 		c.panic(err)
 
 		return

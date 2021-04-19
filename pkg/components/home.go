@@ -85,10 +85,12 @@ func (c *Home) Render() app.UI {
 											AuthorizedWebDAVURL: dpcp.AuthorizedWebDAVURL,
 											ConfigFile:          dpcp.ConfigFile,
 											Index:               dpcp.Index,
+											CurrentDir:          dpcp.CurrentDir,
 
 											SetConfigFile:      dpcp.SetConfigFile,
 											ValidateConfigFile: dpcp.ValidateConfigFile,
 											SaveConfigFile:     dpcp.SaveConfigFile,
+											SetCurrentDir:      dpcp.SetCurrentDir,
 											UploadFile:         dpcp.UploadFile,
 											Refresh:            dpcp.Refresh,
 
