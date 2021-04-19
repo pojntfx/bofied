@@ -19,6 +19,7 @@ type DataProviderChildrenProps struct {
 	SetConfigFile      func(string)
 	ValidateConfigFile func()
 	SaveConfigFile     func()
+	UploadFile         func(string, []byte)
 	Refresh            func()
 
 	Error   error
@@ -49,6 +50,7 @@ func (c *DataProvider) Render() app.UI {
 		SetConfigFile:      c.setConfigFile,
 		ValidateConfigFile: c.validateConfigFile,
 		SaveConfigFile:     c.saveConfigFile,
+		UploadFile:         c.uploadFile,
 		Refresh:            c.refresh,
 
 		Error:   c.err,
@@ -141,6 +143,14 @@ func (c *DataProvider) saveConfigFile() {
 	}
 
 	if err := c.WebDAVClient.Write(constants.BootConfigFileName, []byte(c.configFile), os.ModePerm); err != nil {
+		c.panic(err)
+
+		return
+	}
+}
+
+func (c *DataProvider) uploadFile(path string, content []byte) {
+	if err := c.WebDAVClient.Write(path, content, os.ModePerm); err != nil {
 		c.panic(err)
 
 		return
