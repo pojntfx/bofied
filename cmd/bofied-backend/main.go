@@ -14,16 +14,15 @@ import (
 )
 
 const (
-	configFileKey             = "configFile"
-	workingDirKey             = "workingDir"
-	advertisedIPKey           = "advertisedIP"
-	dhcpListenAddressKey      = "dhcpListenAddress"
-	proxyDHCPListenAddressKey = "proxyDHCPListenAddress"
-	tftpListenAddressKey      = "tftpListenAddress"
-	webDAVListenAddressKey    = "webDAVListenAddress"
-	httpListenAddressKey      = "httpListenAddress"
-	oidcIssuerKey             = "oidcIssuer"
-	oidcClientIDKey           = "oidcClientID"
+	configFileKey                 = "configFile"
+	workingDirKey                 = "workingDir"
+	advertisedIPKey               = "advertisedIP"
+	dhcpListenAddressKey          = "dhcpListenAddress"
+	proxyDHCPListenAddressKey     = "proxyDHCPListenAddress"
+	tftpListenAddressKey          = "tftpListenAddress"
+	webDAVAndHTTPListenAddressKey = "webDAVAndHTTPListenAddress"
+	oidcIssuerKey                 = "oidcIssuer"
+	oidcClientIDKey               = "oidcClientID"
 )
 
 func main() {
@@ -63,17 +62,17 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 				filepath.Join(viper.GetString(workingDirKey), constants.BootConfigFileName),
 			)
 			tftpServer := servers.NewTFTPServer(viper.GetString(workingDirKey), viper.GetString(tftpListenAddressKey))
-			webDAVServer := servers.NewWebDAVServer(viper.GetString(workingDirKey), viper.GetString(webDAVListenAddressKey), oidcValidator)
-			httpServer := servers.NewHTTPServer(viper.GetString(workingDirKey), viper.GetString(httpListenAddressKey))
+			webDAVAndHTTPServer := servers.NewWebDAVAndHTTPServer(viper.GetString(workingDirKey), viper.GetString(webDAVAndHTTPListenAddressKey), oidcValidator)
 
 			// Start servers
 			log.Printf(
-				"bofied backend listening on %v (DHCP), %v (proxyDHCP), %v (TFTP), %v (WebDAV) and %v (HTTP)\n",
+				"bofied backend listening on %v (DHCP), %v (proxyDHCP), %v (TFTP) and %v (WebDAV on %v and HTTP on %v)\n",
 				viper.GetString(dhcpListenAddressKey),
 				viper.GetString(proxyDHCPListenAddressKey),
 				viper.GetString(tftpListenAddressKey),
-				viper.GetString(webDAVListenAddressKey),
-				viper.GetString(httpListenAddressKey),
+				viper.GetString(webDAVAndHTTPListenAddressKey),
+				servers.WebDAVPrefix,
+				servers.HTTPPrefix,
 			)
 
 			go func() {
@@ -88,11 +87,7 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 				log.Fatal(tftpServer.ListenAndServe())
 			}()
 
-			go func() {
-				log.Fatal(webDAVServer.ListenAndServe())
-			}()
-
-			return httpServer.ListenAndServe()
+			return webDAVAndHTTPServer.ListenAndServe()
 		},
 	}
 
@@ -111,8 +106,7 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 	cmd.PersistentFlags().String(dhcpListenAddressKey, ":67", "Listen address for DHCP server")
 	cmd.PersistentFlags().String(proxyDHCPListenAddressKey, ":4011", "Listen address for proxyDHCP server")
 	cmd.PersistentFlags().String(tftpListenAddressKey, ":69", "Listen address for TFTP server")
-	cmd.PersistentFlags().String(webDAVListenAddressKey, ":15256", "Listen address for WebDAV server")
-	cmd.PersistentFlags().String(httpListenAddressKey, ":15257", "Listen address for HTTP server")
+	cmd.PersistentFlags().String(webDAVAndHTTPListenAddressKey, ":15256", "Listen address for WebDAV and HTTP server")
 
 	cmd.PersistentFlags().StringP(oidcIssuerKey, "i", "https://pojntfx.eu.auth0.com/", "OIDC issuer")
 	cmd.PersistentFlags().StringP(oidcClientIDKey, "t", "myoidcclientid", "OIDC client ID")
