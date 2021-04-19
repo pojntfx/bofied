@@ -18,6 +18,7 @@ type DataShell struct {
 
 	SetConfigFile      func(string)
 	ValidateConfigFile func()
+	FormatConfigFile   func()
 	SaveConfigFile     func()
 	SetCurrentDir      func(string, app.Context)
 	UploadFile         func(string, []byte)
@@ -75,6 +76,11 @@ func (c *DataShell) Render() app.UI {
 						c.ValidateConfigFile()
 					}).
 					Text("Validate"),
+				app.Button().
+					OnClick(func(ctx app.Context, e app.Event) {
+						c.FormatConfigFile()
+					}).
+					Text("Format"),
 				app.Button().
 					OnClick(func(ctx app.Context, e app.Event) {
 						c.SaveConfigFile()

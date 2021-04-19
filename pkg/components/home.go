@@ -89,6 +89,7 @@ func (c *Home) Render() app.UI {
 
 											SetConfigFile:      dpcp.SetConfigFile,
 											ValidateConfigFile: dpcp.ValidateConfigFile,
+											FormatConfigFile:   dpcp.FormatConfigFile,
 											SaveConfigFile:     dpcp.SaveConfigFile,
 											SetCurrentDir:      dpcp.SetCurrentDir,
 											UploadFile:         dpcp.UploadFile,

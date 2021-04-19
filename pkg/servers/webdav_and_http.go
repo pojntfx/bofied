@@ -1,7 +1,6 @@
 package servers
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/pojntfx/bofied/pkg/authorization"
@@ -39,9 +38,6 @@ func (s *WebDAVAndHTTPServer) GetWebDAVHandler(prefix string) webdav.Handler {
 		Prefix:     prefix,
 		FileSystem: webdav.Dir(s.workingDir),
 		LockSystem: webdav.NewMemLS(),
-		Logger: func(r *http.Request, e error) {
-			log.Println(r, e)
-		},
 	}
 }
 
@@ -75,7 +71,6 @@ func (s *WebDAVAndHTTPServer) ListenAndServe() error {
 				"Content-Type",
 				"Depth",
 			},
-			Debug: true,
 		}).Handler(
 			authorization.OIDCOverBasicAuth(
 				&webDAVHandler,
