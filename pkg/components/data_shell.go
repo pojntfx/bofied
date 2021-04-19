@@ -17,6 +17,7 @@ type DataShell struct {
 	SetConfigFile      func(string)
 	ValidateConfigFile func()
 	SaveConfigFile     func()
+	UploadFile         func(string, []byte)
 	Refresh            func()
 
 	Error   error
@@ -81,6 +82,32 @@ func (c *DataShell) Render() app.UI {
 						c.Refresh()
 					}).
 					Text("Refresh"),
+			),
+		app.Section().
+			Body(
+				app.Input().
+					Type("file").
+					OnChange(func(ctx app.Context, e app.Event) {
+						reader := app.Window().JSValue().Get("FileReader").New()
+						fileName := ctx.JSSrc.Get("files").Get("0").Get("name").String()
+
+						reader.Set("onload", app.FuncOf(func(this app.Value, args []app.Value) interface{} {
+							go func() {
+								rawFileContent := app.Window().Get("Uint8Array").New(args[0].Get("target").Get("result"))
+
+								fileContent := make([]byte, rawFileContent.Get("length").Int())
+								app.CopyBytesToGo(fileContent, rawFileContent)
+
+								c.UploadFile(fileName, fileContent)
+
+								c.Refresh()
+							}()
+
+							return nil
+						}))
+
+						reader.Call("readAsArrayBuffer", ctx.JSSrc.Get("files").Get("0"))
+					}),
 			),
 		app.Section().
 			Body(
