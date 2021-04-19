@@ -2,6 +2,7 @@ package components
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/maxence-charriere/go-app/v8/pkg/app"
 	"github.com/pojntfx/liwasc/pkg/components"
@@ -13,12 +14,14 @@ type DataShell struct {
 	AuthorizedWebDAVURL string
 	ConfigFile          string
 	Index               []os.FileInfo
+	CurrentDir          string
 
 	SetConfigFile      func(string)
 	ValidateConfigFile func()
 	SaveConfigFile     func()
+	SetCurrentDir      func(string, app.Context)
 	UploadFile         func(string, []byte)
-	Refresh            func()
+	Refresh            func(app.Context)
 
 	Error   error
 	Recover func()
@@ -77,9 +80,17 @@ func (c *DataShell) Render() app.UI {
 						c.SaveConfigFile()
 					}).
 					Text("Save"),
+				app.If(
+					c.CurrentDir != ".",
+					app.Button().
+						OnClick(func(ctx app.Context, e app.Event) {
+							c.SetCurrentDir(filepath.Dir(c.CurrentDir), ctx)
+						}).
+						Text("Up"),
+				),
 				app.Button().
 					OnClick(func(ctx app.Context, e app.Event) {
-						c.Refresh()
+						c.Refresh(ctx)
 					}).
 					Text("Refresh"),
 			),
@@ -100,7 +111,7 @@ func (c *DataShell) Render() app.UI {
 
 								c.UploadFile(fileName, fileContent)
 
-								c.Refresh()
+								c.Refresh(ctx)
 							}()
 
 							return nil
@@ -113,13 +124,24 @@ func (c *DataShell) Render() app.UI {
 			Body(
 				app.Ul().Body(
 					app.Range(c.Index).Slice(func(i int) app.UI {
-						return app.Li().Body(
-							app.Text(c.Index[i].Name()),
-							app.If(
-								c.Index[i].IsDir(),
-								app.Text("/"),
-							),
-						)
+						handler := func(app.Context) {}
+						if c.Index[i].IsDir() {
+							handler = func(ctx app.Context) {
+								c.SetCurrentDir(c.Index[i].Name(), ctx)
+							}
+						}
+
+						return app.Li().
+							OnClick(func(ctx app.Context, e app.Event) {
+								handler(ctx)
+							}).
+							Body(
+								app.Text(c.Index[i].Name()),
+								app.If(
+									c.Index[i].IsDir(),
+									app.Text("/"),
+								),
+							)
 					}),
 				),
 			),
