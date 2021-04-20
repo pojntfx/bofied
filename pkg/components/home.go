@@ -22,7 +22,6 @@ func (c *Home) Render() app.UI {
 		Children: func(cpcp metaproviders.SetupProviderChildrenProps) app.UI {
 			// This div is required so that there are no authorization loops
 			return app.Div().
-				TabIndex(-1).
 				Class("pf-x-ws-router").
 				Body(
 					app.If(cpcp.Ready,
@@ -90,9 +89,8 @@ func (c *Home) Render() app.UI {
 											RefreshConfigFile: dpcp.RefreshConfigFile,
 											SaveConfigFile:    dpcp.SaveConfigFile,
 
-											ConfigFileError:        dpcp.ConfigFileError,
-											RecoverConfigFileError: dpcp.RecoverConfigFileError,
-											IgnoreConfigFileError:  dpcp.IgnoreConfigFileError,
+											ConfigFileError:       dpcp.ConfigFileError,
+											IgnoreConfigFileError: dpcp.IgnoreConfigFileError,
 
 											// File explorer
 											CurrentPath:    dpcp.CurrentPath,
