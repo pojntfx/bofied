@@ -2,16 +2,16 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta httpequiv="Content-Type" content="text/html; charset=utf-8">
+<meta content="text/html; charset=utf-8" httpequiv="Content-Type">
 <meta name="author" content="Felix Pojtinger">
 <meta name="description" content="Network boot nodes in a network.">
 <meta name="keywords" content="pxe-boot, ipxe, netboot, network-boot, http-server, dhcp-server, pxe, webdav-server, tftp-server, proxy-dhcp">
 <meta name="theme-color" content="#151515">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
-<meta property="og:url" content="http://127.0.0.1:46577/">
+<meta property="og:url" content="http://127.0.0.1:36505/">
 <meta property="og:title" content="bofied">
 <meta property="og:description" content="Network boot nodes in a network.">
-<meta property="og:type" content="website">
+<meta content="website" property="og:type">
 <meta property="og:image" content>
 <title>
 bofied
@@ -19,11 +19,11 @@ bofied
 <link rel="icon" type="image/png" href="/bofied/web/icon.png">
 <link rel="apple-touch-icon" href="/bofied/web/icon.png">
 <link rel="manifest" href="/bofied/manifest.webmanifest">
-<link href="/bofied/app.css" type="text/css" rel="stylesheet">
+<link rel="stylesheet" href="/bofied/app.css" type="text/css">
 <script defer src="/bofied/wasm_exec.js"></script>
 <script defer src="/bofied/app.js"></script>
-<link href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly.css" type="text/css" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly-addons.css" type="text/css">
+<link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly.css">
+<link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly-addons.css">
 <link rel="stylesheet" href="/bofied/web/index.css" type="text/css">
 <meta property="og:url" content="https://pojntfx.github.io/bofied/">
 <meta property="og:title" content="bofied">
@@ -111,22 +111,22 @@ OIDC Issuer
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input name="oidcIssuer" id="oidcIssuer" type="url" required placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false">
+<input required placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false" name="oidcIssuer" id="oidcIssuer" type="url">
 </div>
 </div>
 <div class="pf-c-form__group">
 <div class="pf-c-form__group-label">
-<label class="pf-c-form__label" for="oidcClientID">
+<label for="oidcClientID" class="pf-c-form__label">
 <span class="pf-c-form__label-text">
 OIDC Client ID
 </span>
 </label>
-<span class="pf-c-form__label-required" aria-hidden="true">
+<span aria-hidden="true" class="pf-c-form__label-required">
 *
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input class="pf-c-form-control" aria-invalid="false" name="oidcClientID" id="oidcClientID" type="text" required>
+<input required class="pf-c-form-control" aria-invalid="false" name="oidcClientID" id="oidcClientID" type="text">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -145,7 +145,7 @@ OIDC Redirect URL
 </div>
 </div>
 <div class="pf-c-form__group pf-m-action">
-<button class="pf-c-button pf-m-primary pf-m-block" type="submit">
+<button type="submit" class="pf-c-button pf-m-primary pf-m-block">
 Log in
 </button>
 </div>
@@ -168,7 +168,7 @@ bofied is a network boot server. It provides everything you need to PXE boot a n
 </p>
 <ul class="pf-c-list pf-m-inline">
 <li>
-<a href="https://github.com/pojntfx/bofied#Usage" target="_blank">
+<a target="_blank" href="https://github.com/pojntfx/bofied#Usage">
 Documentation
 </a>
 </li>
@@ -190,7 +190,7 @@ Source Code
 </div>
 </div>
 <div id="app-wasm-loader" class="goapp-app-info">
-<img class="goapp-logo goapp-spin" src="/bofied/web/icon.png" id="app-wasm-loader-icon">
+<img id="app-wasm-loader-icon" class="goapp-logo goapp-spin" src="/bofied/web/icon.png">
 <p id="app-wasm-loader-label" class="goapp-label">
 Network boot nodes in a network.
 </p>
