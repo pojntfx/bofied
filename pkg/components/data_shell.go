@@ -36,7 +36,6 @@ type DataShell struct {
 	DeletePath      func(string)
 	MovePath        func(string, string)
 	CopyPath        func(string, string)
-	RenamePath      func(string, string)
 
 	AuthorizedWebDAVURL string
 
@@ -79,7 +78,6 @@ func (c *DataShell) Render() app.UI {
 					DeletePath:      c.DeletePath,
 					MovePath:        c.MovePath,
 					CopyPath:        c.CopyPath,
-					RenamePath:      c.RenamePath,
 
 					AuthorizedWebDAVURL: c.AuthorizedWebDAVURL,
 

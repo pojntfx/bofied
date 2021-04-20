@@ -109,7 +109,6 @@ func (c *Home) Render() app.UI {
 											DeletePath:      dpcp.DeletePath,
 											MovePath:        dpcp.MovePath,
 											CopyPath:        dpcp.CopyPath,
-											RenamePath:      dpcp.RenamePath,
 
 											AuthorizedWebDAVURL: dpcp.AuthorizedWebDAVURL,
 

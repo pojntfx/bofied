@@ -25,7 +25,6 @@ type FileExplorer struct {
 	DeletePath      func(string)
 	MovePath        func(string, string)
 	CopyPath        func(string, string)
-	RenamePath      func(string, string)
 
 	AuthorizedWebDAVURL string
 
@@ -134,9 +133,8 @@ func (c *FileExplorer) Render() app.UI {
 											Body(
 												app.A().
 													Target("_blank").
-													Href(
-														c.ShareLink,
-													),
+													Href(c.ShareLink).
+													Text(c.ShareLink),
 											),
 									),
 								),
@@ -195,7 +193,7 @@ func (c *FileExplorer) Render() app.UI {
 									}),
 								app.Button().
 									OnClick(func(ctx app.Context, e app.Event) {
-										c.RenamePath(c.selectedPath, c.newFileName)
+										c.MovePath(c.selectedPath, filepath.Join(c.CurrentPath, c.newFileName))
 
 										c.newFileName = ""
 
