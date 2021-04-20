@@ -64,6 +64,7 @@ func (s *WebDAVAndHTTPServer) ListenAndServe() error {
 				"GET",
 				"PUT",
 				"PROPFIND",
+				"MKCOL",
 			},
 			AllowCredentials: true,
 			AllowedHeaders: []string{

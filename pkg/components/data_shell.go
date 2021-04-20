@@ -9,18 +9,6 @@ import (
 type DataShell struct {
 	app.Compo
 
-	AuthorizedWebDAVURL string
-	Index               []os.FileInfo
-	CurrentDir          string
-
-	SetCurrentDir func(string, app.Context)
-	UploadFile    func(string, []byte)
-	Refresh       func(app.Context)
-
-	Error   error
-	Recover func()
-	Ignore  func()
-
 	// Config file editor
 	ConfigFile    string
 	SetConfigFile func(string)
@@ -32,6 +20,29 @@ type DataShell struct {
 	ConfigFileError        error
 	RecoverConfigFileError func()
 	IgnoreConfigFileError  func()
+
+	// File explorer
+	CurrentPath    string
+	SetCurrentPath func(string)
+
+	Index        []os.FileInfo
+	RefreshIndex func()
+	UploadFile   func(string, []byte)
+
+	ShareLink string
+	SharePath func(string)
+
+	CreateDirectory func(string)
+	DeletePath      func(string)
+	MovePath        func(string, string)
+	CopyPath        func(string, string)
+	RenamePath      func(string, string)
+
+	AuthorizedWebDAVURL string
+
+	FileExplorerError        error
+	RecoverFileExplorerError func()
+	IgnoreFileExplorerError  func()
 }
 
 func (c *DataShell) Render() app.UI {
@@ -51,64 +62,31 @@ func (c *DataShell) Render() app.UI {
 					Ignore:  c.IgnoreConfigFileError,
 				},
 			),
-		// app.Section().
-		// 	Body(
-		// 		app.Input().
-		// 			ReadOnly(true).
-		// 			Value(
-		// 				c.AuthorizedWebDAVURL,
-		// 			),
-		// 	),
-		// app.Section().
-		// 	Body(
-		// 		app.Input().
-		// 			Type("file").
-		// 			OnChange(func(ctx app.Context, e app.Event) {
-		// 				reader := app.Window().JSValue().Get("FileReader").New()
-		// 				fileName := ctx.JSSrc.Get("files").Get("0").Get("name").String()
+		app.Section().
+			Body(
+				&FileExplorer{
+					CurrentPath:    c.CurrentPath,
+					SetCurrentPath: c.SetCurrentPath,
 
-		// 				reader.Set("onload", app.FuncOf(func(this app.Value, args []app.Value) interface{} {
-		// 					go func() {
-		// 						rawFileContent := app.Window().Get("Uint8Array").New(args[0].Get("target").Get("result"))
+					Index:        c.Index,
+					RefreshIndex: c.RefreshIndex,
+					UploadFile:   c.UploadFile,
 
-		// 						fileContent := make([]byte, rawFileContent.Get("length").Int())
-		// 						app.CopyBytesToGo(fileContent, rawFileContent)
+					ShareLink: c.ShareLink,
+					SharePath: c.SharePath,
 
-		// 						c.UploadFile(fileName, fileContent)
+					CreateDirectory: c.CreateDirectory,
+					DeletePath:      c.DeletePath,
+					MovePath:        c.MovePath,
+					CopyPath:        c.CopyPath,
+					RenamePath:      c.RenamePath,
 
-		// 						c.Refresh(ctx)
-		// 					}()
+					AuthorizedWebDAVURL: c.AuthorizedWebDAVURL,
 
-		// 					return nil
-		// 				}))
-
-		// 				reader.Call("readAsArrayBuffer", ctx.JSSrc.Get("files").Get("0"))
-		// 			}),
-		// 	),
-		// app.Section().
-		// 	Body(
-		// 		app.Ul().Body(
-		// 			app.Range(c.Index).Slice(func(i int) app.UI {
-		// 				handler := func(app.Context) {}
-		// 				if c.Index[i].IsDir() {
-		// 					handler = func(ctx app.Context) {
-		// 						c.SetCurrentDir(c.Index[i].Name(), ctx)
-		// 					}
-		// 				}
-
-		// 				return app.Li().
-		// 					OnClick(func(ctx app.Context, e app.Event) {
-		// 						handler(ctx)
-		// 					}).
-		// 					Body(
-		// 						app.Text(c.Index[i].Name()),
-		// 						app.If(
-		// 							c.Index[i].IsDir(),
-		// 							app.Text("/"),
-		// 						),
-		// 					)
-		// 			}),
-		// 		),
-		// 	),
+					Error:   c.FileExplorerError,
+					Recover: c.RecoverFileExplorerError,
+					Ignore:  c.IgnoreFileExplorerError,
+				},
+			),
 	)
 }

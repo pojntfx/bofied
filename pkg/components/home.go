@@ -82,18 +82,6 @@ func (c *Home) Render() app.UI {
 									Children: func(dpcp providers.DataProviderChildrenProps) app.UI {
 										// Data shell
 										return &DataShell{
-											AuthorizedWebDAVURL: dpcp.AuthorizedWebDAVURL,
-											Index:               dpcp.Index,
-											CurrentDir:          dpcp.CurrentDir,
-
-											SetCurrentDir: dpcp.SetCurrentDir,
-											UploadFile:    dpcp.UploadFile,
-											Refresh:       dpcp.Refresh,
-
-											Error:   dpcp.Error,
-											Recover: dpcp.Recover,
-											Ignore:  dpcp.Ignore,
-
 											// Config file editor
 											ConfigFile:    dpcp.ConfigFile,
 											SetConfigFile: dpcp.SetConfigFile,
@@ -105,6 +93,29 @@ func (c *Home) Render() app.UI {
 											ConfigFileError:        dpcp.ConfigFileError,
 											RecoverConfigFileError: dpcp.RecoverConfigFileError,
 											IgnoreConfigFileError:  dpcp.IgnoreConfigFileError,
+
+											// File explorer
+											CurrentPath:    dpcp.CurrentPath,
+											SetCurrentPath: dpcp.SetCurrentPath,
+
+											Index:        dpcp.Index,
+											RefreshIndex: dpcp.RefreshIndex,
+											UploadFile:   dpcp.UploadFile,
+
+											ShareLink: dpcp.ShareLink,
+											SharePath: dpcp.SharePath,
+
+											CreateDirectory: dpcp.CreateDirectory,
+											DeletePath:      dpcp.DeletePath,
+											MovePath:        dpcp.MovePath,
+											CopyPath:        dpcp.CopyPath,
+											RenamePath:      dpcp.RenamePath,
+
+											AuthorizedWebDAVURL: dpcp.AuthorizedWebDAVURL,
+
+											FileExplorerError:        dpcp.FileExplorerError,
+											RecoverFileExplorerError: dpcp.RecoverFileExplorerError,
+											IgnoreFileExplorerError:  dpcp.IgnoreFileExplorerError,
 										}
 									},
 								}
