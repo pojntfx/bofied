@@ -28,7 +28,7 @@ if ("serviceWorker" in navigator) {
 // -----------------------------------------------------------------------------
 // Init progressive app
 // -----------------------------------------------------------------------------
-const goappEnv = {"GOAPP_ROOT_PREFIX":"/bofied","GOAPP_STATIC_RESOURCES_URL":"/bofied","GOAPP_VERSION":"69bc48abce99ae64bea5662cc669a7009e4117c8"};
+const goappEnv = {"GOAPP_ROOT_PREFIX":"/bofied","GOAPP_STATIC_RESOURCES_URL":"/bofied","GOAPP_VERSION":"dad337fab7bf4e220baa259d2c6728619cf81eb6"};
 
 function goappGetenv(k) {
   return goappEnv[k];
