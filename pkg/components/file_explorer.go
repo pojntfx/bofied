@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/maxence-charriere/go-app/v8/pkg/app"
+	"github.com/pojntfx/liwasc/pkg/components"
 )
 
 type FileExplorer struct {
@@ -28,12 +29,16 @@ type FileExplorer struct {
 
 	AuthorizedWebDAVURL string
 
-	FileExplorerError        error
-	RecoverFileExplorerError func()
-	IgnoreFileExplorerError  func()
+	Error   error
+	Recover func()
+	Ignore  func()
 
-	newCurrentPath string
-	selectedPath   string
+	newCurrentPath   string
+	selectedPath     string
+	newDirectoryName string
+	pathToMoveTo     string
+	pathToCopyTo     string
+	newFileName      string
 }
 
 func (c *FileExplorer) Render() app.UI {
@@ -71,25 +76,147 @@ func (c *FileExplorer) Render() app.UI {
 								c.RefreshIndex()
 							}).
 							Text("Refresh"),
-						app.If(
-							c.selectedPath != "",
+						app.Div().Body(
+							app.Input().
+								Type("text").
+								OnInput(func(ctx app.Context, e app.Event) {
+									c.newDirectoryName = ctx.JSSrc.Get("value").String()
+
+									c.Update()
+								}),
 							app.Button().
 								OnClick(func(ctx app.Context, e app.Event) {
-									c.SharePath(c.selectedPath)
+									c.CreateDirectory(c.newDirectoryName)
+
+									c.newDirectoryName = ""
+
+									c.Update()
+
+									c.RefreshIndex()
 								}).
-								Text("Share"),
-							app.If(
-								c.ShareLink != "",
-								app.Div().
-									Body(
-										app.A().
-											Target("_blank").
-											Href(
-												c.ShareLink,
+								Text("Create Directory"),
+						),
+						app.Input().
+							Type("file").
+							OnChange(func(ctx app.Context, e app.Event) {
+								reader := app.Window().JSValue().Get("FileReader").New()
+								fileName := ctx.JSSrc.Get("files").Get("0").Get("name").String()
+
+								reader.Set("onload", app.FuncOf(func(this app.Value, args []app.Value) interface{} {
+									go func() {
+										rawFileContent := app.Window().Get("Uint8Array").New(args[0].Get("target").Get("result"))
+
+										fileContent := make([]byte, rawFileContent.Get("length").Int())
+										app.CopyBytesToGo(fileContent, rawFileContent)
+
+										c.UploadFile(fileName, fileContent)
+
+										c.RefreshIndex()
+									}()
+
+									return nil
+								}))
+
+								reader.Call("readAsArrayBuffer", ctx.JSSrc.Get("files").Get("0"))
+							}),
+						app.If(
+							c.selectedPath != "",
+							app.Div().
+								Body(
+									app.Button().
+										OnClick(func(ctx app.Context, e app.Event) {
+											c.SharePath(c.selectedPath)
+										}).
+										Text("Share"),
+									app.If(
+										c.ShareLink != "",
+										app.Div().
+											Body(
+												app.A().
+													Target("_blank").
+													Href(
+														c.ShareLink,
+													),
 											),
 									),
+								),
+							app.Button().
+								OnClick(func(ctx app.Context, e app.Event) {
+									c.DeletePath(c.selectedPath)
+								}).
+								Text("Delete"),
+							app.Div().Body(
+								app.Input().
+									Type("text").
+									OnInput(func(ctx app.Context, e app.Event) {
+										c.pathToMoveTo = ctx.JSSrc.Get("value").String()
+
+										c.Update()
+									}),
+								app.Button().
+									OnClick(func(ctx app.Context, e app.Event) {
+										c.MovePath(c.selectedPath, c.pathToMoveTo)
+
+										c.pathToMoveTo = ""
+
+										c.Update()
+
+										c.RefreshIndex()
+									}).
+									Text("Move"),
+							),
+							app.Div().Body(
+								app.Input().
+									Type("text").
+									OnInput(func(ctx app.Context, e app.Event) {
+										c.pathToCopyTo = ctx.JSSrc.Get("value").String()
+
+										c.Update()
+									}),
+								app.Button().
+									OnClick(func(ctx app.Context, e app.Event) {
+										c.CopyPath(c.selectedPath, c.pathToCopyTo)
+
+										c.pathToCopyTo = ""
+
+										c.Update()
+
+										c.RefreshIndex()
+									}).
+									Text("Copy"),
+							),
+							app.Div().Body(
+								app.Input().
+									Type("text").
+									OnInput(func(ctx app.Context, e app.Event) {
+										c.newFileName = ctx.JSSrc.Get("value").String()
+
+										c.Update()
+									}),
+								app.Button().
+									OnClick(func(ctx app.Context, e app.Event) {
+										c.RenamePath(c.selectedPath, c.newFileName)
+
+										c.newFileName = ""
+
+										c.Update()
+
+										c.RefreshIndex()
+									}).
+									Text("Rename"),
 							),
 						),
+					),
+				app.Div().
+					Body(
+						&components.Controlled{
+							Component: app.Input().
+								ReadOnly(true).
+								Value(c.AuthorizedWebDAVURL),
+							Properties: map[string]interface{}{
+								"value": c.AuthorizedWebDAVURL,
+							},
+						},
 					),
 			),
 			app.Div().
@@ -127,5 +254,25 @@ func (c *FileExplorer) Render() app.UI {
 							}),
 						),
 				),
+			app.If(
+				c.Error != nil,
+				app.Div().
+					Body(
+						app.H3().
+							Text("Error"),
+						app.Code().
+							Text(c.Error),
+						app.Button().
+							OnClick(func(ctx app.Context, e app.Event) {
+								c.Ignore()
+							}).
+							Text("Ignore"),
+						app.Button().
+							OnClick(func(ctx app.Context, e app.Event) {
+								c.Recover()
+							}).
+							Text("Recover"),
+					),
+			),
 		)
 }
