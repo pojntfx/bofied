@@ -17,9 +17,8 @@ type DataShell struct {
 	RefreshConfigFile func()
 	SaveConfigFile    func()
 
-	ConfigFileError        error
-	RecoverConfigFileError func()
-	IgnoreConfigFileError  func()
+	ConfigFileError       error
+	IgnoreConfigFileError func()
 
 	// File explorer
 	CurrentPath    string
@@ -56,9 +55,8 @@ func (c *DataShell) Render() app.UI {
 					RefreshConfigFile: c.RefreshConfigFile,
 					SaveConfigFile:    c.SaveConfigFile,
 
-					Error:   c.ConfigFileError,
-					Recover: c.RecoverConfigFileError,
-					Ignore:  c.IgnoreConfigFileError,
+					Error:  c.ConfigFileError,
+					Ignore: c.IgnoreConfigFileError,
 				},
 			),
 		app.Section().

@@ -22,9 +22,8 @@ type DataProviderChildrenProps struct {
 	RefreshConfigFile func()
 	SaveConfigFile    func()
 
-	ConfigFileError        error
-	RecoverConfigFileError func()
-	IgnoreConfigFileError  func()
+	ConfigFileError       error
+	IgnoreConfigFileError func()
 
 	// File explorer
 	CurrentPath    string
@@ -76,9 +75,8 @@ func (c *DataProvider) Render() app.UI {
 		RefreshConfigFile: c.refreshConfigFile,
 		SaveConfigFile:    c.saveConfigFile,
 
-		ConfigFileError:        c.configFileErr,
-		RecoverConfigFileError: c.recoverConfigFileError,
-		IgnoreConfigFileError:  c.ignoreConfigFileError,
+		ConfigFileError:       c.configFileErr,
+		IgnoreConfigFileError: c.ignoreConfigFileError,
 
 		// File explorer
 		CurrentPath:    c.currentPath,
@@ -144,21 +142,23 @@ func (c *DataProvider) refreshConfigFile() {
 		c.panicConfigFileError(err)
 	}
 
-	c.configFile = string(content)
+	c.setConfigFile(string(content))
 
 	c.Update()
 }
 
 func (c *DataProvider) saveConfigFile() {
+	if err := validators.CheckGoSyntax(c.configFile); err != nil {
+		c.panicConfigFileError(err)
+
+		return
+	}
+
 	if err := c.WebDAVClient.Write(constants.BootConfigFileName, []byte(c.configFile), os.ModePerm); err != nil {
 		c.panicConfigFileError(err)
 
 		return
 	}
-}
-
-func (c *DataProvider) recoverConfigFileError() {
-	c.ignoreConfigFileError()
 }
 
 func (c *DataProvider) ignoreConfigFileError() {
