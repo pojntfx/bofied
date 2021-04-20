@@ -83,21 +83,28 @@ func (c *Home) Render() app.UI {
 										// Data shell
 										return &DataShell{
 											AuthorizedWebDAVURL: dpcp.AuthorizedWebDAVURL,
-											ConfigFile:          dpcp.ConfigFile,
 											Index:               dpcp.Index,
 											CurrentDir:          dpcp.CurrentDir,
 
-											SetConfigFile:      dpcp.SetConfigFile,
-											ValidateConfigFile: dpcp.ValidateConfigFile,
-											FormatConfigFile:   dpcp.FormatConfigFile,
-											SaveConfigFile:     dpcp.SaveConfigFile,
-											SetCurrentDir:      dpcp.SetCurrentDir,
-											UploadFile:         dpcp.UploadFile,
-											Refresh:            dpcp.Refresh,
+											SetCurrentDir: dpcp.SetCurrentDir,
+											UploadFile:    dpcp.UploadFile,
+											Refresh:       dpcp.Refresh,
 
 											Error:   dpcp.Error,
 											Recover: dpcp.Recover,
 											Ignore:  dpcp.Ignore,
+
+											// Config file editor
+											ConfigFile:    dpcp.ConfigFile,
+											SetConfigFile: dpcp.SetConfigFile,
+
+											FormatConfigFile:  dpcp.FormatConfigFile,
+											RefreshConfigFile: dpcp.RefreshConfigFile,
+											SaveConfigFile:    dpcp.SaveConfigFile,
+
+											ConfigFileError:        dpcp.ConfigFileError,
+											RecoverConfigFileError: dpcp.RecoverConfigFileError,
+											IgnoreConfigFileError:  dpcp.IgnoreConfigFileError,
 										}
 									},
 								}
