@@ -104,6 +104,7 @@ func (c *FileExplorer) Render() app.UI {
 								}).
 								Text("Create Directory"),
 						),
+						// Upload file
 						app.Input().
 							Type("file").
 							OnChange(func(ctx app.Context, e app.Event) {
@@ -117,9 +118,7 @@ func (c *FileExplorer) Render() app.UI {
 										fileContent := make([]byte, rawFileContent.Get("length").Int())
 										app.CopyBytesToGo(fileContent, rawFileContent)
 
-										c.WriteToPath(fileName, fileContent)
-
-										c.RefreshIndex()
+										c.WriteToPath(filepath.Join(c.CurrentPath, fileName), fileContent)
 									}()
 
 									return nil
@@ -129,6 +128,7 @@ func (c *FileExplorer) Render() app.UI {
 							}),
 						app.If(
 							c.selectedPath != "",
+							// Share
 							app.Div().
 								Body(
 									app.Button().
@@ -147,59 +147,77 @@ func (c *FileExplorer) Render() app.UI {
 											),
 									),
 								),
+							// Delete
 							app.Button().
 								OnClick(func(ctx app.Context, e app.Event) {
 									c.DeletePath(c.selectedPath)
 								}).
 								Text("Delete"),
+							// Move
 							app.Div().Body(
-								app.Input().
-									Type("text").
-									OnInput(func(ctx app.Context, e app.Event) {
-										c.pathToMoveTo = ctx.JSSrc.Get("value").String()
+								&components.Controlled{
+									Component: app.Input().
+										Type("text").
+										Value(c.pathToMoveTo).
+										OnInput(func(ctx app.Context, e app.Event) {
+											c.pathToMoveTo = ctx.JSSrc.Get("value").String()
 
-										c.Update()
-									}),
+											c.Update()
+										}),
+									Properties: map[string]interface{}{
+										"value": c.pathToMoveTo,
+									},
+								},
 								app.Button().
 									OnClick(func(ctx app.Context, e app.Event) {
-										c.MovePath(c.selectedPath, c.pathToMoveTo)
+										c.MovePath(c.selectedPath, filepath.Join(c.CurrentPath, c.pathToMoveTo))
 
 										c.pathToMoveTo = ""
 
 										c.Update()
-
-										c.RefreshIndex()
 									}).
 									Text("Move"),
 							),
+							// Copy
 							app.Div().Body(
-								app.Input().
-									Type("text").
-									OnInput(func(ctx app.Context, e app.Event) {
-										c.pathToCopyTo = ctx.JSSrc.Get("value").String()
+								&components.Controlled{
+									Component: app.Input().
+										Type("text").
+										Value(c.pathToCopyTo).
+										OnInput(func(ctx app.Context, e app.Event) {
+											c.pathToCopyTo = ctx.JSSrc.Get("value").String()
 
-										c.Update()
-									}),
+											c.Update()
+										}),
+									Properties: map[string]interface{}{
+										"value": c.pathToCopyTo,
+									},
+								},
 								app.Button().
 									OnClick(func(ctx app.Context, e app.Event) {
-										c.CopyPath(c.selectedPath, c.pathToCopyTo)
+										c.CopyPath(c.selectedPath, filepath.Join(c.CurrentPath, c.pathToCopyTo))
 
 										c.pathToCopyTo = ""
 
 										c.Update()
-
-										c.RefreshIndex()
 									}).
 									Text("Copy"),
 							),
+							// Rename
 							app.Div().Body(
-								app.Input().
-									Type("text").
-									OnInput(func(ctx app.Context, e app.Event) {
-										c.newFileName = ctx.JSSrc.Get("value").String()
+								&components.Controlled{
+									Component: app.Input().
+										Type("text").
+										Value(c.newFileName).
+										OnInput(func(ctx app.Context, e app.Event) {
+											c.newFileName = ctx.JSSrc.Get("value").String()
 
-										c.Update()
-									}),
+											c.Update()
+										}),
+									Properties: map[string]interface{}{
+										"value": c.newFileName,
+									},
+								},
 								app.Button().
 									OnClick(func(ctx app.Context, e app.Event) {
 										c.MovePath(c.selectedPath, filepath.Join(c.CurrentPath, c.newFileName))
@@ -207,8 +225,6 @@ func (c *FileExplorer) Render() app.UI {
 										c.newFileName = ""
 
 										c.Update()
-
-										c.RefreshIndex()
 									}).
 									Text("Rename"),
 							),
