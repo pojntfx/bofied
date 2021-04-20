@@ -65,12 +65,13 @@ func (s *WebDAVAndHTTPServer) ListenAndServe() error {
 				"PUT",
 				"PROPFIND",
 				"MKCOL",
+				"MOVE",
+				"COPY",
+				"DELETE",
 			},
 			AllowCredentials: true,
 			AllowedHeaders: []string{
-				"Authorization",
-				"Content-Type",
-				"Depth",
+				"*",
 			},
 		}).Handler(
 			authorization.OIDCOverBasicAuth(

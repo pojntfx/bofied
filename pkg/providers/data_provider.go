@@ -41,7 +41,6 @@ type DataProviderChildrenProps struct {
 	DeletePath      func(string)
 	MovePath        func(string, string)
 	CopyPath        func(string, string)
-	RenamePath      func(string, string)
 
 	AuthorizedWebDAVURL string
 
@@ -93,10 +92,9 @@ func (c *DataProvider) Render() app.UI {
 		SharePath: c.sharePath,
 
 		CreateDirectory: c.createDirectory,
-		// DeletePath:      c.deletePath,
-		// MovePath:        c.movePath,
-		// CopyPath:        c.copyPath,
-		// RenamePath:      c.renamePath,
+		DeletePath:      c.deletePath,
+		MovePath:        c.movePath,
+		CopyPath:        c.copyPath,
 
 		AuthorizedWebDAVURL: c.getAuthorizedWebDAVURL(),
 
@@ -261,6 +259,30 @@ func (c *DataProvider) uploadFile(name string, content []byte) {
 
 func (c *DataProvider) createDirectory(name string) {
 	if err := c.WebDAVClient.MkdirAll(filepath.Join(c.currentPath, name), os.ModePerm); err != nil {
+		c.panicFileExplorerError(err)
+
+		return
+	}
+}
+
+func (c *DataProvider) deletePath(name string) {
+	if err := c.WebDAVClient.RemoveAll(filepath.Join(c.currentPath, name)); err != nil {
+		c.panicFileExplorerError(err)
+
+		return
+	}
+}
+
+func (c *DataProvider) movePath(old string, new string) {
+	if err := c.WebDAVClient.Rename(old, new, false); err != nil {
+		c.panicFileExplorerError(err)
+
+		return
+	}
+}
+
+func (c *DataProvider) copyPath(src string, dst string) {
+	if err := c.WebDAVClient.Copy(src, dst, false); err != nil {
 		c.panicFileExplorerError(err)
 
 		return
