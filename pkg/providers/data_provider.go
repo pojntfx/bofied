@@ -32,15 +32,15 @@ type DataProviderChildrenProps struct {
 
 	Index        []os.FileInfo
 	RefreshIndex func()
-	UploadFile   func(string, []byte)
+	WriteToPath  func(string, []byte)
 
 	ShareLink string
 	SharePath func(string)
 
-	CreateDirectory func(string)
-	DeletePath      func(string)
-	MovePath        func(string, string)
-	CopyPath        func(string, string)
+	CreatePath func(string)
+	DeletePath func(string)
+	MovePath   func(string, string)
+	CopyPath   func(string, string)
 
 	AuthorizedWebDAVURL string
 
@@ -86,15 +86,15 @@ func (c *DataProvider) Render() app.UI {
 
 		Index:        c.index,
 		RefreshIndex: c.refreshIndex,
-		UploadFile:   c.uploadFile,
+		WriteToPath:  c.writeToPath,
 
 		ShareLink: c.shareLink,
 		SharePath: c.sharePath,
 
-		CreateDirectory: c.createDirectory,
-		DeletePath:      c.deletePath,
-		MovePath:        c.movePath,
-		CopyPath:        c.copyPath,
+		CreatePath: c.createPath,
+		DeletePath: c.deletePath,
+		MovePath:   c.movePath,
+		CopyPath:   c.copyPath,
 
 		AuthorizedWebDAVURL: c.getAuthorizedWebDAVURL(),
 
@@ -204,11 +204,19 @@ func (c *DataProvider) refreshIndex() {
 	}
 
 	c.setCurrentPath(c.currentPath)
-
-	c.Update()
 }
 
-func (c *DataProvider) sharePath(s string) {
+func (c *DataProvider) writeToPath(path string, content []byte) {
+	if err := c.WebDAVClient.Write(path, content, os.ModePerm); err != nil {
+		c.panicFileExplorerError(err)
+
+		return
+	}
+
+	c.refreshIndex()
+}
+
+func (c *DataProvider) sharePath(path string) {
 	// Parse URL
 	u, err := url.Parse(c.BackendURL)
 	if err != nil {
@@ -220,11 +228,51 @@ func (c *DataProvider) sharePath(s string) {
 	if len(pathParts) > 0 {
 		pathParts = pathParts[1:]
 	}
-	u.Path = filepath.Join(filepath.Join(append([]string{servers.HTTPPrefix}, pathParts...)...), s)
+	u.Path = filepath.Join(filepath.Join(append([]string{servers.HTTPPrefix}, pathParts...)...), path)
 
 	c.shareLink = u.String()
 
 	c.Update()
+}
+
+func (c *DataProvider) createPath(path string) {
+	if err := c.WebDAVClient.MkdirAll(path, os.ModePerm); err != nil {
+		c.panicFileExplorerError(err)
+
+		return
+	}
+
+	c.refreshIndex()
+}
+
+func (c *DataProvider) deletePath(path string) {
+	if err := c.WebDAVClient.RemoveAll(path); err != nil {
+		c.panicFileExplorerError(err)
+
+		return
+	}
+
+	c.refreshIndex()
+}
+
+func (c *DataProvider) movePath(old string, new string) {
+	if err := c.WebDAVClient.Rename(old, new, false); err != nil {
+		c.panicFileExplorerError(err)
+
+		return
+	}
+
+	c.refreshIndex()
+}
+
+func (c *DataProvider) copyPath(src string, dst string) {
+	if err := c.WebDAVClient.Copy(src, dst, false); err != nil {
+		c.panicFileExplorerError(err)
+
+		return
+	}
+
+	c.refreshIndex()
 }
 
 func (c *DataProvider) getAuthorizedWebDAVURL() string {
@@ -247,46 +295,6 @@ func (c *DataProvider) getAuthorizedWebDAVURL() string {
 	u.User = url.UserPassword(constants.OIDCOverBasicAuthUsername, c.IDToken)
 
 	return u.String()
-}
-
-func (c *DataProvider) uploadFile(name string, content []byte) {
-	if err := c.WebDAVClient.Write(filepath.Join(c.currentPath, name), content, os.ModePerm); err != nil {
-		c.panicFileExplorerError(err)
-
-		return
-	}
-}
-
-func (c *DataProvider) createDirectory(name string) {
-	if err := c.WebDAVClient.MkdirAll(filepath.Join(c.currentPath, name), os.ModePerm); err != nil {
-		c.panicFileExplorerError(err)
-
-		return
-	}
-}
-
-func (c *DataProvider) deletePath(name string) {
-	if err := c.WebDAVClient.RemoveAll(filepath.Join(c.currentPath, name)); err != nil {
-		c.panicFileExplorerError(err)
-
-		return
-	}
-}
-
-func (c *DataProvider) movePath(old string, new string) {
-	if err := c.WebDAVClient.Rename(old, new, false); err != nil {
-		c.panicFileExplorerError(err)
-
-		return
-	}
-}
-
-func (c *DataProvider) copyPath(src string, dst string) {
-	if err := c.WebDAVClient.Copy(src, dst, false); err != nil {
-		c.panicFileExplorerError(err)
-
-		return
-	}
 }
 
 func (c *DataProvider) recoverFileExplorerError() {
