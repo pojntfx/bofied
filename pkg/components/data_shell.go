@@ -27,15 +27,15 @@ type DataShell struct {
 
 	Index        []os.FileInfo
 	RefreshIndex func()
-	UploadFile   func(string, []byte)
+	WriteToPath  func(string, []byte)
 
 	ShareLink string
 	SharePath func(string)
 
-	CreateDirectory func(string)
-	DeletePath      func(string)
-	MovePath        func(string, string)
-	CopyPath        func(string, string)
+	CreatePath func(string)
+	DeletePath func(string)
+	MovePath   func(string, string)
+	CopyPath   func(string, string)
 
 	AuthorizedWebDAVURL string
 
@@ -69,15 +69,15 @@ func (c *DataShell) Render() app.UI {
 
 					Index:        c.Index,
 					RefreshIndex: c.RefreshIndex,
-					UploadFile:   c.UploadFile,
+					WriteToPath:  c.WriteToPath,
 
 					ShareLink: c.ShareLink,
 					SharePath: c.SharePath,
 
-					CreateDirectory: c.CreateDirectory,
-					DeletePath:      c.DeletePath,
-					MovePath:        c.MovePath,
-					CopyPath:        c.CopyPath,
+					CreatePath: c.CreatePath,
+					DeletePath: c.DeletePath,
+					MovePath:   c.MovePath,
+					CopyPath:   c.CopyPath,
 
 					AuthorizedWebDAVURL: c.AuthorizedWebDAVURL,
 

@@ -16,15 +16,15 @@ type FileExplorer struct {
 
 	Index        []os.FileInfo
 	RefreshIndex func()
-	UploadFile   func(string, []byte)
+	WriteToPath  func(string, []byte)
 
 	ShareLink string
 	SharePath func(string)
 
-	CreateDirectory func(string)
-	DeletePath      func(string)
-	MovePath        func(string, string)
-	CopyPath        func(string, string)
+	CreatePath func(string)
+	DeletePath func(string)
+	MovePath   func(string, string)
+	CopyPath   func(string, string)
 
 	AuthorizedWebDAVURL string
 
@@ -46,13 +46,16 @@ func (c *FileExplorer) Render() app.UI {
 			app.Div().Body(
 				app.Div().
 					Body(
+						// Path navigation
 						app.H2().
 							Text("Files"),
+						// Current path
 						app.Div().
 							Body(
 								app.Code().
 									Text(c.CurrentPath),
 							),
+						// Set current path
 						app.Div().Body(
 							app.Input().
 								Type("text").
@@ -70,28 +73,34 @@ func (c *FileExplorer) Render() app.UI {
 					),
 				app.Div().
 					Body(
+						// Refresh
 						app.Button().
 							OnClick(func(ctx app.Context, e app.Event) {
 								c.RefreshIndex()
 							}).
 							Text("Refresh"),
+						// Create directory
 						app.Div().Body(
-							app.Input().
-								Type("text").
-								OnInput(func(ctx app.Context, e app.Event) {
-									c.newDirectoryName = ctx.JSSrc.Get("value").String()
+							&components.Controlled{
+								Component: app.Input().
+									Type("text").
+									Value(c.newDirectoryName).
+									OnInput(func(ctx app.Context, e app.Event) {
+										c.newDirectoryName = ctx.JSSrc.Get("value").String()
 
-									c.Update()
-								}),
+										c.Update()
+									}),
+								Properties: map[string]interface{}{
+									"value": c.newDirectoryName,
+								},
+							},
 							app.Button().
 								OnClick(func(ctx app.Context, e app.Event) {
-									c.CreateDirectory(c.newDirectoryName)
+									c.CreatePath(filepath.Join(c.CurrentPath, c.newDirectoryName))
 
 									c.newDirectoryName = ""
 
 									c.Update()
-
-									c.RefreshIndex()
 								}).
 								Text("Create Directory"),
 						),
@@ -108,7 +117,7 @@ func (c *FileExplorer) Render() app.UI {
 										fileContent := make([]byte, rawFileContent.Get("length").Int())
 										app.CopyBytesToGo(fileContent, rawFileContent)
 
-										c.UploadFile(fileName, fileContent)
+										c.WriteToPath(fileName, fileContent)
 
 										c.RefreshIndex()
 									}()
@@ -223,6 +232,14 @@ func (c *FileExplorer) Render() app.UI {
 						Body(
 							app.Range(c.Index).Slice(func(i int) app.UI {
 								return app.Li().
+									Style("cursor", "pointer").
+									Style("background", func() string {
+										if c.selectedPath == filepath.Join(c.CurrentPath, c.Index[i].Name()) {
+											return "lightgrey"
+										}
+
+										return "inherit"
+									}()).
 									OnClick(func(ctx app.Context, e app.Event) {
 										newSelectedPath := filepath.Join(c.CurrentPath, c.Index[i].Name())
 										if c.selectedPath == newSelectedPath {
@@ -233,20 +250,22 @@ func (c *FileExplorer) Render() app.UI {
 
 										c.Update()
 									}).
+									OnDblClick(func(ctx app.Context, e app.Event) {
+										if c.Index[i].IsDir() {
+											e.PreventDefault()
+
+											c.selectedPath = ""
+
+											c.Update()
+
+											c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
+										}
+									}).
 									Body(
+										app.Text(c.Index[i].Name()),
 										app.If(
 											c.Index[i].IsDir(),
-											app.Button().
-												OnDblClick(func(ctx app.Context, e app.Event) {
-													c.selectedPath = ""
-
-													c.Update()
-
-													c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
-												}).
-												Text(c.Index[i].Name()+"/"),
-										).Else(
-											app.Text(c.Index[i].Name()),
+											app.Text("/"),
 										),
 									)
 							}),

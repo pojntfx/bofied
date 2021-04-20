@@ -100,15 +100,15 @@ func (c *Home) Render() app.UI {
 
 											Index:        dpcp.Index,
 											RefreshIndex: dpcp.RefreshIndex,
-											UploadFile:   dpcp.UploadFile,
+											WriteToPath:  dpcp.WriteToPath,
 
 											ShareLink: dpcp.ShareLink,
 											SharePath: dpcp.SharePath,
 
-											CreateDirectory: dpcp.CreateDirectory,
-											DeletePath:      dpcp.DeletePath,
-											MovePath:        dpcp.MovePath,
-											CopyPath:        dpcp.CopyPath,
+											CreatePath: dpcp.CreatePath,
+											DeletePath: dpcp.DeletePath,
+											MovePath:   dpcp.MovePath,
+											CopyPath:   dpcp.CopyPath,
 
 											AuthorizedWebDAVURL: dpcp.AuthorizedWebDAVURL,
 
