@@ -7,24 +7,13 @@ import (
 
 	"github.com/maxence-charriere/go-app/v8/pkg/app"
 	"github.com/pojntfx/bofied/pkg/constants"
+	"github.com/pojntfx/bofied/pkg/servers"
 	"github.com/pojntfx/bofied/pkg/validators"
 
 	"github.com/studio-b12/gowebdav"
 )
 
 type DataProviderChildrenProps struct {
-	AuthorizedWebDAVURL string
-	Index               []os.FileInfo
-	CurrentDir          string
-
-	SetCurrentDir func(string, app.Context)
-	UploadFile    func(string, []byte)
-	Refresh       func(app.Context)
-
-	Error   error
-	Recover func()
-	Ignore  func()
-
 	// Config file editor
 	ConfigFile    string
 	SetConfigFile func(string)
@@ -36,6 +25,29 @@ type DataProviderChildrenProps struct {
 	ConfigFileError        error
 	RecoverConfigFileError func()
 	IgnoreConfigFileError  func()
+
+	// File explorer
+	CurrentPath    string
+	SetCurrentPath func(string)
+
+	Index        []os.FileInfo
+	RefreshIndex func()
+	UploadFile   func(string, []byte)
+
+	ShareLink string
+	SharePath func(string)
+
+	CreateDirectory func(string)
+	DeletePath      func(string)
+	MovePath        func(string, string)
+	CopyPath        func(string, string)
+	RenamePath      func(string, string)
+
+	AuthorizedWebDAVURL string
+
+	FileExplorerError        error
+	RecoverFileExplorerError func()
+	IgnoreFileExplorerError  func()
 }
 
 type DataProvider struct {
@@ -46,28 +58,17 @@ type DataProvider struct {
 	WebDAVClient *gowebdav.Client
 	Children     func(dpcp DataProviderChildrenProps) app.UI
 
-	configFile string
-	index      []os.FileInfo
-	currentDir string
-
-	err           error
+	configFile    string
 	configFileErr error
+
+	currentPath     string
+	index           []os.FileInfo
+	shareLink       string
+	fileExplorerErr error
 }
 
 func (c *DataProvider) Render() app.UI {
 	return c.Children(DataProviderChildrenProps{
-		AuthorizedWebDAVURL: c.getAuthorizedWebDAVURL(),
-		Index:               c.index,
-		CurrentDir:          c.currentDir,
-
-		SetCurrentDir: c.setCurrentDir,
-		UploadFile:    c.uploadFile,
-		Refresh:       c.refresh,
-
-		Error:   c.err,
-		Recover: c.recover,
-		Ignore:  c.ignore,
-
 		// Config file editor
 		ConfigFile:    c.configFile,
 		SetConfigFile: c.setConfigFile,
@@ -79,114 +80,35 @@ func (c *DataProvider) Render() app.UI {
 		ConfigFileError:        c.configFileErr,
 		RecoverConfigFileError: c.recoverConfigFileError,
 		IgnoreConfigFileError:  c.ignoreConfigFileError,
+
+		// File explorer
+		CurrentPath:    c.currentPath,
+		SetCurrentPath: c.setCurrentPath,
+
+		Index:        c.index,
+		RefreshIndex: c.refreshIndex,
+		UploadFile:   c.uploadFile,
+
+		ShareLink: c.shareLink,
+		SharePath: c.sharePath,
+
+		CreateDirectory: c.createDirectory,
+		// DeletePath:      c.deletePath,
+		// MovePath:        c.movePath,
+		// CopyPath:        c.copyPath,
+		// RenamePath:      c.renamePath,
+
+		AuthorizedWebDAVURL: c.getAuthorizedWebDAVURL(),
+
+		FileExplorerError:        c.fileExplorerErr,
+		RecoverFileExplorerError: c.recoverFileExplorerError,
+		IgnoreFileExplorerError:  c.ignoreFileExplorerError,
 	})
 }
 
 func (c *DataProvider) OnMount(ctx app.Context) {
-	c.refresh(ctx)
-}
-
-func (c *DataProvider) refresh(ctx app.Context) {
-	c.configFile = c.getConfigFile()
-
-	// On initial render, render the working directory
-	if c.currentDir == "" {
-		c.currentDir = "."
-	}
-	c.setCurrentDir(c.currentDir, ctx)
-
-	c.Update()
-}
-
-func (c *DataProvider) getAuthorizedWebDAVURL() string {
-	// Parse URL
-	u, err := url.Parse(c.BackendURL)
-	if err != nil {
-		c.panic(err)
-
-		return ""
-	}
-
-	// Make it a WebDAV URL
-	if u.Scheme == "https" {
-		u.Scheme = "davs"
-	} else {
-		u.Scheme = "dav"
-	}
-
-	// Add basic auth
-	u.User = url.UserPassword(constants.OIDCOverBasicAuthUsername, c.IDToken)
-
-	return u.String()
-}
-
-func (c *DataProvider) getConfigFile() string {
-	content, err := c.WebDAVClient.Read(constants.BootConfigFileName)
-	if err != nil {
-		c.panic(err)
-
-		return ""
-	}
-
-	return string(content)
-}
-
-func (c *DataProvider) setCurrentDir(dir string, ctx app.Context) {
-	rawDirs, err := c.WebDAVClient.ReadDir(dir)
-	if err != nil {
-		c.panic(err)
-
-		return
-	}
-
-	filteredDirs := []os.FileInfo{}
-	for _, dir := range rawDirs {
-		if dir.Name() != constants.BootConfigFileName {
-			filteredDirs = append(filteredDirs, dir)
-		}
-	}
-
-	ctx.Dispatch(func() {
-		c.currentDir = dir
-		c.index = filteredDirs
-
-		c.Update()
-	})
-}
-
-func (c *DataProvider) validateConfigFile() {
-	if err := validators.CheckGoSyntax(c.configFile); err != nil {
-		c.panic(err)
-
-		return
-	}
-}
-
-func (c *DataProvider) uploadFile(name string, content []byte) {
-	if err := c.WebDAVClient.Write(filepath.Join(c.currentDir, name), content, os.ModePerm); err != nil {
-		c.panic(err)
-
-		return
-	}
-}
-
-func (c *DataProvider) recover() {
-	// Recover ignore for now, as updating will re-evaluate potentially fault expressions
-	c.ignore()
-}
-
-func (c *DataProvider) ignore() {
-	// Only clear the error
-	c.err = nil
-
-	c.Update()
-}
-
-func (c *DataProvider) panic(err error) {
-	// Set the error
-	c.err = err
-
-	c.Update()
+	c.refreshConfigFile()
+	c.refreshIndex()
 }
 
 // Config file editor
@@ -219,7 +141,12 @@ func (c *DataProvider) formatConfigFile() {
 }
 
 func (c *DataProvider) refreshConfigFile() {
-	c.configFile = c.getConfigFile()
+	content, err := c.WebDAVClient.Read(constants.BootConfigFileName)
+	if err != nil {
+		c.panicConfigFileError(err)
+	}
+
+	c.configFile = string(content)
 
 	c.Update()
 }
@@ -246,6 +173,114 @@ func (c *DataProvider) ignoreConfigFileError() {
 func (c *DataProvider) panicConfigFileError(err error) {
 	// Set the error
 	c.configFileErr = err
+
+	c.Update()
+}
+
+// File explorer
+func (c *DataProvider) setCurrentPath(path string) {
+	rawDirs, err := c.WebDAVClient.ReadDir(path)
+	if err != nil {
+		c.panicFileExplorerError(err)
+
+		return
+	}
+
+	filteredDirs := []os.FileInfo{}
+	for _, dir := range rawDirs {
+		if dir.Name() != constants.BootConfigFileName {
+			filteredDirs = append(filteredDirs, dir)
+		}
+	}
+
+	c.currentPath = path
+	c.index = filteredDirs
+
+	c.Update()
+}
+
+func (c *DataProvider) refreshIndex() {
+	// On initial render, render the working directory
+	if c.currentPath == "" {
+		c.currentPath = "."
+	}
+
+	c.setCurrentPath(c.currentPath)
+
+	c.Update()
+}
+
+func (c *DataProvider) sharePath(s string) {
+	// Parse URL
+	u, err := url.Parse(c.BackendURL)
+	if err != nil {
+		c.panicFileExplorerError(err)
+	}
+
+	// Replace `private` prefix with `public` prefix
+	pathParts := filepath.SplitList(u.Path)
+	if len(pathParts) > 0 {
+		pathParts = pathParts[1:]
+	}
+	u.Path = filepath.Join(filepath.Join(append([]string{servers.HTTPPrefix}, pathParts...)...), s)
+
+	c.shareLink = u.String()
+
+	c.Update()
+}
+
+func (c *DataProvider) getAuthorizedWebDAVURL() string {
+	// Parse URL
+	u, err := url.Parse(c.BackendURL)
+	if err != nil {
+		c.panicFileExplorerError(err)
+
+		return ""
+	}
+
+	// Make it a WebDAV URL
+	if u.Scheme == "https" {
+		u.Scheme = "davs"
+	} else {
+		u.Scheme = "dav"
+	}
+
+	// Add basic auth
+	u.User = url.UserPassword(constants.OIDCOverBasicAuthUsername, c.IDToken)
+
+	return u.String()
+}
+
+func (c *DataProvider) uploadFile(name string, content []byte) {
+	if err := c.WebDAVClient.Write(filepath.Join(c.currentPath, name), content, os.ModePerm); err != nil {
+		c.panicFileExplorerError(err)
+
+		return
+	}
+}
+
+func (c *DataProvider) createDirectory(name string) {
+	if err := c.WebDAVClient.MkdirAll(filepath.Join(c.currentPath, name), os.ModePerm); err != nil {
+		c.panicFileExplorerError(err)
+
+		return
+	}
+}
+
+func (c *DataProvider) recoverFileExplorerError() {
+	c.ignoreFileExplorerError()
+}
+
+func (c *DataProvider) ignoreFileExplorerError() {
+	// Only clear the error
+	c.fileExplorerErr = nil
+
+	c.Update()
+}
+
+func (c *DataProvider) panicFileExplorerError(err error) {
+	// Set the error
+	c.fileExplorerErr = err
 
 	c.Update()
 }
