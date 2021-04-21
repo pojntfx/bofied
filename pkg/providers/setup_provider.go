@@ -57,33 +57,23 @@ func (c *SetupProvider) Render() app.UI {
 		Ready:           c.ready,
 
 		SetBackendURL: func(s string, ctx app.Context) {
-			ctx.Dispatch(func(ctx app.Context) {
-				c.ready = false
-				c.backendURL = s
-			})
+			c.ready = false
+			c.backendURL = s
 		},
 		SetOIDCIssuer: func(s string, ctx app.Context) {
-			ctx.Dispatch(func(ctx app.Context) {
-				c.ready = false
-				c.oidcIssuer = s
-			})
+			c.ready = false
+			c.oidcIssuer = s
 		},
 		SetOIDCClientID: func(s string, ctx app.Context) {
-			ctx.Dispatch(func(ctx app.Context) {
-				c.ready = false
-				c.oidcClientID = s
-			})
+			c.ready = false
+			c.oidcClientID = s
 		},
 		SetOIDCRedirectURL: func(s string, ctx app.Context) {
-			ctx.Dispatch(func(ctx app.Context) {
-				c.ready = false
-				c.oidcRedirectURL = s
-			})
+			c.ready = false
+			c.oidcRedirectURL = s
 		},
 		ApplyConfig: func(ctx app.Context) {
-			ctx.Dispatch(func(ctx app.Context) {
-				c.validate(ctx)
-			})
+			c.validate(ctx)
 		},
 
 		Error: c.err,
@@ -94,8 +84,6 @@ func (c *SetupProvider) invalidate(err error) {
 	// Set the error state
 	c.err = err
 	c.ready = false
-
-	c.Update()
 }
 
 func (c *SetupProvider) validate(ctx app.Context) {
@@ -124,20 +112,16 @@ func (c *SetupProvider) validate(ctx app.Context) {
 		return
 	}
 
-	ctx.Dispatch(func(ctx app.Context) {
-		// Persist state
-		if err := c.persist(ctx); err != nil {
-			c.invalidate(err)
+	// Persist state
+	if err := c.persist(ctx); err != nil {
+		c.invalidate(err)
 
-			return
-		}
+		return
+	}
 
-		// If all are valid, set ready state
-		c.err = nil
-		c.ready = true
-
-		c.Update()
-	})
+	// If all are valid, set ready state
+	c.err = nil
+	c.ready = true
 }
 
 func (c *SetupProvider) persist(ctx app.Context) error {
@@ -166,12 +150,10 @@ func (c *SetupProvider) rehydrateFromURL(ctx app.Context) bool {
 
 	// If all values are set, set them in the data provider
 	if backendURL != "" && oidcIssuer != "" && oidcClientID != "" && oidcRedirectURL != "" {
-		ctx.Dispatch(func(ctx app.Context) {
-			c.backendURL = backendURL
-			c.oidcIssuer = oidcIssuer
-			c.oidcClientID = oidcClientID
-			c.oidcRedirectURL = oidcRedirectURL
-		})
+		c.backendURL = backendURL
+		c.oidcIssuer = oidcIssuer
+		c.oidcClientID = oidcClientID
+		c.oidcRedirectURL = oidcRedirectURL
 
 		return true
 	}
@@ -209,12 +191,10 @@ func (c *SetupProvider) rehydrateFromStorage(ctx app.Context) bool {
 
 	// If all values are set, set them in the data provider
 	if backendURL != "" && oidcIssuer != "" && oidcClientID != "" && oidcRedirectURL != "" {
-		ctx.Dispatch(func(ctx app.Context) {
-			c.backendURL = backendURL
-			c.oidcIssuer = oidcIssuer
-			c.oidcClientID = oidcClientID
-			c.oidcRedirectURL = oidcRedirectURL
-		})
+		c.backendURL = backendURL
+		c.oidcIssuer = oidcIssuer
+		c.oidcClientID = oidcClientID
+		c.oidcRedirectURL = oidcRedirectURL
 
 		return true
 	}
@@ -258,20 +238,16 @@ func (c *SetupProvider) OnMount(ctx app.Context) {
 	}
 
 	// If rehydrated from storage, validate & apply
-	ctx.Dispatch(func(ctx app.Context) {
-		if c.rehydrateFromStorage(ctx) {
-			// Auto-apply if configured
-			// Disabled until a flow for handling wrong input details has been implemented
-			// c.validate()
-		}
-	})
+	if c.rehydrateFromStorage(ctx) {
+		// Auto-apply if configured
+		// Disabled until a flow for handling wrong input details has been implemented
+		// c.validate()
+	}
 
 	// If rehydrated authentication from URL, continue
 	if c.rehydrateAuthenticationFromURL() {
 		// Auto-apply if configured; set ready state
-		ctx.Dispatch(func(ctx app.Context) {
-			c.err = nil
-			c.ready = true
-		})
+		c.err = nil
+		c.ready = true
 	}
 }

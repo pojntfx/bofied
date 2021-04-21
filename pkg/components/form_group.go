@@ -11,8 +11,7 @@ type FormGroup struct {
 }
 
 func (c *FormGroup) Render() app.UI {
-	return app.
-		Div().
+	return app.Div().
 		Class("pf-c-form__group").
 		Body(
 			app.Div().
@@ -20,15 +19,13 @@ func (c *FormGroup) Render() app.UI {
 				Body(
 					c.Label,
 					app.If(c.Required,
-						app.
-							Span().
+						app.Span().
 							Class("pf-c-form__label-required").
 							Aria("hidden", true).
 							Text("*"),
 					),
 				),
-			app.
-				Div().
+			app.Div().
 				Class("pf-c-form__group-control").
 				Body(c.Input),
 		)

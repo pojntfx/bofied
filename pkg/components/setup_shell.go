@@ -73,73 +73,97 @@ func (c *SetupShell) Render() app.UI {
   </filter>
 </svg>`),
 				),
-			app.Div().Class("pf-c-login").Body(
-				app.Div().Class("pf-c-login__container").Body(
-					app.Header().Class("pf-c-login__header").Body(
-						app.Img().
-							Class("pf-c-brand pf-x-c-brand--main").
-							Src(c.LogoSrc).
-							Alt("Logo"),
-					),
-					app.Main().Class("pf-c-login__main").Body(
-						app.Header().Class("pf-c-login__main-header").Body(
-							app.H1().Class("pf-c-title pf-m-3xl").Text(
-								c.Title,
-							),
-							app.P().Class("pf-c-login__main-header-desc").Text(
-								c.ShortDescription,
-							),
-						),
-						app.Div().Class("pf-c-login__main-body").Body(
-							&SetupForm{
-								Error:        c.Error,
-								ErrorMessage: errorMessage,
-
-								BackendURL:    c.BackendURL,
-								SetBackendURL: c.SetBackendURL,
-
-								OIDCIssuer:    c.OIDCIssuer,
-								SetOIDCIssuer: c.SetOIDCIssuer,
-
-								OIDCClientID:    c.OIDCClientID,
-								SetOIDCClientID: c.SetOIDCClientID,
-
-								OIDCRedirectURL:    c.OIDCRedirectURL,
-								SetOIDCRedirectURL: c.SetOIDCRedirectURL,
-
-								Submit: c.ApplyConfig,
-							},
-						),
-						app.Footer().Class("pf-c-login__main-footer").Body(
-							app.Div().Class("pf-c-login__main-footer-band").Body(
-								app.P().Class("pf-c-login__main-footer-band-item").Body(
-									app.Text("Not sure what to do? "),
-									app.A().
-										Href(c.HelpLink).
-										Target("_blank").
-										Text("Get help."),
+			app.Div().
+				Class("pf-c-login").
+				Body(
+					app.Div().
+						Class("pf-c-login__container").
+						Body(
+							app.Header().
+								Class("pf-c-login__header").
+								Body(
+									app.Img().
+										Class("pf-c-brand pf-x-c-brand--main").
+										Src(c.LogoSrc).
+										Alt("Logo"),
 								),
-							),
+							app.Main().
+								Class("pf-c-login__main").
+								Body(
+									app.Header().
+										Class("pf-c-login__main-header").
+										Body(
+											app.H1().
+												Class("pf-c-title pf-m-3xl").
+												Text(
+													c.Title,
+												),
+											app.P().
+												Class("pf-c-login__main-header-desc").
+												Text(
+													c.ShortDescription,
+												),
+										),
+									app.Div().
+										Class("pf-c-login__main-body").
+										Body(
+											&SetupForm{
+												Error:        c.Error,
+												ErrorMessage: errorMessage,
+
+												BackendURL:    c.BackendURL,
+												SetBackendURL: c.SetBackendURL,
+
+												OIDCIssuer:    c.OIDCIssuer,
+												SetOIDCIssuer: c.SetOIDCIssuer,
+
+												OIDCClientID:    c.OIDCClientID,
+												SetOIDCClientID: c.SetOIDCClientID,
+
+												OIDCRedirectURL:    c.OIDCRedirectURL,
+												SetOIDCRedirectURL: c.SetOIDCRedirectURL,
+
+												Submit: c.ApplyConfig,
+											},
+										),
+									app.Footer().
+										Class("pf-c-login__main-footer").
+										Body(
+											app.Div().
+												Class("pf-c-login__main-footer-band").
+												Body(
+													app.P().
+														Class("pf-c-login__main-footer-band-item").
+														Body(
+															app.Text("Not sure what to do? "),
+															app.A().
+																Href(c.HelpLink).
+																Target("_blank").
+																Text("Get help."),
+														),
+												),
+										),
+								),
+							app.Footer().
+								Class("pf-c-login__footer").
+								Body(
+									app.P().
+										Text(c.LongDescription),
+									app.Ul().
+										Class("pf-c-list pf-m-inline").
+										Body(
+											app.Range(c.Links).Map(func(s string) app.UI {
+												return app.Li().Body(
+													app.A().
+														Target("_blank").
+														Href(c.Links[s]).
+														Text(s),
+												)
+											}),
+										),
+								),
 						),
-					),
-					app.Footer().Class("pf-c-login__footer").Body(
-						app.P().Text(
-							c.LongDescription,
-						),
-						app.Ul().Class("pf-c-list pf-m-inline").Body(
-							app.Range(c.Links).Map(func(s string) app.UI {
-								return app.Li().Body(
-									app.
-										A().
-										Target("_blank").
-										Href(c.Links[s]).
-										Text(s),
-								)
-							}),
-						),
-					),
 				),
-			),
 		)
 
 }

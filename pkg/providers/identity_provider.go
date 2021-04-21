@@ -56,9 +56,7 @@ func (c *IdentityProvider) Render() app.UI {
 			UserInfo: c.userInfo,
 
 			Logout: func(ctx app.Context) {
-				ctx.Dispatch(func(ctx app.Context) {
-					c.logout(true, ctx)
-				})
+				c.logout(true, ctx)
 			},
 
 			Error:   c.err,
@@ -70,27 +68,21 @@ func (c *IdentityProvider) Render() app.UI {
 func (c *IdentityProvider) OnMount(ctx app.Context) {
 	// Only continue if there is no error state; this prevents endless loops
 	if c.err == nil {
-		ctx.Dispatch(func(ctx app.Context) {
-			c.authorize(ctx)
-		})
+		c.authorize(ctx)
 	}
 }
 
 func (c *IdentityProvider) OnNav(ctx app.Context) {
 	// Only continue if there is no error state; this prevents endless loops
 	if c.err == nil {
-		ctx.Dispatch(func(ctx app.Context) {
-			c.authorize(ctx)
-		})
+		c.authorize(ctx)
 	}
 }
 
 func (c *IdentityProvider) panic(err error, ctx app.Context) {
 	go func() {
-		ctx.Dispatch(func(ctx app.Context) {
-			// Set the error
-			c.err = err
-		})
+		// Set the error
+		c.err = err
 
 		// Prevent infinite retries
 		time.Sleep(time.Second)
@@ -101,13 +93,11 @@ func (c *IdentityProvider) panic(err error, ctx app.Context) {
 }
 
 func (c *IdentityProvider) recover(ctx app.Context) {
-	ctx.Dispatch(func(ctx app.Context) {
-		// Clear the error
-		c.err = nil
+	// Clear the error
+	c.err = nil
 
-		// Logout
-		c.logout(false, ctx)
-	})
+	// Logout
+	c.logout(false, ctx)
 }
 
 func (c *IdentityProvider) watch(ctx app.Context) {
@@ -133,18 +123,16 @@ func (c *IdentityProvider) watch(ctx app.Context) {
 			return
 		}
 
+		// Persist state in storage
+		if err := c.persist(*oauth2Token, idToken, c.userInfo, ctx); err != nil {
+			c.panic(err, ctx)
+
+			return
+		}
+
 		// Set the login state
-		ctx.Dispatch(func(ctx app.Context) {
-			// Persist state in storage
-			if err := c.persist(*oauth2Token, idToken, c.userInfo, ctx); err != nil {
-				c.panic(err, ctx)
-
-				return
-			}
-
-			c.oauth2Token = *oauth2Token
-			c.idToken = idToken
-		})
+		c.oauth2Token = *oauth2Token
+		c.idToken = idToken
 	}
 }
 
@@ -276,7 +264,6 @@ func (c *IdentityProvider) authorize(ctx app.Context) {
 		}
 
 		// Update and navigate to home URL
-		c.Update()
 		ctx.Navigate(c.HomeURL)
 
 		return
