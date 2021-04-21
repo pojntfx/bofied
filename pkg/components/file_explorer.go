@@ -5,7 +5,6 @@ import (
 	"path/filepath"
 
 	"github.com/maxence-charriere/go-app/v8/pkg/app"
-	"github.com/pojntfx/liwasc/pkg/components"
 )
 
 type FileExplorer struct {
@@ -81,7 +80,7 @@ func (c *FileExplorer) Render() app.UI {
 							Text("Refresh"),
 						// Create directory
 						app.Div().Body(
-							&components.Controlled{
+							&Controlled{
 								Component: app.Input().
 									Type("text").
 									Value(c.newDirectoryName).
@@ -155,7 +154,7 @@ func (c *FileExplorer) Render() app.UI {
 								Text("Delete"),
 							// Move
 							app.Div().Body(
-								&components.Controlled{
+								&Controlled{
 									Component: app.Input().
 										Type("text").
 										Value(c.pathToMoveTo).
@@ -180,7 +179,7 @@ func (c *FileExplorer) Render() app.UI {
 							),
 							// Copy
 							app.Div().Body(
-								&components.Controlled{
+								&Controlled{
 									Component: app.Input().
 										Type("text").
 										Value(c.pathToCopyTo).
@@ -205,7 +204,7 @@ func (c *FileExplorer) Render() app.UI {
 							),
 							// Rename
 							app.Div().Body(
-								&components.Controlled{
+								&Controlled{
 									Component: app.Input().
 										Type("text").
 										Value(c.newFileName).
@@ -232,7 +231,7 @@ func (c *FileExplorer) Render() app.UI {
 					),
 				app.Div().
 					Body(
-						&components.Controlled{
+						&Controlled{
 							Component: app.Input().
 								ReadOnly(true).
 								Value(c.AuthorizedWebDAVURL),

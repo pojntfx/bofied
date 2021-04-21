@@ -2,7 +2,6 @@ package components
 
 import (
 	"github.com/maxence-charriere/go-app/v8/pkg/app"
-	"github.com/pojntfx/liwasc/pkg/components"
 )
 
 type ConfigFileEditor struct {
@@ -93,7 +92,7 @@ func (c *ConfigFileEditor) Render() app.UI {
 												Text("Go"),
 										),
 								),
-							&components.Controlled{
+							&Controlled{
 								Component: app.Textarea().
 									Class("pf-c-code-editor__main pf-u-w-100 pf-x-u-resize-vertical").
 									Rows(25).
