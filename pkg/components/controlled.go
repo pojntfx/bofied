@@ -1,6 +1,6 @@
 package components
 
-import "github.com/maxence-charriere/go-app/v8/pkg/app"
+import "github.com/maxence-charriere/go-app/v9/pkg/app"
 
 type Controlled struct {
 	app.Compo
@@ -10,13 +10,13 @@ type Controlled struct {
 }
 
 func (c *Controlled) Render() app.UI {
-	for key, value := range c.Properties {
-		c.Defer(func(ctx app.Context) {
-			if c.JSValue() != nil {
-				c.JSValue().Set(key, value)
-			}
-		})
-	}
-
 	return c.Component
+}
+
+func (c *Controlled) OnUpdate(ctx app.Context) {
+	for key, value := range c.Properties {
+		if c.JSValue() != nil {
+			c.JSValue().Set(key, value)
+		}
+	}
 }

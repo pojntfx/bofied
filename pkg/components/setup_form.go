@@ -1,6 +1,6 @@
 package components
 
-import "github.com/maxence-charriere/go-app/v8/pkg/app"
+import "github.com/maxence-charriere/go-app/v9/pkg/app"
 
 type SetupForm struct {
 	app.Compo
@@ -9,18 +9,18 @@ type SetupForm struct {
 	ErrorMessage string
 
 	BackendURL    string
-	SetBackendURL func(string)
+	SetBackendURL func(string, app.Context)
 
 	OIDCIssuer    string
-	SetOIDCIssuer func(string)
+	SetOIDCIssuer func(string, app.Context)
 
 	OIDCClientID    string
-	SetOIDCClientID func(string)
+	SetOIDCClientID func(string, app.Context)
 
 	OIDCRedirectURL    string
-	SetOIDCRedirectURL func(string)
+	SetOIDCRedirectURL func(string, app.Context)
 
-	Submit func()
+	Submit func(app.Context)
 }
 
 const (
@@ -78,7 +78,7 @@ func (c *SetupForm) Render() app.UI {
 						Class("pf-c-form-control").
 						Aria("invalid", c.Error != nil).
 						OnInput(func(ctx app.Context, e app.Event) {
-							c.SetBackendURL(ctx.JSSrc.Get("value").String())
+							c.SetBackendURL(ctx.JSSrc.Get("value").String(), ctx)
 						}),
 					Properties: map[string]interface{}{
 						"value": c.BackendURL,
@@ -109,7 +109,7 @@ func (c *SetupForm) Render() app.UI {
 						Class("pf-c-form-control").
 						Aria("invalid", c.Error != nil).
 						OnInput(func(ctx app.Context, e app.Event) {
-							c.SetOIDCIssuer(ctx.JSSrc.Get("value").String())
+							c.SetOIDCIssuer(ctx.JSSrc.Get("value").String(), ctx)
 						}),
 					Properties: map[string]interface{}{
 						"value": c.OIDCIssuer,
@@ -139,7 +139,7 @@ func (c *SetupForm) Render() app.UI {
 						Class("pf-c-form-control").
 						Aria("invalid", c.Error != nil).
 						OnInput(func(ctx app.Context, e app.Event) {
-							c.SetOIDCClientID(ctx.JSSrc.Get("value").String())
+							c.SetOIDCClientID(ctx.JSSrc.Get("value").String(), ctx)
 						}),
 					Properties: map[string]interface{}{
 						"value": c.OIDCClientID,
@@ -170,7 +170,7 @@ func (c *SetupForm) Render() app.UI {
 						Class("pf-c-form-control").
 						Aria("invalid", c.Error != nil).
 						OnInput(func(ctx app.Context, e app.Event) {
-							c.SetOIDCRedirectURL(ctx.JSSrc.Get("value").String())
+							c.SetOIDCRedirectURL(ctx.JSSrc.Get("value").String(), ctx)
 						}),
 					Properties: map[string]interface{}{
 						"value": c.OIDCRedirectURL,
@@ -191,6 +191,6 @@ func (c *SetupForm) Render() app.UI {
 		).OnSubmit(func(ctx app.Context, e app.Event) {
 		e.PreventDefault()
 
-		c.Submit()
+		c.Submit(ctx)
 	})
 }
