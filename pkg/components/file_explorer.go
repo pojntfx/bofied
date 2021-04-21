@@ -4,8 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/maxence-charriere/go-app/v8/pkg/app"
-	"github.com/pojntfx/liwasc/pkg/components"
+	"github.com/maxence-charriere/go-app/v9/pkg/app"
 )
 
 type FileExplorer struct {
@@ -61,12 +60,12 @@ func (c *FileExplorer) Render() app.UI {
 								Type("text").
 								OnInput(func(ctx app.Context, e app.Event) {
 									c.newCurrentPath = ctx.JSSrc.Get("value").String()
-
-									c.Update()
 								}),
 							app.Button().
 								OnClick(func(ctx app.Context, e app.Event) {
-									c.SetCurrentPath(c.newCurrentPath)
+									ctx.Emit(func() {
+										c.SetCurrentPath(c.newCurrentPath)
+									})
 								}).
 								Text("Navigate"),
 						),
@@ -76,19 +75,19 @@ func (c *FileExplorer) Render() app.UI {
 						// Refresh
 						app.Button().
 							OnClick(func(ctx app.Context, e app.Event) {
-								c.RefreshIndex()
+								ctx.Emit(func() {
+									c.RefreshIndex()
+								})
 							}).
 							Text("Refresh"),
 						// Create directory
 						app.Div().Body(
-							&components.Controlled{
+							&Controlled{
 								Component: app.Input().
 									Type("text").
 									Value(c.newDirectoryName).
 									OnInput(func(ctx app.Context, e app.Event) {
 										c.newDirectoryName = ctx.JSSrc.Get("value").String()
-
-										c.Update()
 									}),
 								Properties: map[string]interface{}{
 									"value": c.newDirectoryName,
@@ -96,11 +95,11 @@ func (c *FileExplorer) Render() app.UI {
 							},
 							app.Button().
 								OnClick(func(ctx app.Context, e app.Event) {
-									c.CreatePath(filepath.Join(c.CurrentPath, c.newDirectoryName))
+									ctx.Emit(func() {
+										c.CreatePath(filepath.Join(c.CurrentPath, c.newDirectoryName))
+									})
 
 									c.newDirectoryName = ""
-
-									c.Update()
 								}).
 								Text("Create Directory"),
 						),
@@ -118,7 +117,9 @@ func (c *FileExplorer) Render() app.UI {
 										fileContent := make([]byte, rawFileContent.Get("length").Int())
 										app.CopyBytesToGo(fileContent, rawFileContent)
 
-										c.WriteToPath(filepath.Join(c.CurrentPath, fileName), fileContent)
+										ctx.Emit(func() {
+											c.WriteToPath(filepath.Join(c.CurrentPath, fileName), fileContent)
+										})
 									}()
 
 									return nil
@@ -133,7 +134,9 @@ func (c *FileExplorer) Render() app.UI {
 								Body(
 									app.Button().
 										OnClick(func(ctx app.Context, e app.Event) {
-											c.SharePath(c.selectedPath)
+											ctx.Emit(func() {
+												c.SharePath(c.selectedPath)
+											})
 										}).
 										Text("Share"),
 									app.If(
@@ -150,19 +153,19 @@ func (c *FileExplorer) Render() app.UI {
 							// Delete
 							app.Button().
 								OnClick(func(ctx app.Context, e app.Event) {
-									c.DeletePath(c.selectedPath)
+									ctx.Emit(func() {
+										c.DeletePath(c.selectedPath)
+									})
 								}).
 								Text("Delete"),
 							// Move
 							app.Div().Body(
-								&components.Controlled{
+								&Controlled{
 									Component: app.Input().
 										Type("text").
 										Value(c.pathToMoveTo).
 										OnInput(func(ctx app.Context, e app.Event) {
 											c.pathToMoveTo = ctx.JSSrc.Get("value").String()
-
-											c.Update()
 										}),
 									Properties: map[string]interface{}{
 										"value": c.pathToMoveTo,
@@ -170,24 +173,22 @@ func (c *FileExplorer) Render() app.UI {
 								},
 								app.Button().
 									OnClick(func(ctx app.Context, e app.Event) {
-										c.MovePath(c.selectedPath, filepath.Join(c.CurrentPath, c.pathToMoveTo))
+										ctx.Emit(func() {
+											c.MovePath(c.selectedPath, filepath.Join(c.CurrentPath, c.pathToMoveTo))
+										})
 
 										c.pathToMoveTo = ""
-
-										c.Update()
 									}).
 									Text("Move"),
 							),
 							// Copy
 							app.Div().Body(
-								&components.Controlled{
+								&Controlled{
 									Component: app.Input().
 										Type("text").
 										Value(c.pathToCopyTo).
 										OnInput(func(ctx app.Context, e app.Event) {
 											c.pathToCopyTo = ctx.JSSrc.Get("value").String()
-
-											c.Update()
 										}),
 									Properties: map[string]interface{}{
 										"value": c.pathToCopyTo,
@@ -195,24 +196,22 @@ func (c *FileExplorer) Render() app.UI {
 								},
 								app.Button().
 									OnClick(func(ctx app.Context, e app.Event) {
-										c.CopyPath(c.selectedPath, filepath.Join(c.CurrentPath, c.pathToCopyTo))
+										ctx.Emit(func() {
+											c.CopyPath(c.selectedPath, filepath.Join(c.CurrentPath, c.pathToCopyTo))
+										})
 
 										c.pathToCopyTo = ""
-
-										c.Update()
 									}).
 									Text("Copy"),
 							),
 							// Rename
 							app.Div().Body(
-								&components.Controlled{
+								&Controlled{
 									Component: app.Input().
 										Type("text").
 										Value(c.newFileName).
 										OnInput(func(ctx app.Context, e app.Event) {
 											c.newFileName = ctx.JSSrc.Get("value").String()
-
-											c.Update()
 										}),
 									Properties: map[string]interface{}{
 										"value": c.newFileName,
@@ -223,8 +222,6 @@ func (c *FileExplorer) Render() app.UI {
 										c.MovePath(c.selectedPath, filepath.Join(c.CurrentPath, c.newFileName))
 
 										c.newFileName = ""
-
-										c.Update()
 									}).
 									Text("Rename"),
 							),
@@ -232,7 +229,7 @@ func (c *FileExplorer) Render() app.UI {
 					),
 				app.Div().
 					Body(
-						&components.Controlled{
+						&Controlled{
 							Component: app.Input().
 								ReadOnly(true).
 								Value(c.AuthorizedWebDAVURL),
@@ -263,8 +260,6 @@ func (c *FileExplorer) Render() app.UI {
 										}
 
 										c.selectedPath = newSelectedPath
-
-										c.Update()
 									}).
 									OnDblClick(func(ctx app.Context, e app.Event) {
 										if c.Index[i].IsDir() {
@@ -272,9 +267,9 @@ func (c *FileExplorer) Render() app.UI {
 
 											c.selectedPath = ""
 
-											c.Update()
-
-											c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
+											ctx.Emit(func() {
+												c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
+											})
 										}
 									}).
 									Body(
@@ -297,12 +292,16 @@ func (c *FileExplorer) Render() app.UI {
 							Text(c.Error),
 						app.Button().
 							OnClick(func(ctx app.Context, e app.Event) {
-								c.Ignore()
+								ctx.Emit(func() {
+									c.Ignore()
+								})
 							}).
 							Text("Ignore"),
 						app.Button().
 							OnClick(func(ctx app.Context, e app.Event) {
-								c.Recover()
+								ctx.Emit(func() {
+									c.Recover()
+								})
 							}).
 							Text("Recover"),
 					),

@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/maxence-charriere/go-app/v8/pkg/app"
+	"github.com/maxence-charriere/go-app/v9/pkg/app"
 	"github.com/pojntfx/bofied/pkg/constants"
 	"github.com/pojntfx/bofied/pkg/servers"
 	"github.com/pojntfx/bofied/pkg/validators"
@@ -119,8 +119,6 @@ func (c *DataProvider) setConfigFile(s string) {
 	if err := validators.CheckGoSyntax(c.configFile); err != nil {
 		c.panicConfigFileError(err)
 	}
-
-	c.Update()
 }
 
 func (c *DataProvider) formatConfigFile() {
@@ -132,8 +130,6 @@ func (c *DataProvider) formatConfigFile() {
 	}
 
 	c.configFile = formattedConfigFile
-
-	c.Update()
 }
 
 func (c *DataProvider) refreshConfigFile() {
@@ -143,8 +139,6 @@ func (c *DataProvider) refreshConfigFile() {
 	}
 
 	c.setConfigFile(string(content))
-
-	c.Update()
 }
 
 func (c *DataProvider) saveConfigFile() {
@@ -164,15 +158,11 @@ func (c *DataProvider) saveConfigFile() {
 func (c *DataProvider) ignoreConfigFileError() {
 	// Only clear the error
 	c.configFileErr = nil
-
-	c.Update()
 }
 
 func (c *DataProvider) panicConfigFileError(err error) {
 	// Set the error
 	c.configFileErr = err
-
-	c.Update()
 }
 
 // File explorer
@@ -193,8 +183,6 @@ func (c *DataProvider) setCurrentPath(path string) {
 
 	c.currentPath = path
 	c.index = filteredDirs
-
-	c.Update()
 }
 
 func (c *DataProvider) refreshIndex() {
@@ -231,8 +219,6 @@ func (c *DataProvider) sharePath(path string) {
 	u.Path = filepath.Join(filepath.Join(append([]string{servers.HTTPPrefix}, pathParts...)...), path)
 
 	c.shareLink = u.String()
-
-	c.Update()
 }
 
 func (c *DataProvider) createPath(path string) {
@@ -304,13 +290,9 @@ func (c *DataProvider) recoverFileExplorerError() {
 func (c *DataProvider) ignoreFileExplorerError() {
 	// Only clear the error
 	c.fileExplorerErr = nil
-
-	c.Update()
 }
 
 func (c *DataProvider) panicFileExplorerError(err error) {
 	// Set the error
 	c.fileExplorerErr = err
-
-	c.Update()
 }

@@ -1,12 +1,10 @@
 package components
 
 import (
-	"github.com/maxence-charriere/go-app/v8/pkg/app"
+	"github.com/maxence-charriere/go-app/v9/pkg/app"
 	"github.com/pojntfx/bofied/pkg/authorization"
 	"github.com/pojntfx/bofied/pkg/constants"
 	"github.com/pojntfx/bofied/pkg/providers"
-	"github.com/pojntfx/liwasc/pkg/components"
-	metaproviders "github.com/pojntfx/liwasc/pkg/providers"
 	"github.com/studio-b12/gowebdav"
 )
 
@@ -15,28 +13,28 @@ type Home struct {
 }
 
 func (c *Home) Render() app.UI {
-	return &metaproviders.ConfigurationProvider{
+	return &providers.SetupProvider{
 		StoragePrefix:       "bofied.configuration",
 		StateQueryParameter: "state",
 		CodeQueryParameter:  "code",
-		Children: func(cpcp metaproviders.SetupProviderChildrenProps) app.UI {
+		Children: func(cpcp providers.SetupProviderChildrenProps) app.UI {
 			// This div is required so that there are no authorization loops
 			return app.Div().
 				Class("pf-x-ws-router").
 				Body(
 					app.If(cpcp.Ready,
 						// Identity provider
-						&metaproviders.IdentityProvider{
+						&providers.IdentityProvider{
 							Issuer:        cpcp.OIDCIssuer,
 							ClientID:      cpcp.OIDCClientID,
 							RedirectURL:   cpcp.OIDCRedirectURL,
 							HomeURL:       "/",
 							Scopes:        []string{"profile", "email"},
 							StoragePrefix: "bofied.identity",
-							Children: func(ipcp metaproviders.IdentityProviderChildrenProps) app.UI {
+							Children: func(ipcp providers.IdentityProviderChildrenProps) app.UI {
 								// Configuration shell
 								if ipcp.Error != nil {
-									return &components.SetupShell{
+									return &SetupShell{
 										LogoSrc:          "/web/logo.svg",
 										Title:            "Log in to bofied",
 										ShortDescription: "Network boot nodes in a network.",
@@ -120,7 +118,7 @@ func (c *Home) Render() app.UI {
 						},
 					).Else(
 						// Configuration shell
-						&components.SetupShell{
+						&SetupShell{
 							LogoSrc:          "/web/logo.svg",
 							Title:            "Log in to bofied",
 							ShortDescription: "Network boot nodes in a network.",
