@@ -42,6 +42,297 @@ type FileExplorer struct {
 func (c *FileExplorer) Render() app.UI {
 	return app.Div().
 		Body(
+			app.Div().Class("pf-c-card").Body(
+				app.Div().Class("pf-c-card__title").Body(
+					app.Raw(`
+        <div class="pf-c-toolbar pf-u-pt-0">
+          <div class="pf-c-toolbar__content">
+            <div class="pf-c-toolbar__content-section">
+              <div class="pf-c-toolbar__item pf-m-overflow-menu">
+                <div class="pf-c-overflow-menu">
+                  <div class="pf-c-overflow-menu__content">
+                    <div class="pf-c-overflow-menu__group pf-m-button-group">
+                      <div class="pf-c-overflow-menu__item">
+                        <nav class="pf-c-breadcrumb" aria-label="breadcrumb">
+                          <ol class="pf-c-breadcrumb__list">
+                            <li class="pf-c-breadcrumb__item">
+                              <span class="pf-c-breadcrumb__item-divider">
+                                <i
+                                  class="fas fa-angle-right"
+                                  aria-hidden="true"
+                                ></i>
+                              </span>
+                              <a href="#" class="pf-c-breadcrumb__link"
+                                >Files</a
+                              >
+                            </li>
+                            <li class="pf-c-breadcrumb__item">
+                              <span class="pf-c-breadcrumb__item-divider">
+                                <i
+                                  class="fas fa-angle-right"
+                                  aria-hidden="true"
+                                ></i>
+                              </span>
+                              <span class="pf-c-breadcrumb__dropdown">
+                                <div class="pf-c-dropdown">
+                                  <button
+                                    class="pf-c-dropdown__toggle pf-m-plain"
+                                    aria-expanded="true"
+                                    type="button"
+                                  >
+                                    <span class="pf-c-badge pf-m-read"
+                                      >5
+                                      <span class="pf-c-dropdown__toggle-icon">
+                                        <i
+                                          class="fas fa-caret-down"
+                                          aria-hidden="true"
+                                        ></i>
+                                      </span>
+                                    </span>
+                                  </button>
+                                  <ul
+                                    class="pf-c-dropdown__menu pf-m-hidden"
+                                    aria-labelledby="dropdown-badge-toggle-button"
+                                  >
+                                    <li>
+                                      <button
+                                        class="pf-c-dropdown__menu-item"
+                                        type="button"
+                                      >
+                                        Boot
+                                      </button>
+                                    </li>
+                                    <li>
+                                      <button
+                                        class="pf-c-dropdown__menu-item"
+                                        type="button"
+                                      >
+                                        Distros
+                                      </button>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </span>
+                            </li>
+                            <li class="pf-c-breadcrumb__item">
+                              <span class="pf-c-breadcrumb__item-divider">
+                                <i
+                                  class="fas fa-angle-right"
+                                  aria-hidden="true"
+                                ></i>
+                              </span>
+                              <h1 class="pf-c-breadcrumb__heading">
+                                <a
+                                  href="#"
+                                  class="pf-c-breadcrumb__link pf-m-current"
+                                  aria-current="page"
+                                  >Debian</a
+                                >
+                              </h1>
+                            </li>
+                          </ol>
+                        </nav>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="pf-c-toolbar__item pf-m-pagination">
+                <div class="pf-c-pagination pf-m-compact">
+                  <div class="pf-c-pagination pf-m-compact pf-m-compact">
+                    <div class="pf-c-overflow-menu">
+                      <div class="pf-c-overflow-menu__content">
+                        <div
+                          class="pf-c-overflow-menu__group pf-m-button-group"
+                        >
+                          <div class="pf-c-overflow-menu__item">
+                            <button
+                              type="button"
+                              aria-label="Refresh"
+                              title="Refresh"
+                              class="pf-c-button pf-m-plain"
+                            >
+                              <i class="fas fas fa-sync" aria-hidden="true"></i>
+                            </button>
+                          </div>
+                          <div
+                            class="pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-sm"
+                            role="separator"
+                          ></div>
+                          <div class="pf-c-overflow-menu__item">
+                            <button
+                              type="button"
+                              aria-label="Create Directory"
+                              title="Create Directory"
+                              class="pf-c-button pf-m-plain"
+                            >
+                              <i
+                                class="fas fa-folder-plus"
+                                aria-hidden="true"
+                              ></i>
+                            </button>
+                          </div>
+                          <div class="pf-c-overflow-menu__item">
+                            <button
+                              type="button"
+                              aria-label="Upload file"
+                              title="Upload file"
+                              class="pf-c-button pf-m-plain"
+                            >
+                              <i
+                                class="fas fa-cloud-upload-alt"
+                                aria-hidden="true"
+                              ></i>
+                            </button>
+                          </div>
+                          <div
+                            class="pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-sm"
+                            role="separator"
+                          ></div>
+                          <div class="pf-c-overflow-menu__item">
+                            <button
+                              type="button"
+                              aria-label="Share file"
+                              title="Share file"
+                              class="pf-c-button pf-m-plain"
+                            >
+                              <i
+                                class="fas fa-share-alt"
+                                aria-hidden="true"
+                              ></i>
+                            </button>
+                          </div>
+                          <div class="pf-c-overflow-menu__item">
+                            <button
+                              type="button"
+                              aria-label="Delete file"
+                              title="Delete file"
+                              class="pf-c-button pf-m-plain"
+                            >
+                              <i class="fas fa-trash" aria-hidden="true"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="pf-c-overflow-menu__control">
+                        <div class="pf-c-dropdown">
+                          <button
+                            class="pf-c-button pf-c-dropdown__toggle pf-m-plain"
+                            type="button"
+                            aria-label="Overflow menu"
+                          >
+                            <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                          </button>
+                          <ul
+                            class="pf-c-dropdown__menu"
+                            aria-labelledby="toolbar-attribute-value-search-filter-desktop-example-overflow-menu-dropdown-toggle"
+                            hidden
+                          >
+                            <li>
+                              <button class="pf-c-dropdown__menu-item">
+                                Tertiary
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div
+                        class="pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-lg"
+                        role="separator"
+                      ></div>
+                      <div class="pf-c-overflow-menu__item">
+                        <div class="pf-c-clipboard-copy">
+                          <div class="pf-c-clipboard-copy__group">
+                            <input
+                              class="pf-c-form-control"
+                              readonly
+                              type="text"
+                              value="dav://user:eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFtSXdJNVprRjBJTmh0b0dwVWFmcyJ9.eyJuaWNrbmFtZSI6ImZlbGl4IiwibmFtZSI6ImZlbGl4QHBvanRpbmdlci5jb20iLCJwaWN0dXJlIjoiaHR0cHM6Ly9zLmdyYXZhdGFyLmNvbS9hdmF0YXIvZGI4NTZkZjMzZmE0ZjRiY2U0NDE4MTlmNjA0YzkwZDU_cz00ODAmcj1wZyZkPWh0dHBzJTNBJTJGJTJGY2RuLmF1dGgwLmNvbSUyRmF2YXRhcnMlMkZmZS5wbmciLCJ1cGRhdGVkX2F0IjoiMjAyMS0wNC0yMVQxNToxNzoxMy4zNDZaIiwiZW1haWwiOiJmZWxpeEBwb2p0aW5nZXIuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImlzcyI6Imh0dHBzOi8vcG9qbnRmeC5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NjA3YzJkNmY0OWZkODQwMDczODRmODZlIiwiYXVkIjoiMEdRWEt5dTlwUEtBeW1heFg4N29WUEkzNXJpMGt4Zk0iLCJpYXQiOjE2MTkwMTkwOTEsImV4cCI6MTYxOTA1NTA5MX0.LnSDaOEA1Do8DjYSK73GOuYzoD9gFTF7xvnnGPVUvXwJHLPCbHeiLLsL-ZMl4g80ErtYdmiIn1qDV7VEijepjGPfN-MoYlCy8Lml2EqMdy3ODxCd4CUj6Rx3ggsVXLxpZh6wutrgFLGNUeaiWFC2MAxjnItRVtAdwXHzvL4mIjOLfAeZcuighvhwfeGX7PHfUH1HHCoWvpjZVBN_wKC4A-vQyos4CDGGL5nvw2b86ND6QtpAIrKGXLFHqCqAjHfU1dKrWGvBMB15bju68RVguPr1NSQyPUgGWfNlDMf1hnSdyb5CVw0P3wD2R56jAcnQhi0RfDlq2t2pWmwDn-Emww@localhost:15256/private"
+                              aria-label="Copyable input"
+                            />
+                            <button
+                              class="pf-c-button pf-m-control"
+                              type="button"
+                              aria-label="Copy to clipboard"
+                              aria-labelledby="basic-readonly-copy-button basic-readonly-text-input"
+                            >
+                              <i class="fas fa-copy" aria-hidden="true"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="pf-c-toolbar__expandable-content pf-m-hidden"
+              hidden
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>`),
+				),
+				app.Div().Class("pf-c-card__body").Body(
+					app.Div().Class("pf-l-grid pf-m-gutter pf-m-all-4-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-2-col-on-xl").Body(
+						app.Range(c.Index).Slice(func(i int) app.UI {
+							return app.Div().Class("pf-l-grid__item pf-u-text-align-center").
+								OnClick(func(ctx app.Context, e app.Event) {
+									newSelectedPath := filepath.Join(c.CurrentPath, c.Index[i].Name())
+									if c.selectedPath == newSelectedPath {
+										newSelectedPath = ""
+									}
+
+									c.selectedPath = newSelectedPath
+								}).
+								OnDblClick(func(ctx app.Context, e app.Event) {
+									if c.Index[i].IsDir() {
+										e.PreventDefault()
+
+										c.selectedPath = ""
+
+										ctx.Emit(func() {
+											c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
+										})
+									}
+								}).
+								Body(
+									app.Div().Class(
+										func() string {
+											classes := "pf-c-card pf-m-plain pf-m-hoverable pf-m-selectable"
+											if c.selectedPath == filepath.Join(c.CurrentPath, c.Index[i].Name()) {
+												classes += " pf-m-selected"
+											}
+
+											return classes
+										}()).Body(
+										app.Div().Class("pf-c-card__body").Body(
+											app.I().Class(func() string {
+												classes := "fas pf-u-font-size-3xl"
+												if c.Index[i].IsDir() {
+													classes += " fa-folder"
+												} else {
+													classes += " fa-file-alt"
+												}
+
+												return classes
+											}()).Aria("hidden", true),
+										),
+										app.Div().Class("pf-c-card__footer").Body(
+											app.Text(c.Index[i].Name()),
+											app.If(
+												c.Index[i].IsDir(),
+												app.Text("/"),
+											),
+										),
+									),
+								)
+						}),
+					),
+				),
+			),
 			app.Div().Body(
 				app.Div().
 					Body(
