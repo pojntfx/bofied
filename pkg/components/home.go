@@ -5,7 +5,6 @@ import (
 	"github.com/pojntfx/bofied/pkg/authorization"
 	"github.com/pojntfx/bofied/pkg/constants"
 	"github.com/pojntfx/bofied/pkg/providers"
-	"github.com/pojntfx/liwasc/pkg/components"
 	metaproviders "github.com/pojntfx/liwasc/pkg/providers"
 	"github.com/studio-b12/gowebdav"
 )
@@ -36,7 +35,7 @@ func (c *Home) Render() app.UI {
 							Children: func(ipcp metaproviders.IdentityProviderChildrenProps) app.UI {
 								// Configuration shell
 								if ipcp.Error != nil {
-									return &components.SetupShell{
+									return &SetupShell{
 										LogoSrc:          "/web/logo.svg",
 										Title:            "Log in to bofied",
 										ShortDescription: "Network boot nodes in a network.",
@@ -120,7 +119,7 @@ func (c *Home) Render() app.UI {
 						},
 					).Else(
 						// Configuration shell
-						&components.SetupShell{
+						&SetupShell{
 							LogoSrc:          "/web/logo.svg",
 							Title:            "Log in to bofied",
 							ShortDescription: "Network boot nodes in a network.",
