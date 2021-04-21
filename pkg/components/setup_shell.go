@@ -1,7 +1,7 @@
 package components
 
 import (
-	"github.com/maxence-charriere/go-app/v8/pkg/app"
+	"github.com/maxence-charriere/go-app/v9/pkg/app"
 )
 
 type SetupShell struct {
@@ -22,8 +22,8 @@ type SetupShell struct {
 	SetBackendURL,
 	SetOIDCIssuer,
 	SetOIDCClientID,
-	SetOIDCRedirectURL func(string)
-	ApplyConfig func()
+	SetOIDCRedirectURL func(string, app.Context)
+	ApplyConfig func(app.Context)
 
 	Error error
 }
