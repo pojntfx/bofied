@@ -200,8 +200,6 @@ func (c *DataProvider) writeToPath(path string, content []byte) {
 
 		return
 	}
-
-	c.refreshIndex()
 }
 
 func (c *DataProvider) sharePath(path string) {
