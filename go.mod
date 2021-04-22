@@ -6,7 +6,7 @@ require (
 	github.com/coreos/go-oidc/v3 v3.0.0
 	github.com/google/gopacket v1.1.19
 	github.com/kataras/compress v0.0.6
-	github.com/maxence-charriere/go-app/v9 v9.0.0-20210421094209-f9f3ee1ccba4
+	github.com/maxence-charriere/go-app/v9 v9.0.0-20210422141225-0e7d7c5630b2
 	github.com/pin/tftp v2.1.0+incompatible
 	github.com/pojntfx/liwasc v0.0.0-20210418112916-18ce29ed848d
 	github.com/rs/cors v1.7.0

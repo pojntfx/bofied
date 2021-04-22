@@ -293,9 +293,7 @@ func (c *FileExplorer) Render() app.UI {
 
 										c.selectedPath = ""
 
-										ctx.Emit(func() {
-											c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
-										})
+										c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
 									}
 								}).
 								Body(
@@ -354,9 +352,7 @@ func (c *FileExplorer) Render() app.UI {
 								}),
 							app.Button().
 								OnClick(func(ctx app.Context, e app.Event) {
-									ctx.Emit(func() {
-										c.SetCurrentPath(c.newCurrentPath)
-									})
+									c.SetCurrentPath(c.newCurrentPath)
 								}).
 								Text("Navigate"),
 						),
@@ -366,9 +362,7 @@ func (c *FileExplorer) Render() app.UI {
 						// Refresh
 						app.Button().
 							OnClick(func(ctx app.Context, e app.Event) {
-								ctx.Emit(func() {
-									c.RefreshIndex()
-								})
+								c.RefreshIndex()
 							}).
 							Text("Refresh"),
 						// Create directory
@@ -386,9 +380,7 @@ func (c *FileExplorer) Render() app.UI {
 							},
 							app.Button().
 								OnClick(func(ctx app.Context, e app.Event) {
-									ctx.Emit(func() {
-										c.CreatePath(filepath.Join(c.CurrentPath, c.newDirectoryName))
-									})
+									c.CreatePath(filepath.Join(c.CurrentPath, c.newDirectoryName))
 
 									c.newDirectoryName = ""
 								}).
@@ -408,8 +400,11 @@ func (c *FileExplorer) Render() app.UI {
 										fileContent := make([]byte, rawFileContent.Get("length").Int())
 										app.CopyBytesToGo(fileContent, rawFileContent)
 
+										c.WriteToPath(filepath.Join(c.CurrentPath, fileName), fileContent)
+
+										// Manually refresh, as `c.WriteToPath` runs in a seperate goroutine
 										ctx.Emit(func() {
-											c.WriteToPath(filepath.Join(c.CurrentPath, fileName), fileContent)
+											c.RefreshIndex()
 										})
 									}()
 
@@ -425,9 +420,7 @@ func (c *FileExplorer) Render() app.UI {
 								Body(
 									app.Button().
 										OnClick(func(ctx app.Context, e app.Event) {
-											ctx.Emit(func() {
-												c.SharePath(c.selectedPath)
-											})
+											c.SharePath(c.selectedPath)
 										}).
 										Text("Share"),
 									app.If(
@@ -444,9 +437,7 @@ func (c *FileExplorer) Render() app.UI {
 							// Delete
 							app.Button().
 								OnClick(func(ctx app.Context, e app.Event) {
-									ctx.Emit(func() {
-										c.DeletePath(c.selectedPath)
-									})
+									c.DeletePath(c.selectedPath)
 								}).
 								Text("Delete"),
 							// Move
@@ -464,9 +455,7 @@ func (c *FileExplorer) Render() app.UI {
 								},
 								app.Button().
 									OnClick(func(ctx app.Context, e app.Event) {
-										ctx.Emit(func() {
-											c.MovePath(c.selectedPath, filepath.Join(c.CurrentPath, c.pathToMoveTo))
-										})
+										c.MovePath(c.selectedPath, filepath.Join(c.CurrentPath, c.pathToMoveTo))
 
 										c.pathToMoveTo = ""
 									}).
@@ -487,9 +476,7 @@ func (c *FileExplorer) Render() app.UI {
 								},
 								app.Button().
 									OnClick(func(ctx app.Context, e app.Event) {
-										ctx.Emit(func() {
-											c.CopyPath(c.selectedPath, filepath.Join(c.CurrentPath, c.pathToCopyTo))
-										})
+										c.CopyPath(c.selectedPath, filepath.Join(c.CurrentPath, c.pathToCopyTo))
 
 										c.pathToCopyTo = ""
 									}).
@@ -558,9 +545,7 @@ func (c *FileExplorer) Render() app.UI {
 
 											c.selectedPath = ""
 
-											ctx.Emit(func() {
-												c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
-											})
+											c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
 										}
 									}).
 									Body(
@@ -583,16 +568,12 @@ func (c *FileExplorer) Render() app.UI {
 							Text(c.Error),
 						app.Button().
 							OnClick(func(ctx app.Context, e app.Event) {
-								ctx.Emit(func() {
-									c.Ignore()
-								})
+								c.Ignore()
 							}).
 							Text("Ignore"),
 						app.Button().
 							OnClick(func(ctx app.Context, e app.Event) {
-								ctx.Emit(func() {
-									c.Recover()
-								})
+								c.Recover()
 							}).
 							Text("Recover"),
 					),

@@ -43,9 +43,7 @@ func (c *ConfigFileEditor) Render() app.UI {
 												Aria("label", "Format").
 												Title("Format").
 												OnClick(func(ctx app.Context, e app.Event) {
-													ctx.Emit(func() {
-														c.FormatConfigFile()
-													})
+													c.FormatConfigFile()
 												}).
 												Body(
 													app.I().
@@ -58,9 +56,7 @@ func (c *ConfigFileEditor) Render() app.UI {
 												Aria("label", "Refresh").
 												Title("Refresh").
 												OnClick(func(ctx app.Context, e app.Event) {
-													ctx.Emit(func() {
-														c.RefreshConfigFile()
-													})
+													c.RefreshConfigFile()
 												}).
 												Body(
 													app.I().
@@ -73,9 +69,7 @@ func (c *ConfigFileEditor) Render() app.UI {
 												Aria("label", "Save").
 												Title("Save").
 												OnClick(func(ctx app.Context, e app.Event) {
-													ctx.Emit(func() {
-														c.SaveConfigFile()
-													})
+													c.SaveConfigFile()
 												}).
 												Body(
 													app.I().
@@ -103,9 +97,7 @@ func (c *ConfigFileEditor) Render() app.UI {
 									Class("pf-c-code-editor__main pf-u-w-100 pf-x-u-resize-vertical").
 									Rows(25).
 									OnInput(func(ctx app.Context, e app.Event) {
-										ctx.Emit(func() {
-											c.SetConfigFile(ctx.JSSrc.Get("value").String())
-										})
+										c.SetConfigFile(ctx.JSSrc.Get("value").String())
 									}).
 									Text(c.ConfigFile),
 								Properties: map[string]interface{}{
@@ -150,9 +142,7 @@ func (c *ConfigFileEditor) Render() app.UI {
 											Type("button").
 											Aria("label", "Button to ignore the syntax error").
 											OnClick(func(ctx app.Context, e app.Event) {
-												ctx.Emit(func() {
-													c.Ignore()
-												})
+												c.Ignore()
 											}).
 											Body(
 												app.I().

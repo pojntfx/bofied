@@ -78,9 +78,7 @@ func (c *SetupForm) Render() app.UI {
 						Class("pf-c-form-control").
 						Aria("invalid", c.Error != nil).
 						OnInput(func(ctx app.Context, e app.Event) {
-							ctx.Emit(func() {
-								c.SetBackendURL(ctx.JSSrc.Get("value").String(), ctx)
-							})
+							c.SetBackendURL(ctx.JSSrc.Get("value").String(), ctx)
 						}),
 					Properties: map[string]interface{}{
 						"value": c.BackendURL,
@@ -111,9 +109,7 @@ func (c *SetupForm) Render() app.UI {
 						Class("pf-c-form-control").
 						Aria("invalid", c.Error != nil).
 						OnInput(func(ctx app.Context, e app.Event) {
-							ctx.Emit(func() {
-								c.SetOIDCIssuer(ctx.JSSrc.Get("value").String(), ctx)
-							})
+							c.SetOIDCIssuer(ctx.JSSrc.Get("value").String(), ctx)
 						}),
 					Properties: map[string]interface{}{
 						"value": c.OIDCIssuer,
@@ -143,9 +139,7 @@ func (c *SetupForm) Render() app.UI {
 						Class("pf-c-form-control").
 						Aria("invalid", c.Error != nil).
 						OnInput(func(ctx app.Context, e app.Event) {
-							ctx.Emit(func() {
-								c.SetOIDCClientID(ctx.JSSrc.Get("value").String(), ctx)
-							})
+							c.SetOIDCClientID(ctx.JSSrc.Get("value").String(), ctx)
 						}),
 					Properties: map[string]interface{}{
 						"value": c.OIDCClientID,
@@ -176,9 +170,7 @@ func (c *SetupForm) Render() app.UI {
 						Class("pf-c-form-control").
 						Aria("invalid", c.Error != nil).
 						OnInput(func(ctx app.Context, e app.Event) {
-							ctx.Emit(func() {
-								c.SetOIDCRedirectURL(ctx.JSSrc.Get("value").String(), ctx)
-							})
+							c.SetOIDCRedirectURL(ctx.JSSrc.Get("value").String(), ctx)
 						}),
 					Properties: map[string]interface{}{
 						"value": c.OIDCRedirectURL,
@@ -199,8 +191,6 @@ func (c *SetupForm) Render() app.UI {
 		).OnSubmit(func(ctx app.Context, e app.Event) {
 		e.PreventDefault()
 
-		ctx.Emit(func() {
-			c.Submit(ctx)
-		})
+		c.Submit(ctx)
 	})
 }
