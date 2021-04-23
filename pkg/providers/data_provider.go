@@ -3,6 +3,7 @@ package providers
 import (
 	"net/url"
 	"os"
+	"path"
 	"path/filepath"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
@@ -277,6 +278,9 @@ func (c *DataProvider) getAuthorizedWebDAVURL() string {
 
 	// Add basic auth
 	u.User = url.UserPassword(constants.OIDCOverBasicAuthUsername, c.IDToken)
+
+	// Add current folder
+	u.Path = path.Join(u.Path, c.currentPath)
 
 	return u.String()
 }
