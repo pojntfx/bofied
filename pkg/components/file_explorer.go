@@ -155,89 +155,199 @@ func (c *FileExplorer) Render() app.UI {
 																		),
 																),
 														),
-													app.Div().Class("pf-c-toolbar__item pf-m-pagination").Body(
-														app.Div().Class("pf-c-pagination pf-m-compact").Body(
-															app.Div().Class("pf-c-pagination pf-m-compact pf-m-compact").Body(
-																app.Div().Class("pf-c-overflow-menu").Body(
-																	app.Div().Class("pf-c-overflow-menu__content").Body(
-																		app.Div().Class("pf-c-overflow-menu__group pf-m-button-group").Body(
-																			app.Div().Class("pf-c-overflow-menu__item").Body(
-																				app.Button().Type("button").Aria("label", "Refresh").Title("Refresh").Class("pf-c-button pf-m-plain").Body(
-																					app.I().Class("fas fas fa-sync").Aria("hidden", true),
-																				),
-																			),
-																			app.Div().Class("pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-sm").Aria("role", "separator"),
-																			app.Div().Class("pf-c-overflow-menu__item").Body(
-																				app.Button().Type("button").Aria("label", "Create directory").Title("Create directory").Class("pf-c-button pf-m-plain").Body(
-																					app.I().Class("fas fa-folder-plus").Aria("hidden", true),
-																				),
-																			),
-																			app.Div().Class("pf-c-overflow-menu__item").Body(
-																				app.Button().Type("button").Aria("label", "Upload file").Title("Upload file").Class("pf-c-button pf-m-plain").Body(
-																					app.I().Class("fas fa-cloud-upload-alt").Aria("hidden", true),
-																				),
-																			),
-																			app.Div().Class("pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-sm").Aria("role", "separator"),
-																			app.Div().Class("pf-c-overflow-menu__item").Body(
-																				app.Button().Type("button").Aria("label", "Share file").Title("Share file").Class("pf-c-button pf-m-plain").Body(
-																					app.I().Class("fas fa-share-alt").Aria("hidden", true),
-																				),
-																			),
-																			app.Div().Class("pf-c-overflow-menu__item").Body(
-																				app.Button().Type("button").Aria("label", "Delete file").Title("Delete file").Class("pf-c-button pf-m-plain").Body(
-																					app.I().Class("fas fa-trash").Aria("hidden", true),
-																				),
-																			),
-																		),
-																	),
-																	app.Div().Class("pf-c-overflow-menu__control").Body(
-																		app.Div().Class(func() string {
-																			classes := "pf-c-dropdown"
-																			if c.overflowMenuOpen {
-																				classes += " pf-m-expanded"
-																			}
+													app.Div().
+														Class("pf-c-toolbar__item pf-m-pagination").
+														Body(
+															app.Div().
+																Class("pf-c-pagination pf-m-compact").
+																Body(
+																	app.Div().
+																		Class("pf-c-pagination pf-m-compact pf-m-compact").
+																		Body(
+																			app.Div().
+																				Class("pf-c-overflow-menu").
+																				Body(
+																					app.Div().
+																						Class("pf-c-overflow-menu__content").
+																						Body(
+																							app.Div().
+																								Class("pf-c-overflow-menu__group pf-m-button-group").
+																								Body(
+																									app.Div().
+																										Class("pf-c-overflow-menu__item").
+																										Body(
+																											app.Button().
+																												Type("button").
+																												Aria("label", "Refresh").
+																												Title("Refresh").
+																												Class("pf-c-button pf-m-plain").
+																												Body(
+																													app.I().
+																														Class("fas fas fa-sync").
+																														Aria("hidden", true),
+																												),
+																										),
+																									app.Div().
+																										Class("pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-sm").
+																										Aria("role", "separator"),
+																									app.Div().
+																										Class("pf-c-overflow-menu__item").
+																										Body(
+																											app.Button().
+																												Type("button").
+																												Aria("label", "Create directory").
+																												Title("Create directory").
+																												Class("pf-c-button pf-m-plain").
+																												Body(
+																													app.I().
+																														Class("fas fa-folder-plus").
+																														Aria("hidden", true),
+																												),
+																										),
+																									app.Div().
+																										Class("pf-c-overflow-menu__item").
+																										Body(
+																											app.Button().
+																												Type("button").
+																												Aria("label", "Upload file").
+																												Title("Upload file").
+																												Class("pf-c-button pf-m-plain").
+																												Body(
+																													app.I().
+																														Class("fas fa-cloud-upload-alt").
+																														Aria("hidden", true),
+																												),
+																										),
+																									app.Div().
+																										Class("pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-sm").
+																										Aria("role", "separator"),
+																									app.Div().
+																										Class("pf-c-overflow-menu__item").
+																										Body(
+																											app.Button().
+																												Type("button").
+																												Aria("label", "Share file").
+																												Title("Share file").
+																												Class("pf-c-button pf-m-plain").
+																												Body(
+																													app.I().
+																														Class("fas fa-share-alt").
+																														Aria("hidden", true),
+																												),
+																										),
+																									app.Div().
+																										Class("pf-c-overflow-menu__item").
+																										Body(
+																											app.Button().
+																												Type("button").
+																												Aria("label", "Delete file").
+																												Title("Delete file").
+																												Class("pf-c-button pf-m-plain").
+																												Body(
+																													app.I().
+																														Class("fas fa-trash").
+																														Aria("hidden", true),
+																												),
+																										),
+																								),
+																						),
+																					app.Div().
+																						Class("pf-c-overflow-menu__control").
+																						Body(
+																							app.Div().
+																								Class(func() string {
+																									classes := "pf-c-dropdown"
+																									if c.overflowMenuOpen {
+																										classes += " pf-m-expanded"
+																									}
 
-																			return classes
-																		}()).Body(
-																			app.Button().Class("pf-c-dropdown__toggle pf-m-plain").ID("toolbar-overflow-menu-button").Aria("expanded", c.overflowMenuOpen).Type("button").Aria("label", "Toggle overflow menu").OnClick(func(ctx app.Context, e app.Event) {
-																				c.overflowMenuOpen = !c.overflowMenuOpen
-																			}).Body(
-																				app.I().Class("fas fa-ellipsis-v").Aria("hidden", true),
-																			),
-																			app.Ul().Class("pf-c-dropdown__menu").Aria("labelledby", "toolbar-overflow-menu-button").Hidden(!c.overflowMenuOpen).Body(
-																				app.Li().Body(
-																					app.Button().Class("pf-c-dropdown__menu-item").Text("Move to ..."),
+																									return classes
+																								}()).
+																								Body(
+																									app.Button().
+																										Class("pf-c-dropdown__toggle pf-m-plain").
+																										ID("toolbar-overflow-menu-button").
+																										Aria("expanded", c.overflowMenuOpen).
+																										Type("button").
+																										Aria("label", "Toggle overflow menu").
+																										OnClick(func(ctx app.Context, e app.Event) {
+																											c.overflowMenuOpen = !c.overflowMenuOpen
+																										}).
+																										Body(
+																											app.I().
+																												Class("fas fa-ellipsis-v").
+																												Aria("hidden", true),
+																										),
+																									app.Ul().
+																										Class("pf-c-dropdown__menu").
+																										Aria("labelledby", "toolbar-overflow-menu-button").
+																										Hidden(!c.overflowMenuOpen).
+																										Body(
+																											app.Li().
+																												Body(
+																													app.Button().
+																														Class("pf-c-dropdown__menu-item").
+																														Text("Move to ..."),
+																												),
+																											app.Li().
+																												Body(
+																													app.Button().
+																														Class("pf-c-dropdown__menu-item").
+																														Text("Copy to ..."),
+																												),
+																											app.Li().
+																												Class("pf-c-divider").
+																												Aria("role", "separator"),
+																											app.Li().
+																												Body(
+																													app.Button().
+																														Class("pf-c-dropdown__menu-item").
+																														Text("Rename"),
+																												),
+																										),
+																								),
+																						),
+																					app.Div().
+																						Class("pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-lg").
+																						Aria("role", "separator"),
+																					app.Div().
+																						Class("pf-c-overflow-menu__item").
+																						Body(
+																							app.Div().
+																								Class("pf-c-clipboard-copy").
+																								Body(
+																									app.Div().
+																										Class("pf-c-clipboard-copy__group").
+																										Body(
+																											&Controlled{
+																												Component: app.Input().
+																													Class("pf-c-form-control").
+																													ReadOnly(true).
+																													Type("text").
+																													Value(c.AuthorizedWebDAVURL).
+																													Aria("label", "Authorized WebDAV URL").
+																													ID("authorized-webdav-url-input"),
+																												Properties: map[string]interface{}{
+																													"value": c.AuthorizedWebDAVURL,
+																												},
+																											},
+																											app.Button().
+																												Class("pf-c-button pf-m-control").
+																												Type("button").
+																												Aria("label", "Copy to clipboard").
+																												Aria("labelledby", "authorized-webdav-url-input").
+																												Body(
+																													app.I().
+																														Class("fas fa-copy").
+																														Aria("hidden", true),
+																												),
+																										),
+																								),
+																						),
 																				),
-																				app.Li().Body(
-																					app.Button().Class("pf-c-dropdown__menu-item").Text("Copy to ..."),
-																				),
-																				app.Li().Class("pf-c-divider").Aria("role", "separator"),
-																				app.Li().Body(
-																					app.Button().Class("pf-c-dropdown__menu-item").Text("Rename"),
-																				),
-																			),
 																		),
-																	),
-																	app.Div().Class("pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-lg").Aria("role", "separator"),
-																	app.Div().Class("pf-c-overflow-menu__item").Body(
-																		app.Div().Class("pf-c-clipboard-copy").Body(
-																			app.Div().Class("pf-c-clipboard-copy__group").Body(
-																				&Controlled{
-																					Component: app.Input().Class("pf-c-form-control").ReadOnly(true).Type("text").Value(c.AuthorizedWebDAVURL).Aria("label", "Authorized WebDAV URL").ID("authorized-webdav-url-input"),
-																					Properties: map[string]interface{}{
-																						"value": c.AuthorizedWebDAVURL,
-																					},
-																				},
-																				app.Button().Class("pf-c-button pf-m-control").Type("button").Aria("label", "Copy to clipboard").Aria("labelledby", "authorized-webdav-url-input").Body(
-																					app.I().Class("fas fa-copy").Aria("hidden", true),
-																				),
-																			),
-																		),
-																	),
 																),
-															),
 														),
-													),
 												),
 										),
 								),
@@ -254,15 +364,16 @@ func (c *FileExplorer) Render() app.UI {
 											return app.Div().
 												Class("pf-l-grid__item pf-u-text-align-center").
 												Body(
-													app.Div().Class(
-														func() string {
-															classes := "pf-c-card pf-m-plain pf-m-hoverable pf-m-selectable"
-															if c.selectedPath == filepath.Join(c.CurrentPath, c.Index[i].Name()) {
-																classes += " pf-m-selected"
-															}
+													app.Div().
+														Class(
+															func() string {
+																classes := "pf-c-card pf-m-plain pf-m-hoverable pf-m-selectable"
+																if c.selectedPath == filepath.Join(c.CurrentPath, c.Index[i].Name()) {
+																	classes += " pf-m-selected"
+																}
 
-															return classes
-														}()).
+																return classes
+															}()).
 														OnClick(func(ctx app.Context, e app.Event) {
 															newSelectedPath := filepath.Join(c.CurrentPath, c.Index[i].Name())
 															if c.selectedPath == newSelectedPath {
@@ -309,19 +420,36 @@ func (c *FileExplorer) Render() app.UI {
 										}),
 									),
 							).Else(
-								app.Div().Class("pf-c-empty-state").Body(
-									app.Div().Class("pf-c-empty-state__content").Body(
-										app.I().Class("fas fa-folder-open pf-c-empty-state__icon").Aria("hidden", true),
-										app.H1().Class("pf-c-title pf-m-lg").Text("No files or directories here yet"),
-										app.Div().Class("pf-c-empty-state__body").Text("You can upload a file or create a directory to make it available for nodes."),
-										app.Button().Class("pf-c-button pf-m-primary").Type("button").Body(
-											app.Span().Class("pf-c-button__icon pf-m-start").Body(
-												app.I().Class("fas fa-cloud-upload-alt").Aria("hidden", true),
+								app.Div().
+									Class("pf-c-empty-state").
+									Body(
+										app.Div().
+											Class("pf-c-empty-state__content").
+											Body(
+												app.I().
+													Class("fas fa-folder-open pf-c-empty-state__icon").
+													Aria("hidden", true),
+												app.H1().
+													Class("pf-c-title pf-m-lg").
+													Text("No files or directories here yet"),
+												app.Div().
+													Class("pf-c-empty-state__body").
+													Text("You can upload a file or create a directory to make it available for nodes."),
+												app.Button().
+													Class("pf-c-button pf-m-primary").
+													Type("button").
+													Body(
+														app.Span().
+															Class("pf-c-button__icon pf-m-start").
+															Body(
+																app.I().
+																	Class("fas fa-cloud-upload-alt").
+																	Aria("hidden", true),
+															),
+														app.Text("Upload File"),
+													),
 											),
-											app.Text("Upload File"),
-										),
 									),
-								),
 							),
 						),
 				),
