@@ -189,34 +189,39 @@ func (c *FileExplorer) Render() app.UI {
 																		),
 																	),
 																	app.Div().Class("pf-c-overflow-menu__control").Body(
-																		app.Raw(`<div class="pf-c-dropdown">
-        <button class="pf-c-button pf-c-dropdown__toggle pf-m-plain" type="button" aria-label="Overflow menu">
-            <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
-        </button>
-        <ul class="pf-c-dropdown__menu"
-            aria-labelledby="toolbar-attribute-value-search-filter-desktop-example-overflow-menu-dropdown-toggle"
-            hidden>
-            <li>
-                <button class="pf-c-dropdown__menu-item">
-                    Tertiary
-                </button>
-            </li>
-        </ul>
-    </div>`),
+																		app.Raw(`<div class="pf-c-dropdown pf-m-expanded">
+  <button class="pf-c-dropdown__toggle pf-m-plain" id="dropdown-kebab-expanded-button" aria-expanded="true" type="button" aria-label="Actions">
+    <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+  </button>
+  <ul class="pf-c-dropdown__menu" aria-labelledby="dropdown-kebab-expanded-button">
+    <li>
+      <button class="pf-c-dropdown__menu-item" href="#">Move to ...</button>
+    </li>
+    <li>
+      <button class="pf-c-dropdown__menu-item" type="button">Copy to ...</button>
+    </li>
+    <li class="pf-c-divider" role="separator"></li>
+    <li>
+      <button class="pf-c-dropdown__menu-item" href="#">Rename</button>
+    </li>
+  </ul>
+</div>`),
 																	),
 																	app.Div().Class("pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-lg").Aria("role", "separator"),
 																	app.Div().Class("pf-c-overflow-menu__item").Body(
-																		app.Raw(`<div class="pf-c-clipboard-copy">
-        <div class="pf-c-clipboard-copy__group">
-            <input class="pf-c-form-control" readonly type="text"
-                value="dav://user:eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFtSXdJNVprRjBJTmh0b0dwVWFmcyJ9.eyJuaWNrbmFtZSI6ImZlbGl4IiwibmFtZSI6ImZlbGl4QHBvanRpbmdlci5jb20iLCJwaWN0dXJlIjoiaHR0cHM6Ly9zLmdyYXZhdGFyLmNvbS9hdmF0YXIvZGI4NTZkZjMzZmE0ZjRiY2U0NDE4MTlmNjA0YzkwZDU_cz00ODAmcj1wZyZkPWh0dHBzJTNBJTJGJTJGY2RuLmF1dGgwLmNvbSUyRmF2YXRhcnMlMkZmZS5wbmciLCJ1cGRhdGVkX2F0IjoiMjAyMS0wNC0yMVQxNToxNzoxMy4zNDZaIiwiZW1haWwiOiJmZWxpeEBwb2p0aW5nZXIuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImlzcyI6Imh0dHBzOi8vcG9qbnRmeC5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NjA3YzJkNmY0OWZkODQwMDczODRmODZlIiwiYXVkIjoiMEdRWEt5dTlwUEtBeW1heFg4N29WUEkzNXJpMGt4Zk0iLCJpYXQiOjE2MTkwMTkwOTEsImV4cCI6MTYxOTA1NTA5MX0.LnSDaOEA1Do8DjYSK73GOuYzoD9gFTF7xvnnGPVUvXwJHLPCbHeiLLsL-ZMl4g80ErtYdmiIn1qDV7VEijepjGPfN-MoYlCy8Lml2EqMdy3ODxCd4CUj6Rx3ggsVXLxpZh6wutrgFLGNUeaiWFC2MAxjnItRVtAdwXHzvL4mIjOLfAeZcuighvhwfeGX7PHfUH1HHCoWvpjZVBN_wKC4A-vQyos4CDGGL5nvw2b86ND6QtpAIrKGXLFHqCqAjHfU1dKrWGvBMB15bju68RVguPr1NSQyPUgGWfNlDMf1hnSdyb5CVw0P3wD2R56jAcnQhi0RfDlq2t2pWmwDn-Emww@localhost:15256/private"
-                aria-label="Copyable input" />
-            <button class="pf-c-button pf-m-control" type="button" aria-label="Copy to clipboard"
-                aria-labelledby="basic-readonly-copy-button basic-readonly-text-input">
-                <i class="fas fa-copy" aria-hidden="true"></i>
-            </button>
-        </div>
-    </div>`),
+																		app.Div().Class("pf-c-clipboard-copy").Body(
+																			app.Div().Class("pf-c-clipboard-copy__group").Body(
+																				&Controlled{
+																					Component: app.Input().Class("pf-c-form-control").ReadOnly(true).Type("text").Value(c.AuthorizedWebDAVURL).Aria("label", "Authorized WebDAV URL").ID("authorized-webdav-url-input"),
+																					Properties: map[string]interface{}{
+																						"value": c.AuthorizedWebDAVURL,
+																					},
+																				},
+																				app.Button().Class("pf-c-button pf-m-control").Type("button").Aria("label", "Copy to clipboard").Aria("labelledby", "authorized-webdav-url-input").Body(
+																					app.I().Class("fas fa-copy").Aria("hidden", true),
+																				),
+																			),
+																		),
 																	),
 																),
 															),
@@ -291,19 +296,19 @@ func (c *FileExplorer) Render() app.UI {
 										}),
 									),
 							).Else(
-								app.Raw(`<div class="pf-c-empty-state">
-  <div class="pf-c-empty-state__content">
-    <i class="fas fa-folder-open pf-c-empty-state__icon" aria-hidden="true"></i>
-    <h1 class="pf-c-title pf-m-lg">No files or directories here yet</h1>
-    <div class="pf-c-empty-state__body">You can upload a file or create a directory to make it available for nodes.</div>
-							<button class="pf-c-button pf-m-primary" type="button">
-  <span class="pf-c-button__icon pf-m-start">
-    <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
-  </span>
-								Upload File
-</button>
-  </div>
-</div>`),
+								app.Div().Class("pf-c-empty-state").Body(
+									app.Div().Class("pf-c-empty-state__content").Body(
+										app.I().Class("fas fa-folder-open pf-c-empty-state__icon").Aria("hidden", true),
+										app.H1().Class("pf-c-title pf-m-lg").Text("No files or directories here yet"),
+										app.Div().Class("pf-c-empty-state__body").Text("You can upload a file or create a directory to make it available for nodes."),
+										app.Button().Class("pf-c-button pf-m-primary").Type("button").Body(
+											app.Span().Class("pf-c-button__icon pf-m-start").Body(
+												app.I().Class("fas fa-cloud-upload-alt").Aria("hidden", true),
+											),
+											app.Text("Upload File"),
+										),
+									),
+								),
 							),
 						),
 				),
