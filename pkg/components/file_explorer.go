@@ -154,80 +154,73 @@ func (c *FileExplorer) Render() app.UI {
 																),
 														),
 													app.Div().Class("pf-c-toolbar__item pf-m-pagination").Body(
-														app.Raw(`<div class="pf-c-pagination pf-m-compact">
-        <div class="pf-c-pagination pf-m-compact pf-m-compact">
-            <div class="pf-c-overflow-menu">
-                <div class="pf-c-overflow-menu__content">
-                    <div class="pf-c-overflow-menu__group pf-m-button-group">
-                        <div class="pf-c-overflow-menu__item">
-                            <button type="button" aria-label="Refresh" title="Refresh" class="pf-c-button pf-m-plain">
-                                <i class="fas fas fa-sync" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                        <div class="pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-sm" role="separator">
-                        </div>
-                        <div class="pf-c-overflow-menu__item">
-                            <button type="button" aria-label="Create Directory" title="Create Directory"
-                                class="pf-c-button pf-m-plain">
-                                <i class="fas fa-folder-plus" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                        <div class="pf-c-overflow-menu__item">
-                            <button type="button" aria-label="Upload file" title="Upload file"
-                                class="pf-c-button pf-m-plain">
-                                <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                        <div class="pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-sm" role="separator">
-                        </div>
-                        <div class="pf-c-overflow-menu__item">
-                            <button type="button" aria-label="Share file" title="Share file"
-                                class="pf-c-button pf-m-plain">
-                                <i class="fas fa-share-alt" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                        <div class="pf-c-overflow-menu__item">
-                            <button type="button" aria-label="Delete file" title="Delete file"
-                                class="pf-c-button pf-m-plain">
-                                <i class="fas fa-trash" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="pf-c-overflow-menu__control">
-                    <div class="pf-c-dropdown">
-                        <button class="pf-c-button pf-c-dropdown__toggle pf-m-plain" type="button"
-                            aria-label="Overflow menu">
-                            <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
-                        </button>
-                        <ul class="pf-c-dropdown__menu"
-                            aria-labelledby="toolbar-attribute-value-search-filter-desktop-example-overflow-menu-dropdown-toggle"
-                            hidden>
-                            <li>
-                                <button class="pf-c-dropdown__menu-item">
-                                    Tertiary
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-lg" role="separator"></div>
-                <div class="pf-c-overflow-menu__item">
-                    <div class="pf-c-clipboard-copy">
-                        <div class="pf-c-clipboard-copy__group">
-                            <input class="pf-c-form-control" readonly type="text"
-                                value="dav://user:eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFtSXdJNVprRjBJTmh0b0dwVWFmcyJ9.eyJuaWNrbmFtZSI6ImZlbGl4IiwibmFtZSI6ImZlbGl4QHBvanRpbmdlci5jb20iLCJwaWN0dXJlIjoiaHR0cHM6Ly9zLmdyYXZhdGFyLmNvbS9hdmF0YXIvZGI4NTZkZjMzZmE0ZjRiY2U0NDE4MTlmNjA0YzkwZDU_cz00ODAmcj1wZyZkPWh0dHBzJTNBJTJGJTJGY2RuLmF1dGgwLmNvbSUyRmF2YXRhcnMlMkZmZS5wbmciLCJ1cGRhdGVkX2F0IjoiMjAyMS0wNC0yMVQxNToxNzoxMy4zNDZaIiwiZW1haWwiOiJmZWxpeEBwb2p0aW5nZXIuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImlzcyI6Imh0dHBzOi8vcG9qbnRmeC5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NjA3YzJkNmY0OWZkODQwMDczODRmODZlIiwiYXVkIjoiMEdRWEt5dTlwUEtBeW1heFg4N29WUEkzNXJpMGt4Zk0iLCJpYXQiOjE2MTkwMTkwOTEsImV4cCI6MTYxOTA1NTA5MX0.LnSDaOEA1Do8DjYSK73GOuYzoD9gFTF7xvnnGPVUvXwJHLPCbHeiLLsL-ZMl4g80ErtYdmiIn1qDV7VEijepjGPfN-MoYlCy8Lml2EqMdy3ODxCd4CUj6Rx3ggsVXLxpZh6wutrgFLGNUeaiWFC2MAxjnItRVtAdwXHzvL4mIjOLfAeZcuighvhwfeGX7PHfUH1HHCoWvpjZVBN_wKC4A-vQyos4CDGGL5nvw2b86ND6QtpAIrKGXLFHqCqAjHfU1dKrWGvBMB15bju68RVguPr1NSQyPUgGWfNlDMf1hnSdyb5CVw0P3wD2R56jAcnQhi0RfDlq2t2pWmwDn-Emww@localhost:15256/private"
-                                aria-label="Copyable input" />
-                            <button class="pf-c-button pf-m-control" type="button" aria-label="Copy to clipboard"
-                                aria-labelledby="basic-readonly-copy-button basic-readonly-text-input">
-                                <i class="fas fa-copy" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+														app.Div().Class("pf-c-pagination pf-m-compact").Body(
+															app.Div().Class("pf-c-pagination pf-m-compact pf-m-compact").Body(
+																app.Div().Class("pf-c-overflow-menu").Body(
+																	app.Div().Class("pf-c-overflow-menu__content").Body(
+																		app.Div().Class("pf-c-overflow-menu__group pf-m-button-group").Body(
+																			app.Div().Class("pf-c-overflow-menu__item").Body(
+																				app.Button().Type("button").Aria("label", "Refresh").Title("Refresh").Class("pf-c-button pf-m-plain").Body(
+																					app.I().Class("fas fas fa-sync").Aria("hidden", true),
+																				),
+																			),
+																			app.Div().Class("pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-sm").Aria("role", "separator"),
+																			app.Div().Class("pf-c-overflow-menu__item").Body(
+																				app.Button().Type("button").Aria("label", "Create directory").Title("Create directory").Class("pf-c-button pf-m-plain").Body(
+																					app.I().Class("fas fa-folder-plus").Aria("hidden", true),
+																				),
+																			),
+																			app.Div().Class("pf-c-overflow-menu__item").Body(
+																				app.Button().Type("button").Aria("label", "Upload file").Title("Upload file").Class("pf-c-button pf-m-plain").Body(
+																					app.I().Class("fas fa-cloud-upload-alt").Aria("hidden", true),
+																				),
+																			),
+																			app.Div().Class("pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-sm").Aria("role", "separator"),
+																			app.Div().Class("pf-c-overflow-menu__item").Body(
+																				app.Button().Type("button").Aria("label", "Share file").Title("Share file").Class("pf-c-button pf-m-plain").Body(
+																					app.I().Class("fas fa-share-alt").Aria("hidden", true),
+																				),
+																			),
+																			app.Div().Class("pf-c-overflow-menu__item").Body(
+																				app.Button().Type("button").Aria("label", "Delete file").Title("Delete file").Class("pf-c-button pf-m-plain").Body(
+																					app.I().Class("fas fa-trash").Aria("hidden", true),
+																				),
+																			),
+																		),
+																	),
+																	app.Div().Class("pf-c-overflow-menu__control").Body(
+																		app.Raw(`<div class="pf-c-dropdown">
+        <button class="pf-c-button pf-c-dropdown__toggle pf-m-plain" type="button" aria-label="Overflow menu">
+            <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+        </button>
+        <ul class="pf-c-dropdown__menu"
+            aria-labelledby="toolbar-attribute-value-search-filter-desktop-example-overflow-menu-dropdown-toggle"
+            hidden>
+            <li>
+                <button class="pf-c-dropdown__menu-item">
+                    Tertiary
+                </button>
+            </li>
+        </ul>
+    </div>`),
+																	),
+																	app.Div().Class("pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-lg").Aria("role", "separator"),
+																	app.Div().Class("pf-c-overflow-menu__item").Body(
+																		app.Raw(`<div class="pf-c-clipboard-copy">
+        <div class="pf-c-clipboard-copy__group">
+            <input class="pf-c-form-control" readonly type="text"
+                value="dav://user:eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFtSXdJNVprRjBJTmh0b0dwVWFmcyJ9.eyJuaWNrbmFtZSI6ImZlbGl4IiwibmFtZSI6ImZlbGl4QHBvanRpbmdlci5jb20iLCJwaWN0dXJlIjoiaHR0cHM6Ly9zLmdyYXZhdGFyLmNvbS9hdmF0YXIvZGI4NTZkZjMzZmE0ZjRiY2U0NDE4MTlmNjA0YzkwZDU_cz00ODAmcj1wZyZkPWh0dHBzJTNBJTJGJTJGY2RuLmF1dGgwLmNvbSUyRmF2YXRhcnMlMkZmZS5wbmciLCJ1cGRhdGVkX2F0IjoiMjAyMS0wNC0yMVQxNToxNzoxMy4zNDZaIiwiZW1haWwiOiJmZWxpeEBwb2p0aW5nZXIuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImlzcyI6Imh0dHBzOi8vcG9qbnRmeC5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NjA3YzJkNmY0OWZkODQwMDczODRmODZlIiwiYXVkIjoiMEdRWEt5dTlwUEtBeW1heFg4N29WUEkzNXJpMGt4Zk0iLCJpYXQiOjE2MTkwMTkwOTEsImV4cCI6MTYxOTA1NTA5MX0.LnSDaOEA1Do8DjYSK73GOuYzoD9gFTF7xvnnGPVUvXwJHLPCbHeiLLsL-ZMl4g80ErtYdmiIn1qDV7VEijepjGPfN-MoYlCy8Lml2EqMdy3ODxCd4CUj6Rx3ggsVXLxpZh6wutrgFLGNUeaiWFC2MAxjnItRVtAdwXHzvL4mIjOLfAeZcuighvhwfeGX7PHfUH1HHCoWvpjZVBN_wKC4A-vQyos4CDGGL5nvw2b86ND6QtpAIrKGXLFHqCqAjHfU1dKrWGvBMB15bju68RVguPr1NSQyPUgGWfNlDMf1hnSdyb5CVw0P3wD2R56jAcnQhi0RfDlq2t2pWmwDn-Emww@localhost:15256/private"
+                aria-label="Copyable input" />
+            <button class="pf-c-button pf-m-control" type="button" aria-label="Copy to clipboard"
+                aria-labelledby="basic-readonly-copy-button basic-readonly-text-input">
+                <i class="fas fa-copy" aria-hidden="true"></i>
+            </button>
         </div>
     </div>`),
+																	),
+																),
+															),
+														),
 													),
 												),
 										),
