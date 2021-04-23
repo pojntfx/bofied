@@ -632,42 +632,22 @@ func (c *FileExplorer) Render() app.UI {
 											app.Div().
 												Class("pf-c-form__group-control").
 												Body(
-													app.Div().
-														Class("pf-c-clipboard-copy").
-														Body(
-															app.Div().
-																Class("pf-c-clipboard-copy__group").
-																Body(
-																	&Controlled{
-																		Component: app.Input().
-																			Class("pf-c-form-control").
-																			ReadOnly(true).
-																			Type("text").
-																			Value(c.AuthorizedWebDAVURL).
-																			Aria("label", "WebDAV server address").
-																			Name("webdav-address").
-																			ID("webdav-address"),
-																		Properties: map[string]interface{}{
-																			"value": c.AuthorizedWebDAVURL,
-																		},
-																	},
-																	app.Button().
-																		Class("pf-c-button pf-m-control").
-																		Type("button").
-																		Aria("label", "Copy to clipboard").
-																		Aria("labelledby", "webdav-address").
-																		OnClick(func(ctx app.Context, e app.Event) {
-																			app.Window().JSValue().Get("document").Call("getElementById", "webdav-address").Call("select")
-
-																			app.Window().JSValue().Get("document").Call("execCommand", "copy")
-																		}).
-																		Body(
-																			app.I().
-																				Class("fas fa-copy").
-																				Aria("hidden", true),
-																		),
-																),
-														),
+													&CopyableInput{
+														Component: &Controlled{
+															Component: app.Input().
+																Class("pf-c-form-control").
+																ReadOnly(true).
+																Type("text").
+																Value(c.AuthorizedWebDAVURL).
+																Aria("label", "WebDAV server address").
+																Name("webdav-address").
+																ID("webdav-address"),
+															Properties: map[string]interface{}{
+																"value": c.AuthorizedWebDAVURL,
+															},
+														},
+														ID: "webdav-address",
+													},
 												),
 										),
 								),
