@@ -103,6 +103,8 @@ func (c *FileExplorer) Render() app.UI {
 																													app.A().
 																														Class("pf-c-breadcrumb__link").
 																														OnClick(func(ctx app.Context, e app.Event) {
+																															c.selectedPath = ""
+
 																															c.SetCurrentPath("/")
 																														}).
 																														Text("Files"),
@@ -136,6 +138,8 @@ func (c *FileExplorer) Render() app.UI {
 																															app.A().
 																																Class(classes).
 																																OnClick(func(ctx app.Context, e app.Event) {
+																																	c.selectedPath = ""
+
 																																	c.SetCurrentPath(link)
 																																}).
 																																Text(pathParts[i]),
@@ -232,65 +236,82 @@ func (c *FileExplorer) Render() app.UI {
 					app.Div().
 						Class("pf-c-card__body").
 						Body(
-							app.Div().
-								Class("pf-l-grid pf-m-gutter pf-m-all-4-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-2-col-on-xl").
-								Body(
-									app.Range(c.Index).Slice(func(i int) app.UI {
-										return app.Div().
-											Class("pf-l-grid__item pf-u-text-align-center").
-											OnClick(func(ctx app.Context, e app.Event) {
-												newSelectedPath := filepath.Join(c.CurrentPath, c.Index[i].Name())
-												if c.selectedPath == newSelectedPath {
-													newSelectedPath = ""
-												}
+							app.If(
+								len(c.Index) > 0,
+								app.Div().
+									Class("pf-l-grid pf-m-gutter pf-m-all-4-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-2-col-on-xl").
+									Body(
+										app.Range(c.Index).Slice(func(i int) app.UI {
+											return app.Div().
+												Class("pf-l-grid__item pf-u-text-align-center").
+												OnClick(func(ctx app.Context, e app.Event) {
+													newSelectedPath := filepath.Join(c.CurrentPath, c.Index[i].Name())
+													if c.selectedPath == newSelectedPath {
+														newSelectedPath = ""
+													}
 
-												c.selectedPath = newSelectedPath
-											}).
-											OnDblClick(func(ctx app.Context, e app.Event) {
-												if c.Index[i].IsDir() {
-													e.PreventDefault()
+													c.selectedPath = newSelectedPath
+												}).
+												OnDblClick(func(ctx app.Context, e app.Event) {
+													if c.Index[i].IsDir() {
+														e.PreventDefault()
 
-													c.selectedPath = ""
+														c.selectedPath = ""
 
-													c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
-												}
-											}).
-											Body(
-												app.Div().Class(
-													func() string {
-														classes := "pf-c-card pf-m-plain pf-m-hoverable pf-m-selectable"
-														if c.selectedPath == filepath.Join(c.CurrentPath, c.Index[i].Name()) {
-															classes += " pf-m-selected"
-														}
+														c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
+													}
+												}).
+												Body(
+													app.Div().Class(
+														func() string {
+															classes := "pf-c-card pf-m-plain pf-m-hoverable pf-m-selectable"
+															if c.selectedPath == filepath.Join(c.CurrentPath, c.Index[i].Name()) {
+																classes += " pf-m-selected"
+															}
 
-														return classes
-													}()).
-													Body(
-														app.Div().
-															Class("pf-c-card__body").
-															Body(
-																app.I().
-																	Class(func() string {
-																		classes := "fas pf-u-font-size-3xl"
-																		if c.Index[i].IsDir() {
-																			classes += " fa-folder"
-																		} else {
-																			classes += " fa-file-alt"
-																		}
+															return classes
+														}()).
+														Body(
+															app.Div().
+																Class("pf-c-card__body").
+																Body(
+																	app.I().
+																		Class(func() string {
+																			classes := "fas pf-u-font-size-3xl"
+																			if c.Index[i].IsDir() {
+																				classes += " fa-folder"
+																			} else {
+																				classes += " fa-file-alt"
+																			}
 
-																		return classes
-																	}()).
-																	Aria("hidden", true),
-															),
-														app.Div().
-															Class("pf-c-card__footer").
-															Body(
-																app.Text(c.Index[i].Name()),
-															),
-													),
-											)
-									}),
-								),
+																			return classes
+																		}()).
+																		Aria("hidden", true),
+																),
+															app.Div().
+																Class("pf-c-card__footer").
+																Body(
+																	app.Text(c.Index[i].Name()),
+																),
+														),
+												)
+										}),
+									),
+							).Else(
+								app.Raw(`<div class="pf-c-empty-state">
+  <div class="pf-c-empty-state__content">
+    <i class="fas fa-folder-open pf-c-empty-state__icon" aria-hidden="true"></i>
+    <h1 class="pf-c-title pf-m-lg">No files or directories here yet</h1>
+    <div class="pf-c-empty-state__body">You can upload a file or create a directory to make it available for nodes.</div>
+							<button class="pf-c-button pf-m-primary" type="button">
+  <span class="pf-c-button__icon pf-m-start">
+    <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
+  </span>
+								Upload File
+</button>
+  </div>
+</div>`),
+							),
 						),
 				),
 			app.Div().Body(
