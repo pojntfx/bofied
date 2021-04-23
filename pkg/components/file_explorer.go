@@ -39,6 +39,8 @@ type FileExplorer struct {
 	pathToMoveTo     string
 	pathToCopyTo     string
 	newFileName      string
+
+	overflowMenuOpen bool
 }
 
 func (c *FileExplorer) Render() app.UI {
@@ -189,23 +191,32 @@ func (c *FileExplorer) Render() app.UI {
 																		),
 																	),
 																	app.Div().Class("pf-c-overflow-menu__control").Body(
-																		app.Raw(`<div class="pf-c-dropdown pf-m-expanded">
-  <button class="pf-c-dropdown__toggle pf-m-plain" id="dropdown-kebab-expanded-button" aria-expanded="true" type="button" aria-label="Actions">
-    <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
-  </button>
-  <ul class="pf-c-dropdown__menu" aria-labelledby="dropdown-kebab-expanded-button">
-    <li>
-      <button class="pf-c-dropdown__menu-item" href="#">Move to ...</button>
-    </li>
-    <li>
-      <button class="pf-c-dropdown__menu-item" type="button">Copy to ...</button>
-    </li>
-    <li class="pf-c-divider" role="separator"></li>
-    <li>
-      <button class="pf-c-dropdown__menu-item" href="#">Rename</button>
-    </li>
-  </ul>
-</div>`),
+																		app.Div().Class(func() string {
+																			classes := "pf-c-dropdown"
+																			if c.overflowMenuOpen {
+																				classes += " pf-m-expanded"
+																			}
+
+																			return classes
+																		}()).Body(
+																			app.Button().Class("pf-c-dropdown__toggle pf-m-plain").ID("toolbar-overflow-menu-button").Aria("expanded", c.overflowMenuOpen).Type("button").Aria("label", "Toggle overflow menu").OnClick(func(ctx app.Context, e app.Event) {
+																				c.overflowMenuOpen = !c.overflowMenuOpen
+																			}).Body(
+																				app.I().Class("fas fa-ellipsis-v").Aria("hidden", true),
+																			),
+																			app.Ul().Class("pf-c-dropdown__menu").Aria("labelledby", "toolbar-overflow-menu-button").Hidden(!c.overflowMenuOpen).Body(
+																				app.Li().Body(
+																					app.Button().Class("pf-c-dropdown__menu-item").Text("Move to ..."),
+																				),
+																				app.Li().Body(
+																					app.Button().Class("pf-c-dropdown__menu-item").Text("Copy to ..."),
+																				),
+																				app.Li().Class("pf-c-divider").Aria("role", "separator"),
+																				app.Li().Body(
+																					app.Button().Class("pf-c-dropdown__menu-item").Text("Rename"),
+																				),
+																			),
+																		),
 																	),
 																	app.Div().Class("pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-lg").Aria("role", "separator"),
 																	app.Div().Class("pf-c-overflow-menu__item").Body(
@@ -242,23 +253,6 @@ func (c *FileExplorer) Render() app.UI {
 										app.Range(c.Index).Slice(func(i int) app.UI {
 											return app.Div().
 												Class("pf-l-grid__item pf-u-text-align-center").
-												OnClick(func(ctx app.Context, e app.Event) {
-													newSelectedPath := filepath.Join(c.CurrentPath, c.Index[i].Name())
-													if c.selectedPath == newSelectedPath {
-														newSelectedPath = ""
-													}
-
-													c.selectedPath = newSelectedPath
-												}).
-												OnDblClick(func(ctx app.Context, e app.Event) {
-													if c.Index[i].IsDir() {
-														e.PreventDefault()
-
-														c.selectedPath = ""
-
-														c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
-													}
-												}).
 												Body(
 													app.Div().Class(
 														func() string {
@@ -269,6 +263,25 @@ func (c *FileExplorer) Render() app.UI {
 
 															return classes
 														}()).
+														OnClick(func(ctx app.Context, e app.Event) {
+															newSelectedPath := filepath.Join(c.CurrentPath, c.Index[i].Name())
+															if c.selectedPath == newSelectedPath {
+																newSelectedPath = ""
+															}
+
+															c.selectedPath = newSelectedPath
+														}).
+														OnDblClick(func(ctx app.Context, e app.Event) {
+															if c.Index[i].IsDir() {
+																e.PreventDefault()
+
+																c.selectedPath = ""
+
+																c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
+															}
+														}).
+														Aria("role", "button").
+														TabIndex(0).
 														Body(
 															app.Div().
 																Class("pf-c-card__body").
