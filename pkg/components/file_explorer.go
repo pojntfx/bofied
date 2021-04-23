@@ -41,6 +41,8 @@ type FileExplorer struct {
 	newFileName      string
 
 	overflowMenuOpen bool
+
+	mountFolderModalOpen bool
 }
 
 func (c *FileExplorer) Render() app.UI {
@@ -329,6 +331,9 @@ func (c *FileExplorer) Render() app.UI {
 																									app.Button().
 																										Class("pf-c-button pf-m-control").
 																										Type("button").
+																										OnClick(func(ctx app.Context, e app.Event) {
+																											c.mountFolderModalOpen = true
+																										}).
 																										Body(
 																											app.Span().
 																												Class("pf-c-button__icon pf-m-start").
@@ -585,5 +590,89 @@ func (c *FileExplorer) Render() app.UI {
 					),
 				),
 			),
+			&Modal{
+				Open: c.mountFolderModalOpen,
+				Close: func() {
+					c.mountFolderModalOpen = false
+
+					// This manual update is required as the event is fired from `app.Window`
+					c.Update()
+				},
+
+				ID: "mount-folder-modal-title",
+
+				Title: "Mount Folder",
+				Body: []app.UI{
+					app.Div().
+						Class("pf-c-content").
+						Body(
+							app.P().
+								Text(`You can mount this folder as a WebDAV share using your system's file explorer. To do so, please use the following credentials:`),
+							app.Form().
+								Class("pf-c-form").
+								OnSubmit(func(ctx app.Context, e app.Event) {
+									e.PreventDefault()
+								}).
+								Body(
+									app.Div().
+										Class("pf-c-form__group").
+										Body(
+											app.Div().
+												Class("pf-c-form__group-label").
+												Body(
+													app.Label().
+														Class("pf-c-form__label").
+														For("webdav-address").
+														Body(
+															app.Span().
+																Class("pf-c-form__label-text").
+																Text("Address"),
+														),
+												),
+											app.Div().
+												Class("pf-c-form__group-control").
+												Body(
+													app.Div().
+														Class("pf-c-clipboard-copy").
+														Body(
+															app.Div().
+																Class("pf-c-clipboard-copy__group").
+																Body(
+																	&Controlled{
+																		Component: app.Input().
+																			Class("pf-c-form-control").
+																			ReadOnly(true).
+																			Type("text").
+																			Value(c.AuthorizedWebDAVURL).
+																			Aria("label", "WebDAV server address").
+																			Name("webdav-address").
+																			ID("webdav-address"),
+																		Properties: map[string]interface{}{
+																			"value": c.AuthorizedWebDAVURL,
+																		},
+																	},
+																	app.Button().
+																		Class("pf-c-button pf-m-control").
+																		Type("button").
+																		Aria("label", "Copy to clipboard").
+																		Aria("labelledby", "webdav-address").
+																		OnClick(func(ctx app.Context, e app.Event) {
+																			app.Window().JSValue().Get("document").Call("getElementById", "webdav-address").Call("select")
+
+																			app.Window().JSValue().Get("document").Call("execCommand", "copy")
+																		}).
+																		Body(
+																			app.I().
+																				Class("fas fa-copy").
+																				Aria("hidden", true),
+																		),
+																),
+														),
+												),
+										),
+								),
+						),
+				},
+			},
 		)
 }
