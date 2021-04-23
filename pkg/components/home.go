@@ -98,8 +98,9 @@ func (c *Home) Render() app.UI {
 											RefreshIndex: dpcp.RefreshIndex,
 											WriteToPath:  dpcp.WriteToPath,
 
-											ShareLink: dpcp.ShareLink,
-											SharePath: dpcp.SharePath,
+											HTTPShareLink: dpcp.HTTPShareLink,
+											TFTPShareLink: dpcp.TFTPShareLink,
+											SharePath:     dpcp.SharePath,
 
 											CreatePath: dpcp.CreatePath,
 											DeletePath: dpcp.DeletePath,

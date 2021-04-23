@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	WebDAVRealmDescription = "bofied protected area. Please enter `" + constants.OIDCOverBasicAuthUsername + "` as the username and a OpenID Connect token (i.e. from the frontend) as the password"
+	WebDAVRealmDescription = `bofied protected area. You can find your credentials (username and password/token) with the "Mount Folder" option in the frontend.`
 	HTTPPrefix             = "/public"
 	WebDAVPrefix           = "/private"
 )

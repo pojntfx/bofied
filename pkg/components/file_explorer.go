@@ -19,8 +19,9 @@ type FileExplorer struct {
 	RefreshIndex func()
 	WriteToPath  func(string, []byte)
 
-	ShareLink string
-	SharePath func(string)
+	HTTPShareLink string
+	TFTPShareLink string
+	SharePath     func(string)
 
 	CreatePath func(string)
 	DeletePath func(string)
@@ -45,6 +46,7 @@ type FileExplorer struct {
 	overflowMenuOpen bool
 
 	mountFolderModalOpen bool
+	sharePathModalOpen   bool
 }
 
 func (c *FileExplorer) Render() app.UI {
@@ -189,6 +191,11 @@ func (c *FileExplorer) Render() app.UI {
 																													Aria("label", "Share file").
 																													Title("Share file").
 																													Class("pf-c-button pf-m-plain").
+																													OnClick(func(ctx app.Context, e app.Event) {
+																														c.SharePath(c.selectedPath)
+
+																														c.sharePathModalOpen = true
+																													}).
 																													Body(
 																														app.I().
 																															Class("fas fa-share-alt").
@@ -508,25 +515,6 @@ func (c *FileExplorer) Render() app.UI {
 					}),
 				app.If(
 					c.selectedPath != "",
-					// Share
-					app.Div().
-						Body(
-							app.Button().
-								OnClick(func(ctx app.Context, e app.Event) {
-									c.SharePath(c.selectedPath)
-								}).
-								Text("Share"),
-							app.If(
-								c.ShareLink != "",
-								app.Div().
-									Body(
-										app.A().
-											Target("_blank").
-											Href(c.ShareLink).
-											Text(c.ShareLink),
-									),
-							),
-						),
 					// Move
 					app.Div().Body(
 						&Controlled{
@@ -726,6 +714,123 @@ func (c *FileExplorer) Render() app.UI {
 										),
 								),
 						),
+				},
+				Footer: []app.UI{
+					app.Button().
+						Class("pf-c-button pf-m-primary").
+						OnClick(func(ctx app.Context, e app.Event) {
+							c.mountFolderModalOpen = false
+						}).
+						Text("OK"),
+				},
+			},
+
+			&Modal{
+				Open: c.sharePathModalOpen,
+				Close: func() {
+					c.sharePathModalOpen = false
+
+					// This manual update is required as the event is fired from `app.Window`
+					c.Update()
+				},
+
+				ID: "share-path-modal-title",
+
+				Title: "Share Path",
+				Body: []app.UI{
+					app.Div().
+						Class("pf-c-content").
+						Body(
+							app.P().
+								Text(`You should be able to access this path using the following addresses. Please note that, especially for the TFTP address, access is probably only possible from the LAN on which bofied is running:`),
+							app.Form().
+								Class("pf-c-form").
+								OnSubmit(func(ctx app.Context, e app.Event) {
+									e.PreventDefault()
+								}).
+								Body(
+									app.Div().
+										Class("pf-c-form__group").
+										Body(
+											app.Div().
+												Class("pf-c-form__group-label").
+												Body(
+													app.Label().
+														Class("pf-c-form__label").
+														For("http-address").
+														Body(
+															app.Span().
+																Class("pf-c-form__label-text").
+																Text("HTTP Address"),
+														),
+												),
+											app.Div().
+												Class("pf-c-form__group-control").
+												Body(
+													&CopyableInput{
+														Component: &Controlled{
+															Component: app.Input().
+																Class("pf-c-form-control").
+																ReadOnly(true).
+																Type("text").
+																Value(c.HTTPShareLink).
+																Aria("label", "HTTP address").
+																Name("http-address").
+																ID("http-address"),
+															Properties: map[string]interface{}{
+																"value": c.HTTPShareLink,
+															},
+														},
+														ID: "http-address",
+													},
+												),
+										),
+									app.Div().
+										Class("pf-c-form__group").
+										Body(
+											app.Div().
+												Class("pf-c-form__group-label").
+												Body(
+													app.Label().
+														Class("pf-c-form__label").
+														For("tftp-address").
+														Body(
+															app.Span().
+																Class("pf-c-form__label-text").
+																Text("TFTP Address"),
+														),
+												),
+											app.Div().
+												Class("pf-c-form__group-control").
+												Body(
+													&CopyableInput{
+														Component: &Controlled{
+															Component: app.Input().
+																Class("pf-c-form-control").
+																ReadOnly(true).
+																Type("text").
+																Value(c.TFTPShareLink).
+																Aria("label", "TFTP address").
+																Name("tftp-address").
+																ID("tftp-address"),
+															Properties: map[string]interface{}{
+																"value": c.TFTPShareLink,
+															},
+														},
+														ID: "tftp-address",
+													},
+												),
+										),
+								),
+						),
+				},
+				Footer: []app.UI{
+					app.Button().
+						Class("pf-c-button pf-m-primary").
+						OnClick(func(ctx app.Context, e app.Event) {
+							c.sharePathModalOpen = false
+						}).
+						Text("OK"),
 				},
 			},
 		)

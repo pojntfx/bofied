@@ -34,8 +34,9 @@ type DataProviderChildrenProps struct {
 	RefreshIndex func()
 	WriteToPath  func(string, []byte)
 
-	ShareLink string
-	SharePath func(string)
+	HTTPShareLink string
+	TFTPShareLink string
+	SharePath     func(string)
 
 	CreatePath func(string)
 	DeletePath func(string)
@@ -64,7 +65,8 @@ type DataProvider struct {
 
 	currentPath     string
 	index           []os.FileInfo
-	shareLink       string
+	httpShareLink   string
+	tftpShareLink   string
 	fileExplorerErr error
 }
 
@@ -91,8 +93,9 @@ func (c *DataProvider) Render() app.UI {
 		RefreshIndex: c.refreshIndex,
 		WriteToPath:  c.writeToPath,
 
-		ShareLink: c.shareLink,
-		SharePath: c.sharePath,
+		HTTPShareLink: c.httpShareLink,
+		TFTPShareLink: c.tftpShareLink,
+		SharePath:     c.sharePath,
 
 		CreatePath: c.createPath,
 		DeletePath: c.deletePath,
@@ -223,7 +226,14 @@ func (c *DataProvider) sharePath(path string) {
 	}
 	u.Path = filepath.Join(filepath.Join(append([]string{servers.HTTPPrefix}, pathParts...)...), path)
 
-	c.shareLink = u.String()
+	// Set HTTP share link
+	c.httpShareLink = u.String()
+
+	u.Scheme = "tftp"
+	u.Host = u.Hostname() + ":" + constants.TFTPPort
+
+	// Set TFTP share link
+	c.tftpShareLink = u.String()
 }
 
 func (c *DataProvider) createPath(path string) {
