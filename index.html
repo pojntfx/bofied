@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta httpequiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="author" content="Felicitas Pojtinger">
-<meta content="Network boot nodes in a network." name="description">
+<meta name="description" content="Network boot nodes in a network.">
 <meta name="keywords" content="pxe-boot, ipxe, netboot, network-boot, http-server, dhcp-server, pxe, webdav-server, tftp-server, proxy-dhcp">
 <meta name="theme-color" content="#151515">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
-<meta property="og:url" content="http://127.0.0.1:34177/">
+<meta property="og:url" content="http://127.0.0.1:41429/">
 <meta property="og:title" content="bofied">
 <meta property="og:description" content="Network boot nodes in a network.">
 <meta property="og:type" content="website">
@@ -23,7 +23,7 @@ bofied
 <script defer src="/bofied/wasm_exec.js"></script>
 <script defer src="/bofied/app.js"></script>
 <link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly.css">
-<link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly-addons.css">
+<link href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly-addons.css" type="text/css" rel="stylesheet">
 <link type="text/css" rel="stylesheet" href="/bofied/web/index.css">
 <meta property="og:url" content="https://pojntfx.github.io/bofied/">
 <meta property="og:title" content="bofied">
@@ -96,7 +96,7 @@ Backend URL
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input class="pf-c-form-control" aria-invalid="false" name="backendURLName" id="backendURLName" type="url" required placeholder="ws://localhost:15124">
+<input name="backendURLName" id="backendURLName" type="url" required placeholder="ws://localhost:15124" class="pf-c-form-control" aria-invalid="false">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -111,7 +111,7 @@ OIDC Issuer
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input name="oidcIssuer" id="oidcIssuer" type="url" required placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false">
+<input class="pf-c-form-control" aria-invalid="false" name="oidcIssuer" id="oidcIssuer" type="url" required placeholder="https://pojntfx.eu.auth0.com/">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -126,7 +126,7 @@ OIDC Client ID
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input class="pf-c-form-control" aria-invalid="false" name="oidcClientID" id="oidcClientID" type="text" required>
+<input name="oidcClientID" id="oidcClientID" type="text" required class="pf-c-form-control" aria-invalid="false">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -141,7 +141,7 @@ OIDC Redirect URL
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input name="oidcRedirectURL" id="oidcRedirectURL" type="url" required placeholder="http://localhost:15125/" class="pf-c-form-control" aria-invalid="false">
+<input id="oidcRedirectURL" type="url" required placeholder="http://localhost:15125/" class="pf-c-form-control" aria-invalid="false" name="oidcRedirectURL">
 </div>
 </div>
 <div class="pf-c-form__group pf-m-action">
@@ -168,7 +168,7 @@ bofied is a network boot server. It provides everything you need to PXE boot a n
 </p>
 <ul class="pf-c-list pf-m-inline">
 <li>
-<a href="https://github.com/pojntfx/bofied#Usage" target="_blank">
+<a target="_blank" href="https://github.com/pojntfx/bofied#Usage">
 Documentation
 </a>
 </li>
@@ -178,7 +178,7 @@ License
 </a>
 </li>
 <li>
-<a target="_blank" href="https://github.com/pojntfx/bofied">
+<a href="https://github.com/pojntfx/bofied" target="_blank">
 Source Code
 </a>
 </li>
@@ -191,7 +191,7 @@ Source Code
 </div>
 <div class="goapp-app-info" id="app-wasm-loader">
 <img id="app-wasm-loader-icon" class="goapp-logo goapp-spin" src="/bofied/web/icon.png">
-<p class="goapp-label" id="app-wasm-loader-label">
+<p id="app-wasm-loader-label" class="goapp-label">
 Network boot nodes in a network.
 </p>
 </div>
