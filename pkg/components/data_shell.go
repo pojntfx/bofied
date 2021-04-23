@@ -36,7 +36,9 @@ type DataShell struct {
 	MovePath   func(string, string)
 	CopyPath   func(string, string)
 
-	AuthorizedWebDAVURL string
+	WebDAVAddress  string
+	WebDAVUsername string
+	WebDAVPassword string
 
 	FileExplorerError        error
 	RecoverFileExplorerError func()
@@ -77,7 +79,9 @@ func (c *DataShell) Render() app.UI {
 					MovePath:   c.MovePath,
 					CopyPath:   c.CopyPath,
 
-					AuthorizedWebDAVURL: c.AuthorizedWebDAVURL,
+					WebDAVAddress:  c.WebDAVAddress,
+					WebDAVUsername: c.WebDAVUsername,
+					WebDAVPassword: c.WebDAVPassword,
 
 					Error:   c.FileExplorerError,
 					Recover: c.RecoverFileExplorerError,
