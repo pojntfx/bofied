@@ -186,9 +186,9 @@ func (c *DataProvider) setCurrentPath(path string) {
 }
 
 func (c *DataProvider) refreshIndex() {
-	// On initial render, render the working directory
+	// On initial render, render root
 	if c.currentPath == "" {
-		c.currentPath = "."
+		c.currentPath = "/"
 	}
 
 	c.setCurrentPath(c.currentPath)
