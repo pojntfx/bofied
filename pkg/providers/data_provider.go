@@ -42,7 +42,9 @@ type DataProviderChildrenProps struct {
 	MovePath   func(string, string)
 	CopyPath   func(string, string)
 
-	AuthorizedWebDAVURL string
+	WebDAVAddress  string
+	WebDAVUsername string
+	WebDAVPassword string
 
 	FileExplorerError        error
 	RecoverFileExplorerError func()
@@ -67,6 +69,8 @@ type DataProvider struct {
 }
 
 func (c *DataProvider) Render() app.UI {
+	address, username, password := c.getWebDAVCredentials()
+
 	return c.Children(DataProviderChildrenProps{
 		// Config file editor
 		ConfigFile:    c.configFile,
@@ -95,7 +99,9 @@ func (c *DataProvider) Render() app.UI {
 		MovePath:   c.movePath,
 		CopyPath:   c.copyPath,
 
-		AuthorizedWebDAVURL: c.getAuthorizedWebDAVURL(),
+		WebDAVAddress:  address,
+		WebDAVUsername: username,
+		WebDAVPassword: password,
 
 		FileExplorerError:        c.fileExplorerErr,
 		RecoverFileExplorerError: c.recoverFileExplorerError,
@@ -260,13 +266,13 @@ func (c *DataProvider) copyPath(src string, dst string) {
 	c.refreshIndex()
 }
 
-func (c *DataProvider) getAuthorizedWebDAVURL() string {
+func (c *DataProvider) getWebDAVCredentials() (address string, username string, password string) {
 	// Parse URL
 	u, err := url.Parse(c.BackendURL)
 	if err != nil {
 		c.panicFileExplorerError(err)
 
-		return ""
+		return "", "", ""
 	}
 
 	// Make it a WebDAV URL
@@ -276,13 +282,10 @@ func (c *DataProvider) getAuthorizedWebDAVURL() string {
 		u.Scheme = "dav"
 	}
 
-	// Add basic auth
-	u.User = url.UserPassword(constants.OIDCOverBasicAuthUsername, c.IDToken)
-
 	// Add current folder
 	u.Path = path.Join(u.Path, c.currentPath)
 
-	return u.String()
+	return u.String(), constants.OIDCOverBasicAuthUsername, c.IDToken
 }
 
 func (c *DataProvider) recoverFileExplorerError() {

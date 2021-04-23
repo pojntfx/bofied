@@ -27,7 +27,9 @@ type FileExplorer struct {
 	MovePath   func(string, string)
 	CopyPath   func(string, string)
 
-	AuthorizedWebDAVURL string
+	WebDAVAddress  string
+	WebDAVUsername string
+	WebDAVPassword string
 
 	Error   error
 	Recover func()
@@ -638,15 +640,87 @@ func (c *FileExplorer) Render() app.UI {
 																Class("pf-c-form-control").
 																ReadOnly(true).
 																Type("text").
-																Value(c.AuthorizedWebDAVURL).
+																Value(c.WebDAVAddress).
 																Aria("label", "WebDAV server address").
 																Name("webdav-address").
 																ID("webdav-address"),
 															Properties: map[string]interface{}{
-																"value": c.AuthorizedWebDAVURL,
+																"value": c.WebDAVAddress,
 															},
 														},
 														ID: "webdav-address",
+													},
+												),
+										),
+									app.Div().
+										Class("pf-c-form__group").
+										Body(
+											app.Div().
+												Class("pf-c-form__group-label").
+												Body(
+													app.Label().
+														Class("pf-c-form__label").
+														For("webdav-username").
+														Body(
+															app.Span().
+																Class("pf-c-form__label-text").
+																Text("Username"),
+														),
+												),
+											app.Div().
+												Class("pf-c-form__group-control").
+												Body(
+													&CopyableInput{
+														Component: &Controlled{
+															Component: app.Input().
+																Class("pf-c-form-control").
+																ReadOnly(true).
+																Type("text").
+																Value(c.WebDAVUsername).
+																Aria("label", "WebDAV username").
+																Name("webdav-username").
+																ID("webdav-username"),
+															Properties: map[string]interface{}{
+																"value": c.WebDAVUsername,
+															},
+														},
+														ID: "webdav-username",
+													},
+												),
+										),
+									app.Div().
+										Class("pf-c-form__group").
+										Body(
+											app.Div().
+												Class("pf-c-form__group-label").
+												Body(
+													app.Label().
+														Class("pf-c-form__label").
+														For("webdav-password").
+														Body(
+															app.Span().
+																Class("pf-c-form__label-text").
+																Text("Password (One-Time Token)"),
+														),
+												),
+											app.Div().
+												Class("pf-c-form__group-control").
+												Body(
+													&CopyableInput{
+														Component: &Controlled{
+															Component: app.Input().
+																Class("pf-c-form-control").
+																ReadOnly(true).
+																Type("text").
+																Value(c.WebDAVPassword).
+																Aria("label", "WebDAV password").
+																Name("webdav-password").
+																ID("webdav-password"),
+															Properties: map[string]interface{}{
+																"value": c.WebDAVPassword,
+															},
+														},
+														ID: "webdav-password",
 													},
 												),
 										),

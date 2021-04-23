@@ -106,7 +106,9 @@ func (c *Home) Render() app.UI {
 											MovePath:   dpcp.MovePath,
 											CopyPath:   dpcp.CopyPath,
 
-											AuthorizedWebDAVURL: dpcp.AuthorizedWebDAVURL,
+											WebDAVAddress:  dpcp.WebDAVAddress,
+											WebDAVUsername: dpcp.WebDAVUsername,
+											WebDAVPassword: dpcp.WebDAVPassword,
 
 											FileExplorerError:        dpcp.FileExplorerError,
 											RecoverFileExplorerError: dpcp.RecoverFileExplorerError,
