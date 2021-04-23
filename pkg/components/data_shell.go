@@ -28,8 +28,9 @@ type DataShell struct {
 	RefreshIndex func()
 	WriteToPath  func(string, []byte)
 
-	ShareLink string
-	SharePath func(string)
+	HTTPShareLink string
+	TFTPShareLink string
+	SharePath     func(string)
 
 	CreatePath func(string)
 	DeletePath func(string)
@@ -71,8 +72,9 @@ func (c *DataShell) Render() app.UI {
 					RefreshIndex: c.RefreshIndex,
 					WriteToPath:  c.WriteToPath,
 
-					ShareLink: c.ShareLink,
-					SharePath: c.SharePath,
+					HTTPShareLink: c.HTTPShareLink,
+					TFTPShareLink: c.TFTPShareLink,
+					SharePath:     c.SharePath,
 
 					CreatePath: c.CreatePath,
 					DeletePath: c.DeletePath,

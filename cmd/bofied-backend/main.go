@@ -105,7 +105,7 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 
 	cmd.PersistentFlags().String(dhcpListenAddressKey, ":67", "Listen address for DHCP server")
 	cmd.PersistentFlags().String(proxyDHCPListenAddressKey, ":4011", "Listen address for proxyDHCP server")
-	cmd.PersistentFlags().String(tftpListenAddressKey, ":69", "Listen address for TFTP server")
+	cmd.PersistentFlags().String(tftpListenAddressKey, ":"+constants.TFTPPort, "Listen address for TFTP server")
 	cmd.PersistentFlags().String(webDAVAndHTTPListenAddressKey, ":15256", "Listen address for WebDAV and HTTP server")
 
 	cmd.PersistentFlags().StringP(oidcIssuerKey, "i", "https://pojntfx.eu.auth0.com/", "OIDC issuer")
