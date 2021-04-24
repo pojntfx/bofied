@@ -49,6 +49,7 @@ type FileExplorer struct {
 	sharePathModalOpen       bool
 	createDirectoryModalOpen bool
 	deletionConfirmModalOpen bool
+	renamePathModalOpen      bool
 }
 
 func (c *FileExplorer) Render() app.UI {
@@ -272,6 +273,15 @@ func (c *FileExplorer) Render() app.UI {
 																																	Body(
 																																		app.Button().
 																																			Class("pf-c-dropdown__menu-item").
+																																			OnClick(func(ctx app.Context, e app.Event) {
+																																				// Preseed the input with the current file name
+																																				c.newFileName = path.Base(c.selectedPath)
+
+																																				// Close the overflow menu
+																																				c.overflowMenuOpen = false
+
+																																				c.renamePathModalOpen = true
+																																			}).
 																																			Text("Rename"),
 																																	),
 																															),
@@ -538,27 +548,6 @@ func (c *FileExplorer) Render() app.UI {
 								c.pathToCopyTo = ""
 							}).
 							Text("Copy"),
-					),
-					// Rename
-					app.Div().Body(
-						&Controlled{
-							Component: app.Input().
-								Type("text").
-								Value(c.newFileName).
-								OnInput(func(ctx app.Context, e app.Event) {
-									c.newFileName = ctx.JSSrc.Get("value").String()
-								}),
-							Properties: map[string]interface{}{
-								"value": c.newFileName,
-							},
-						},
-						app.Button().
-							OnClick(func(ctx app.Context, e app.Event) {
-								c.MovePath(c.selectedPath, filepath.Join(c.CurrentPath, c.newFileName))
-
-								c.newFileName = ""
-							}).
-							Text("Rename"),
 					),
 				),
 			),
@@ -919,6 +908,78 @@ func (c *FileExplorer) Render() app.UI {
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.deletionConfirmModalOpen = false
+						}).
+						Text("Cancel"),
+				},
+			},
+
+			&Modal{
+				Open: c.renamePathModalOpen,
+				Close: func() {
+					c.renamePathModalOpen = false
+
+					// This manual update is required as the event is fired from `app.Window`
+					c.Update()
+				},
+
+				ID: "rename-path-modal-title",
+
+				Title: `Rename "` + c.selectedPath + `"`,
+				Body: []app.UI{
+					app.Form().
+						Class("pf-c-form").
+						ID("rename-path").
+						OnSubmit(func(ctx app.Context, e app.Event) {
+							e.PreventDefault()
+
+							c.MovePath(c.selectedPath, filepath.Join(c.CurrentPath, c.newFileName))
+
+							c.newFileName = ""
+							c.renamePathModalOpen = false
+						}).
+						Body(
+							&FormGroup{
+								Label: app.Label().
+									For("path-rename-input").
+									Class("pf-c-form__label").
+									Body(
+										app.
+											Span().
+											Class("pf-c-form__label-text").
+											Text("New name"),
+									),
+								Input: &Controlled{
+									Component: &Autofocused{
+										Component: app.Input().
+											Name("path-rename-input").
+											ID("path-rename-input").
+											Type("text").
+											Required(true).
+											Class("pf-c-form-control").
+											OnInput(func(ctx app.Context, e app.Event) {
+												c.newFileName = ctx.JSSrc.Get("value").String()
+											}),
+									},
+									Properties: map[string]interface{}{
+										"value": c.newFileName,
+									},
+								},
+								Required: true,
+							},
+						),
+				},
+				Footer: []app.UI{
+					app.Button().
+						Class("pf-c-button pf-m-primary").
+						Type("submit").
+						Form("rename-path").
+						Text("Rename"),
+					app.Button().
+						Class("pf-c-button pf-m-link").
+						Type("button").
+						OnClick(func(ctx app.Context, e app.Event) {
+							c.newFileName = ""
+							c.renamePathModalOpen = false
 						}).
 						Text("Cancel"),
 				},
