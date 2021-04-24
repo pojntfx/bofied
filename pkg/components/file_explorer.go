@@ -43,7 +43,6 @@ type FileExplorer struct {
 
 	selectedPath     string
 	newDirectoryName string
-	pathToCopyTo     string
 	newFileName      string
 
 	overflowMenuOpen bool
@@ -54,6 +53,7 @@ type FileExplorer struct {
 	deletionConfirmModalOpen bool
 	renamePathModalOpen      bool
 	movePathModalOpen        bool
+	copyPathModalOpen        bool
 
 	operationSelectedPath string
 }
@@ -247,6 +247,31 @@ func (c *FileExplorer) Render() app.UI {
 																																	Body(
 																																		app.Button().
 																																			Class("pf-c-dropdown__menu-item").
+																																			OnClick(func(ctx app.Context, e app.Event) {
+																																				// Preseed the file picker and name input with the current path
+																																				c.OperationSetCurrentPath(path.Dir(c.selectedPath))
+
+																																				// Check if the selected item is a file
+																																				selectedItemIsFile := false
+																																				for _, part := range c.Index {
+																																					if part.Name() == path.Base(c.selectedPath) && !part.IsDir() {
+																																						selectedItemIsFile = true
+																																					}
+																																				}
+
+																																				// Don't select the item as a destination if it is a file
+																																				if selectedItemIsFile {
+																																					c.operationSelectedPath = ""
+																																				} else {
+																																					c.operationSelectedPath = c.selectedPath
+																																				}
+
+																																				// Close the overflow menu
+																																				c.overflowMenuOpen = false
+
+																																				// Open the modal
+																																				c.copyPathModalOpen = true
+																																			}).
 																																			Text("Copy to ..."),
 																																	),
 																																app.Li().
@@ -422,30 +447,6 @@ func (c *FileExplorer) Render() app.UI {
 
 						reader.Call("readAsArrayBuffer", ctx.JSSrc.Get("files").Get("0"))
 					}),
-				app.If(
-					c.selectedPath != "",
-					// Copy
-					app.Div().Body(
-						&Controlled{
-							Component: app.Input().
-								Type("text").
-								Value(c.pathToCopyTo).
-								OnInput(func(ctx app.Context, e app.Event) {
-									c.pathToCopyTo = ctx.JSSrc.Get("value").String()
-								}),
-							Properties: map[string]interface{}{
-								"value": c.pathToCopyTo,
-							},
-						},
-						app.Button().
-							OnClick(func(ctx app.Context, e app.Event) {
-								c.CopyPath(c.selectedPath, filepath.Join(c.CurrentPath, c.pathToCopyTo))
-
-								c.pathToCopyTo = ""
-							}).
-							Text("Copy"),
-					),
-				),
 			),
 			&Modal{
 				Open: c.mountFolderModalOpen,
@@ -722,9 +723,9 @@ func (c *FileExplorer) Render() app.UI {
 						OnSubmit(func(ctx app.Context, e app.Event) {
 							e.PreventDefault()
 
-							// Switch the base path if in move operation
+							// Switch the base path if in move or copy operations
 							basePath := c.CurrentPath
-							if c.movePathModalOpen {
+							if c.movePathModalOpen || c.copyPathModalOpen {
 								basePath = c.OperationCurrentPath
 							}
 
@@ -974,6 +975,98 @@ func (c *FileExplorer) Render() app.UI {
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.movePathModalOpen = false
+							c.OperationSetCurrentPath("/")
+							c.operationSelectedPath = ""
+						}).
+						Text("Cancel"),
+				},
+			},
+
+			&Modal{
+				Open: c.copyPathModalOpen,
+				Close: func() {
+					c.copyPathModalOpen = false
+
+					// This manual update is required as the event is fired from `app.Window`
+					c.Update()
+				},
+
+				ID:    "copy-path-modal-title",
+				Large: true,
+
+				Title: `Copy "` + path.Base(c.selectedPath) + `"`,
+				Body: []app.UI{
+					&PathPickerToolbar{
+						Index:        c.OperationIndex,
+						RefreshIndex: c.RefreshIndex,
+
+						PathComponents: operationPathComponents,
+
+						CurrentPath:    c.OperationCurrentPath,
+						SetCurrentPath: c.OperationSetCurrentPath,
+
+						SelectedPath: c.operationSelectedPath,
+						SetSelectedPath: func(s string) {
+							c.operationSelectedPath = s
+						},
+
+						OpenCreateDirectoryModal: func() {
+							c.createDirectoryModalOpen = true
+						},
+					},
+					app.If(
+						len(c.OperationIndex) > 0,
+						&FileGrid{
+							Index: c.OperationIndex,
+
+							SelectedPath: c.operationSelectedPath,
+							SetSelectedPath: func(s string) {
+								c.operationSelectedPath = s
+							},
+
+							CurrentPath:    c.OperationCurrentPath,
+							SetCurrentPath: c.OperationSetCurrentPath,
+
+							Standalone: true,
+						},
+					).Else(
+						&EmptyState{},
+					),
+				},
+				Footer: []app.UI{
+					func() app.UI {
+						// Prefer selected path, fall back to current path if not selected
+						newDirectory := c.operationSelectedPath
+						if newDirectory == "" {
+							newDirectory = c.OperationCurrentPath
+						}
+
+						return app.Button().
+							Class("pf-c-button pf-m-primary").
+							Type("Button").
+							OnClick(func(ctx app.Context, e app.Event) {
+								// Prefer selected path, fall back to current path if not selected
+								// We have to do this here again to prevent a race condition for c.operationSelectedPath
+								newDirectory := c.operationSelectedPath
+								if newDirectory == "" {
+									newDirectory = c.OperationCurrentPath
+								}
+
+								newPath := path.Join(newDirectory, path.Base(c.selectedPath))
+
+								c.CopyPath(c.selectedPath, newPath)
+
+								c.copyPathModalOpen = false
+								c.OperationSetCurrentPath("/")
+								c.operationSelectedPath = ""
+							}).
+							Text(`Copy to "` + path.Base(newDirectory) + `"`)
+					}(),
+					app.Button().
+						Class("pf-c-button pf-m-link").
+						Type("button").
+						OnClick(func(ctx app.Context, e app.Event) {
+							c.copyPathModalOpen = false
 							c.OperationSetCurrentPath("/")
 							c.operationSelectedPath = ""
 						}).
