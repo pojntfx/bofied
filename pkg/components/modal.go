@@ -17,7 +17,8 @@ type Modal struct {
 	Body   []app.UI
 	Footer []app.UI
 
-	Large bool
+	Large   bool
+	Overlay bool
 }
 
 func (c *Modal) Render() app.UI {
@@ -31,6 +32,10 @@ func (c *Modal) Render() app.UI {
 
 			if !c.Open {
 				classes += " pf-u-display-none"
+			}
+
+			if c.Overlay {
+				classes += " pf-x-m-modal-overlay"
 			}
 
 			return classes

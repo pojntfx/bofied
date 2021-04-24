@@ -204,6 +204,11 @@ func (c *DataProvider) setCurrentPath(path string, operationPath bool) {
 	filteredDirs := []os.FileInfo{}
 	for _, dir := range rawDirs {
 		if dir.Name() != constants.BootConfigFileName {
+			// Hide directories for operations
+			if operationPath && !dir.IsDir() {
+				continue
+			}
+
 			filteredDirs = append(filteredDirs, dir)
 		}
 	}
