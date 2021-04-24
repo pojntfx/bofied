@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta httpequiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="author" content="Felix Pojtinger">
+<meta content="Felix Pojtinger" name="author">
 <meta name="description" content="Network boot nodes in a network.">
 <meta name="keywords" content="pxe-boot, ipxe, netboot, network-boot, http-server, dhcp-server, pxe, webdav-server, tftp-server, proxy-dhcp">
 <meta name="theme-color" content="#151515">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
-<meta property="og:url" content="http://127.0.0.1:41603/">
+<meta property="og:url" content="http://127.0.0.1:45705/">
 <meta property="og:title" content="bofied">
-<meta property="og:description" content="Network boot nodes in a network.">
+<meta content="Network boot nodes in a network." property="og:description">
 <meta property="og:type" content="website">
 <meta property="og:image" content>
 <title>
@@ -23,8 +23,8 @@ bofied
 <script defer src="/bofied/wasm_exec.js"></script>
 <script defer src="/bofied/app.js"></script>
 <link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly.css">
-<link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly-addons.css">
-<link href="/bofied/web/index.css" type="text/css" rel="stylesheet">
+<link href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly-addons.css" type="text/css" rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="/bofied/web/index.css">
 <meta property="og:url" content="https://pojntfx.github.io/bofied/">
 <meta property="og:title" content="bofied">
 <meta property="og:description" content="Network boot nodes in a network.">
@@ -86,7 +86,7 @@ Network boot nodes in a network.
 <form class="pf-c-form">
 <div class="pf-c-form__group">
 <div class="pf-c-form__group-label">
-<label class="pf-c-form__label" for="backendURLName">
+<label for="backendURLName" class="pf-c-form__label">
 <span class="pf-c-form__label-text">
 Backend URL
 </span>
@@ -96,17 +96,17 @@ Backend URL
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input class="pf-c-form-control" aria-invalid="false" name="backendURLName" id="backendURLName" type="url" required placeholder="ws://localhost:15124">
+<input type="url" required placeholder="ws://localhost:15124" class="pf-c-form-control" aria-invalid="false" name="backendURLName" id="backendURLName">
 </div>
 </div>
 <div class="pf-c-form__group">
 <div class="pf-c-form__group-label">
-<label class="pf-c-form__label" for="oidcIssuer">
+<label for="oidcIssuer" class="pf-c-form__label">
 <span class="pf-c-form__label-text">
 OIDC Issuer
 </span>
 </label>
-<span class="pf-c-form__label-required" aria-hidden="true">
+<span aria-hidden="true" class="pf-c-form__label-required">
 *
 </span>
 </div>
@@ -116,7 +116,7 @@ OIDC Issuer
 </div>
 <div class="pf-c-form__group">
 <div class="pf-c-form__group-label">
-<label for="oidcClientID" class="pf-c-form__label">
+<label class="pf-c-form__label" for="oidcClientID">
 <span class="pf-c-form__label-text">
 OIDC Client ID
 </span>
@@ -126,7 +126,7 @@ OIDC Client ID
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input type="text" required class="pf-c-form-control" aria-invalid="false" name="oidcClientID" id="oidcClientID">
+<input id="oidcClientID" type="text" required class="pf-c-form-control" aria-invalid="false" name="oidcClientID">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -145,7 +145,7 @@ OIDC Redirect URL
 </div>
 </div>
 <div class="pf-c-form__group pf-m-action">
-<button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+<button class="pf-c-button pf-m-primary pf-m-block" type="submit">
 Log in
 </button>
 </div>
@@ -168,7 +168,7 @@ bofied is a network boot server. It provides everything you need to PXE boot a n
 </p>
 <ul class="pf-c-list pf-m-inline">
 <li>
-<a href="https://github.com/pojntfx/bofied#Usage" target="_blank">
+<a target="_blank" href="https://github.com/pojntfx/bofied#Usage">
 Documentation
 </a>
 </li>
@@ -189,8 +189,8 @@ Source Code
 </div>
 </div>
 </div>
-<div id="app-wasm-loader" class="goapp-app-info">
-<img id="app-wasm-loader-icon" class="goapp-logo goapp-spin" src="/bofied/web/icon.png">
+<div class="goapp-app-info" id="app-wasm-loader">
+<img class="goapp-logo goapp-spin" src="/bofied/web/icon.png" id="app-wasm-loader-icon">
 <p id="app-wasm-loader-label" class="goapp-label">
 Network boot nodes in a network.
 </p>
