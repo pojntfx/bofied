@@ -111,6 +111,11 @@ func (c *Home) Render() app.UI {
 											WebDAVUsername: dpcp.WebDAVUsername,
 											WebDAVPassword: dpcp.WebDAVPassword,
 
+											OperationIndex: dpcp.OperationIndex,
+
+											OperationCurrentPath:    dpcp.OperationCurrentPath,
+											OperationSetCurrentPath: dpcp.OperationSetCurrentPath,
+
 											FileExplorerError:        dpcp.FileExplorerError,
 											RecoverFileExplorerError: dpcp.RecoverFileExplorerError,
 											IgnoreFileExplorerError:  dpcp.IgnoreFileExplorerError,

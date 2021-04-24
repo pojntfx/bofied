@@ -32,14 +32,17 @@ type FileExplorer struct {
 	WebDAVUsername string
 	WebDAVPassword string
 
+	OperationIndex []os.FileInfo
+
+	OperationCurrentPath    string
+	OperationSetCurrentPath func(string)
+
 	Error   error
 	Recover func()
 	Ignore  func()
 
-	newCurrentPath   string
 	selectedPath     string
 	newDirectoryName string
-	pathToMoveTo     string
 	pathToCopyTo     string
 	newFileName      string
 
@@ -50,6 +53,9 @@ type FileExplorer struct {
 	createDirectoryModalOpen bool
 	deletionConfirmModalOpen bool
 	renamePathModalOpen      bool
+	movePathModalOpen        bool
+
+	operationSelectedPath string
 }
 
 func (c *FileExplorer) Render() app.UI {
@@ -258,6 +264,17 @@ func (c *FileExplorer) Render() app.UI {
 																																	Body(
 																																		app.Button().
 																																			Class("pf-c-dropdown__menu-item").
+																																			OnClick(func(ctx app.Context, e app.Event) {
+																																				// Preseed the file picker and name input with the current path
+																																				c.OperationSetCurrentPath(path.Dir(c.selectedPath))
+																																				c.operationSelectedPath = c.selectedPath
+
+																																				// Close the overflow menu
+																																				c.overflowMenuOpen = false
+
+																																				// Open the modal
+																																				c.movePathModalOpen = true
+																																			}).
 																																			Text("Move to ..."),
 																																	),
 																																app.Li().
@@ -381,68 +398,17 @@ func (c *FileExplorer) Render() app.UI {
 						Body(
 							app.If(
 								len(c.Index) > 0,
-								app.Div().
-									Class("pf-l-grid pf-m-gutter pf-m-all-4-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-2-col-on-xl").
-									Body(
-										app.Range(c.Index).Slice(func(i int) app.UI {
-											return app.Div().
-												Class("pf-l-grid__item pf-u-text-align-center").
-												Body(
-													app.Div().
-														Class(
-															func() string {
-																classes := "pf-c-card pf-m-plain pf-m-hoverable pf-m-selectable"
-																if c.selectedPath == filepath.Join(c.CurrentPath, c.Index[i].Name()) {
-																	classes += " pf-m-selected"
-																}
+								&FileGrid{
+									Index: c.Index,
 
-																return classes
-															}()).
-														OnClick(func(ctx app.Context, e app.Event) {
-															newSelectedPath := filepath.Join(c.CurrentPath, c.Index[i].Name())
-															if c.selectedPath == newSelectedPath {
-																newSelectedPath = ""
-															}
+									SelectedPath: c.selectedPath,
+									SetSelectedPath: func(s string) {
+										c.selectedPath = s
+									},
 
-															c.selectedPath = newSelectedPath
-														}).
-														OnDblClick(func(ctx app.Context, e app.Event) {
-															if c.Index[i].IsDir() {
-																e.PreventDefault()
-
-																c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
-
-																c.selectedPath = ""
-															}
-														}).
-														Aria("role", "button").
-														TabIndex(0).
-														Body(
-															app.Div().
-																Class("pf-c-card__body").
-																Body(
-																	app.I().
-																		Class(func() string {
-																			classes := "fas pf-u-font-size-3xl"
-																			if c.Index[i].IsDir() {
-																				classes += " fa-folder"
-																			} else {
-																				classes += " fa-file-alt"
-																			}
-
-																			return classes
-																		}()).
-																		Aria("hidden", true),
-																),
-															app.Div().
-																Class("pf-c-card__footer").
-																Body(
-																	app.Text(c.Index[i].Name()),
-																),
-														),
-												)
-										}),
-									),
+									CurrentPath:    c.CurrentPath,
+									SetCurrentPath: c.SetCurrentPath,
+								},
 							).Else(
 								app.Div().
 									Class("pf-c-empty-state").
@@ -507,27 +473,6 @@ func (c *FileExplorer) Render() app.UI {
 					}),
 				app.If(
 					c.selectedPath != "",
-					// Move
-					app.Div().Body(
-						&Controlled{
-							Component: app.Input().
-								Type("text").
-								Value(c.pathToMoveTo).
-								OnInput(func(ctx app.Context, e app.Event) {
-									c.pathToMoveTo = ctx.JSSrc.Get("value").String()
-								}),
-							Properties: map[string]interface{}{
-								"value": c.pathToMoveTo,
-							},
-						},
-						app.Button().
-							OnClick(func(ctx app.Context, e app.Event) {
-								c.MovePath(c.selectedPath, filepath.Join(c.CurrentPath, c.pathToMoveTo))
-
-								c.pathToMoveTo = ""
-							}).
-							Text("Move"),
-					),
 					// Copy
 					app.Div().Body(
 						&Controlled{
@@ -707,7 +652,7 @@ func (c *FileExplorer) Render() app.UI {
 
 				ID: "share-path-modal-title",
 
-				Title: "Share Path",
+				Title: `Share "` + path.Base(c.selectedPath) + `"`,
 				Body: []app.UI{
 					app.Div().
 						Class("pf-c-content").
@@ -888,7 +833,7 @@ func (c *FileExplorer) Render() app.UI {
 
 				ID: "deletion-confirm-modal-title",
 
-				Title: `Permanently delete "` + c.selectedPath + `"?`,
+				Title: `Permanently delete "` + path.Base(c.selectedPath) + `"?`,
 				Body: []app.UI{
 					app.P().Text(`If you delete an item, it will be permanently lost.`),
 				},
@@ -924,7 +869,7 @@ func (c *FileExplorer) Render() app.UI {
 
 				ID: "rename-path-modal-title",
 
-				Title: `Rename "` + c.selectedPath + `"`,
+				Title: `Rename "` + path.Base(c.selectedPath) + `"`,
 				Body: []app.UI{
 					app.Form().
 						Class("pf-c-form").
@@ -980,6 +925,75 @@ func (c *FileExplorer) Render() app.UI {
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.newFileName = ""
 							c.renamePathModalOpen = false
+						}).
+						Text("Cancel"),
+				},
+			},
+
+			&Modal{
+				Open: c.movePathModalOpen,
+				Close: func() {
+					c.movePathModalOpen = false
+
+					// This manual update is required as the event is fired from `app.Window`
+					c.Update()
+				},
+
+				ID:    "move-path-modal-title",
+				Large: true,
+
+				Title: `Move "` + path.Base(c.selectedPath) + `"`,
+				Body: []app.UI{
+					&FileGrid{
+						Index: c.OperationIndex,
+
+						SelectedPath: c.operationSelectedPath,
+						SetSelectedPath: func(s string) {
+							c.operationSelectedPath = s
+						},
+
+						CurrentPath:    c.OperationCurrentPath,
+						SetCurrentPath: c.OperationSetCurrentPath,
+
+						Standalone: true,
+					},
+				},
+				Footer: []app.UI{
+					func() app.UI {
+						// Prefer selected path, fall back to current path if not selected
+						newDirectory := c.operationSelectedPath
+						if newDirectory == "" {
+							newDirectory = c.OperationCurrentPath
+						}
+
+						return app.Button().
+							Class("pf-c-button pf-m-primary").
+							Type("Button").
+							OnClick(func(ctx app.Context, e app.Event) {
+								// Prefer selected path, fall back to current path if not selected
+								// We have to do this here again to prevent a race condition for c.operationSelectedPath
+								newDirectory := c.operationSelectedPath
+								if newDirectory == "" {
+									newDirectory = c.OperationCurrentPath
+								}
+
+								newPath := path.Join(newDirectory, path.Base(c.selectedPath))
+
+								c.MovePath(c.selectedPath, newPath)
+
+								c.movePathModalOpen = false
+								c.OperationSetCurrentPath("/")
+								c.operationSelectedPath = ""
+							}).
+							Text(`Move to "` + path.Base(newDirectory) + `"`)
+					}(),
+					app.Button().
+						Class("pf-c-button pf-m-link").
+						Type("button").
+						OnClick(func(ctx app.Context, e app.Event) {
+							c.movePathModalOpen = false
+							c.OperationSetCurrentPath("/")
+							c.operationSelectedPath = ""
 						}).
 						Text("Cancel"),
 				},

@@ -47,6 +47,11 @@ type DataProviderChildrenProps struct {
 	WebDAVUsername string
 	WebDAVPassword string
 
+	OperationIndex []os.FileInfo
+
+	OperationCurrentPath    string
+	OperationSetCurrentPath func(string)
+
 	FileExplorerError        error
 	RecoverFileExplorerError func()
 	IgnoreFileExplorerError  func()
@@ -68,6 +73,9 @@ type DataProvider struct {
 	httpShareLink   string
 	tftpShareLink   string
 	fileExplorerErr error
+
+	operationCurrentPath string
+	operationIndex       []os.FileInfo
 }
 
 func (c *DataProvider) Render() app.UI {
@@ -86,8 +94,10 @@ func (c *DataProvider) Render() app.UI {
 		IgnoreConfigFileError: c.ignoreConfigFileError,
 
 		// File explorer
-		CurrentPath:    c.currentPath,
-		SetCurrentPath: c.setCurrentPath,
+		CurrentPath: c.currentPath,
+		SetCurrentPath: func(s string) {
+			c.setCurrentPath(s, false)
+		},
 
 		Index:        c.index,
 		RefreshIndex: c.refreshIndex,
@@ -105,6 +115,13 @@ func (c *DataProvider) Render() app.UI {
 		WebDAVAddress:  address,
 		WebDAVUsername: username,
 		WebDAVPassword: password,
+
+		OperationIndex: c.operationIndex,
+
+		OperationCurrentPath: c.operationCurrentPath,
+		OperationSetCurrentPath: func(s string) {
+			c.setCurrentPath(s, true)
+		},
 
 		FileExplorerError:        c.fileExplorerErr,
 		RecoverFileExplorerError: c.recoverFileExplorerError,
@@ -176,7 +193,7 @@ func (c *DataProvider) panicConfigFileError(err error) {
 }
 
 // File explorer
-func (c *DataProvider) setCurrentPath(path string) {
+func (c *DataProvider) setCurrentPath(path string, operationPath bool) {
 	rawDirs, err := c.WebDAVClient.ReadDir(path)
 	if err != nil {
 		c.panicFileExplorerError(err)
@@ -191,8 +208,13 @@ func (c *DataProvider) setCurrentPath(path string) {
 		}
 	}
 
-	c.currentPath = path
-	c.index = filteredDirs
+	if operationPath {
+		c.operationCurrentPath = path
+		c.operationIndex = filteredDirs
+	} else {
+		c.currentPath = path
+		c.index = filteredDirs
+	}
 }
 
 func (c *DataProvider) refreshIndex() {
@@ -200,8 +222,12 @@ func (c *DataProvider) refreshIndex() {
 	if c.currentPath == "" {
 		c.currentPath = "/"
 	}
+	if c.operationCurrentPath == "" {
+		c.operationCurrentPath = "/"
+	}
 
-	c.setCurrentPath(c.currentPath)
+	c.setCurrentPath(c.currentPath, false)
+	c.setCurrentPath(c.operationCurrentPath, true)
 }
 
 func (c *DataProvider) writeToPath(path string, content []byte) {
@@ -256,8 +282,8 @@ func (c *DataProvider) deletePath(path string) {
 	c.refreshIndex()
 }
 
-func (c *DataProvider) movePath(old string, new string) {
-	if err := c.WebDAVClient.Rename(old, new, false); err != nil {
+func (c *DataProvider) movePath(src string, dst string) {
+	if err := c.WebDAVClient.Rename(src, dst, true); err != nil {
 		c.panicFileExplorerError(err)
 
 		return
@@ -267,7 +293,7 @@ func (c *DataProvider) movePath(old string, new string) {
 }
 
 func (c *DataProvider) copyPath(src string, dst string) {
-	if err := c.WebDAVClient.Copy(src, dst, false); err != nil {
+	if err := c.WebDAVClient.Copy(src, dst, true); err != nil {
 		c.panicFileExplorerError(err)
 
 		return

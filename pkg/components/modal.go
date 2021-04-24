@@ -16,6 +16,8 @@ type Modal struct {
 	Title  string
 	Body   []app.UI
 	Footer []app.UI
+
+	Large bool
 }
 
 func (c *Modal) Render() app.UI {
@@ -38,7 +40,16 @@ func (c *Modal) Render() app.UI {
 				Class("pf-l-bullseye").
 				Body(
 					app.Div().
-						Class("pf-c-modal-box pf-m-sm").
+						Class(func() string {
+							classes := "pf-c-modal-box"
+							if c.Large {
+								classes += " pf-m-lg"
+							} else {
+								classes += " pf-m-sm"
+							}
+
+							return classes
+						}()).
 						Aria("modal", true).
 						Aria("labelledby", c.ID).
 						Body(
