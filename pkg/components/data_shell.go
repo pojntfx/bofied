@@ -41,6 +41,11 @@ type DataShell struct {
 	WebDAVUsername string
 	WebDAVPassword string
 
+	OperationIndex []os.FileInfo
+
+	OperationCurrentPath    string
+	OperationSetCurrentPath func(string)
+
 	FileExplorerError        error
 	RecoverFileExplorerError func()
 	IgnoreFileExplorerError  func()
@@ -84,6 +89,11 @@ func (c *DataShell) Render() app.UI {
 					WebDAVAddress:  c.WebDAVAddress,
 					WebDAVUsername: c.WebDAVUsername,
 					WebDAVPassword: c.WebDAVPassword,
+
+					OperationIndex: c.OperationIndex,
+
+					OperationCurrentPath:    c.OperationCurrentPath,
+					OperationSetCurrentPath: c.OperationSetCurrentPath,
 
 					Error:   c.FileExplorerError,
 					Recover: c.RecoverFileExplorerError,
