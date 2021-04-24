@@ -48,6 +48,7 @@ type FileExplorer struct {
 	mountFolderModalOpen     bool
 	sharePathModalOpen       bool
 	createDirectoryModalOpen bool
+	deletionConfirmModalOpen bool
 }
 
 func (c *FileExplorer) Render() app.UI {
@@ -212,9 +213,7 @@ func (c *FileExplorer) Render() app.UI {
 																													Title("Delete file").
 																													Class("pf-c-button pf-m-plain").
 																													OnClick(func(ctx app.Context, e app.Event) {
-																														c.DeletePath(c.selectedPath)
-
-																														c.selectedPath = ""
+																														c.deletionConfirmModalOpen = true
 																													}).
 																													Body(
 																														app.I().
@@ -884,6 +883,42 @@ func (c *FileExplorer) Render() app.UI {
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.newDirectoryName = ""
 							c.createDirectoryModalOpen = false
+						}).
+						Text("Cancel"),
+				},
+			},
+
+			&Modal{
+				Open: c.deletionConfirmModalOpen,
+				Close: func() {
+					c.deletionConfirmModalOpen = false
+
+					// This manual update is required as the event is fired from `app.Window`
+					c.Update()
+				},
+
+				ID: "deletion-confirm-modal-title",
+
+				Title: `Permanently delete "` + c.selectedPath + `"?`,
+				Body: []app.UI{
+					app.P().Text(`If you delete an item, it will be permanently lost.`),
+				},
+				Footer: []app.UI{
+					app.Button().
+						Class("pf-c-button pf-m-danger").
+						Type("button").
+						OnClick(func(ctx app.Context, e app.Event) {
+							c.DeletePath(c.selectedPath)
+
+							c.selectedPath = ""
+							c.deletionConfirmModalOpen = false
+						}).
+						Text("Delete"),
+					app.Button().
+						Class("pf-c-button pf-m-link").
+						Type("button").
+						OnClick(func(ctx app.Context, e app.Event) {
+							c.deletionConfirmModalOpen = false
 						}).
 						Text("Cancel"),
 				},
