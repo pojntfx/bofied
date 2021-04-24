@@ -45,8 +45,9 @@ type FileExplorer struct {
 
 	overflowMenuOpen bool
 
-	mountFolderModalOpen bool
-	sharePathModalOpen   bool
+	mountFolderModalOpen     bool
+	sharePathModalOpen       bool
+	createDirectoryModalOpen bool
 }
 
 func (c *FileExplorer) Render() app.UI {
@@ -289,6 +290,9 @@ func (c *FileExplorer) Render() app.UI {
 																												Aria("label", "Create directory").
 																												Title("Create directory").
 																												Class("pf-c-button pf-m-plain").
+																												OnClick(func(ctx app.Context, e app.Event) {
+																													c.createDirectoryModalOpen = true
+																												}).
 																												Body(
 																													app.I().
 																														Class("fas fa-folder-plus").
@@ -351,7 +355,7 @@ func (c *FileExplorer) Render() app.UI {
 																														Class("fas fa-hdd").
 																														Aria("hidden", true),
 																												),
-																											app.Text("Mount Folder"),
+																											app.Text("Mount Directory"),
 																										),
 																								),
 																						),
@@ -465,27 +469,6 @@ func (c *FileExplorer) Render() app.UI {
 						),
 				),
 			app.Div().Body(
-				// Create directory
-				app.Div().Body(
-					&Controlled{
-						Component: app.Input().
-							Type("text").
-							Value(c.newDirectoryName).
-							OnInput(func(ctx app.Context, e app.Event) {
-								c.newDirectoryName = ctx.JSSrc.Get("value").String()
-							}),
-						Properties: map[string]interface{}{
-							"value": c.newDirectoryName,
-						},
-					},
-					app.Button().
-						OnClick(func(ctx app.Context, e app.Event) {
-							c.CreatePath(filepath.Join(c.CurrentPath, c.newDirectoryName))
-
-							c.newDirectoryName = ""
-						}).
-						Text("Create Directory"),
-				),
 				// Upload file
 				app.Input().
 					Type("file").
@@ -831,6 +814,78 @@ func (c *FileExplorer) Render() app.UI {
 							c.sharePathModalOpen = false
 						}).
 						Text("OK"),
+				},
+			},
+
+			&Modal{
+				Open: c.createDirectoryModalOpen,
+				Close: func() {
+					c.createDirectoryModalOpen = false
+
+					// This manual update is required as the event is fired from `app.Window`
+					c.Update()
+				},
+
+				ID: "create-directory-modal-title",
+
+				Title: "Create Directory",
+				Body: []app.UI{
+					app.Form().
+						Class("pf-c-form").
+						ID("create-directory").
+						OnSubmit(func(ctx app.Context, e app.Event) {
+							e.PreventDefault()
+
+							c.CreatePath(filepath.Join(c.CurrentPath, c.newDirectoryName))
+
+							c.newDirectoryName = ""
+							c.createDirectoryModalOpen = false
+						}).
+						Body(
+							&FormGroup{
+								Label: app.Label().
+									For("directory-name-input").
+									Class("pf-c-form__label").
+									Body(
+										app.
+											Span().
+											Class("pf-c-form__label-text").
+											Text("Directory name"),
+									),
+								Input: &Controlled{
+									Component: &Autofocused{
+										Component: app.Input().
+											Name("directory-name-input").
+											ID("directory-name-input").
+											Type("text").
+											Required(true).
+											Class("pf-c-form-control").
+											OnInput(func(ctx app.Context, e app.Event) {
+												c.newDirectoryName = ctx.JSSrc.Get("value").String()
+											}),
+									},
+									Properties: map[string]interface{}{
+										"value": c.newDirectoryName,
+									},
+								},
+								Required: true,
+							},
+						),
+				},
+				Footer: []app.UI{
+					app.Button().
+						Class("pf-c-button pf-m-primary").
+						Type("submit").
+						Form("create-directory").
+						Text("Create"),
+					app.Button().
+						Class("pf-c-button pf-m-link").
+						Type("button").
+						OnClick(func(ctx app.Context, e app.Event) {
+							c.newDirectoryName = ""
+							c.createDirectoryModalOpen = false
+						}).
+						Text("Cancel"),
 				},
 			},
 		)
