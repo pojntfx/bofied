@@ -376,36 +376,21 @@ func (c *FileExplorer) Render() app.UI {
 									SetCurrentPath: c.SetCurrentPath,
 								},
 							).Else(
-								app.Div().
-									Class("pf-c-empty-state").
-									Body(
-										app.Div().
-											Class("pf-c-empty-state__content").
-											Body(
-												app.I().
-													Class("fas fa-folder-open pf-c-empty-state__icon").
-													Aria("hidden", true),
-												app.H1().
-													Class("pf-c-title pf-m-lg").
-													Text("No files or directories here yet"),
-												app.Div().
-													Class("pf-c-empty-state__body").
-													Text("You can upload a file or create a directory to make it available for nodes."),
-												app.Button().
-													Class("pf-c-button pf-m-primary").
-													Type("button").
-													Body(
-														app.Span().
-															Class("pf-c-button__icon pf-m-start").
-															Body(
-																app.I().
-																	Class("fas fa-cloud-upload-alt").
-																	Aria("hidden", true),
-															),
-														app.Text("Upload File"),
-													),
-											),
-									),
+								&EmptyState{
+									Action: app.Button().
+										Class("pf-c-button pf-m-primary").
+										Type("button").
+										Body(
+											app.Span().
+												Class("pf-c-button__icon pf-m-start").
+												Body(
+													app.I().
+														Class("fas fa-cloud-upload-alt").
+														Aria("hidden", true),
+												),
+											app.Text("Upload File"),
+										),
+								},
 							),
 						),
 				),
@@ -720,6 +705,7 @@ func (c *FileExplorer) Render() app.UI {
 				Open: c.createDirectoryModalOpen,
 				Close: func() {
 					c.createDirectoryModalOpen = false
+					c.newDirectoryName = ""
 
 					// This manual update is required as the event is fired from `app.Window`
 					c.Update()
@@ -1025,19 +1011,24 @@ func (c *FileExplorer) Render() app.UI {
 										),
 								),
 						),
-					&FileGrid{
-						Index: c.OperationIndex,
+					app.If(
+						len(c.OperationIndex) > 0,
+						&FileGrid{
+							Index: c.OperationIndex,
 
-						SelectedPath: c.operationSelectedPath,
-						SetSelectedPath: func(s string) {
-							c.operationSelectedPath = s
+							SelectedPath: c.operationSelectedPath,
+							SetSelectedPath: func(s string) {
+								c.operationSelectedPath = s
+							},
+
+							CurrentPath:    c.OperationCurrentPath,
+							SetCurrentPath: c.OperationSetCurrentPath,
+
+							Standalone: true,
 						},
-
-						CurrentPath:    c.OperationCurrentPath,
-						SetCurrentPath: c.OperationSetCurrentPath,
-
-						Standalone: true,
-					},
+					).Else(
+						&EmptyState{},
+					),
 				},
 				Footer: []app.UI{
 					func() app.UI {
