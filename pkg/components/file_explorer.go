@@ -59,12 +59,21 @@ type FileExplorer struct {
 }
 
 func (c *FileExplorer) Render() app.UI {
-	rawPathParts := strings.Split(c.CurrentPath, string(os.PathSeparator))
-	pathParts := []string{}
-	for _, pathPart := range rawPathParts {
+	// Parse the current path
+	pathComponents := []string{}
+	for _, pathPart := range strings.Split(c.CurrentPath, string(os.PathSeparator)) {
 		// Ignore empty paths
 		if pathPart != "" {
-			pathParts = append(pathParts, pathPart)
+			pathComponents = append(pathComponents, pathPart)
+		}
+	}
+
+	// Parse the current operation path
+	operationPathComponents := []string{}
+	for _, pathPart := range strings.Split(c.OperationCurrentPath, string(os.PathSeparator)) {
+		// Ignore empty paths
+		if pathPart != "" {
+			operationPathComponents = append(operationPathComponents, pathPart)
 		}
 	}
 
@@ -100,74 +109,17 @@ func (c *FileExplorer) Render() app.UI {
 																					app.Div().
 																						Class("pf-c-overflow-menu__item").
 																						Body(
-																							app.Nav().
-																								Class("pf-c-breadcrumb").
-																								Aria("label", "Current path").
-																								Body(
-																									app.Ol().
-																										Class("pf-c-breadcrumb__list").
-																										Body(
-																											app.Li().
-																												Class("pf-c-breadcrumb__item").
-																												Body(
-																													app.Span().
-																														Class("pf-c-breadcrumb__item-divider").
-																														Body(
-																															app.I().
-																																Class("fas fa-angle-right").
-																																Aria("hidden", true),
-																														),
-																													app.Button().
-																														Type("button").
-																														Class("pf-c-breadcrumb__link").
-																														TabIndex(0).
-																														OnClick(func(ctx app.Context, e app.Event) {
-																															c.SetCurrentPath("/")
+																							&Breadcrumbs{
+																								PathComponents: pathComponents,
 
-																															c.selectedPath = ""
-																														}).
-																														Text("Files"),
-																												),
-																											app.Range(pathParts).Slice(func(i int) app.UI {
-																												link := path.Join(append([]string{"/"}, pathParts[:i+1]...)...)
+																								CurrentPath:    c.CurrentPath,
+																								SetCurrentPath: c.SetCurrentPath,
 
-																												// The last path part shouldn't be marked as a link
-																												classes := "pf-c-breadcrumb__link"
-																												if i == len(pathParts)-1 {
-																													classes += " pf-m-current"
-																												}
-
-																												return app.Li().
-																													Class("pf-c-breadcrumb__item").
-																													Body(
-																														app.Span().
-																															Class("pf-c-breadcrumb__item-divider").
-																															Body(
-																																app.I().
-																																	Class("fas fa-angle-right").
-																																	Aria("hidden", true),
-																															),
-																														app.If(
-																															// The last path part shouldn't be an action
-																															i == len(pathParts)-1,
-																															app.A().
-																																Class(classes).
-																																Text(pathParts[i]),
-																														).Else(
-																															app.Button().
-																																Type("button").
-																																Class(classes).
-																																OnClick(func(ctx app.Context, e app.Event) {
-																																	c.SetCurrentPath(link)
-
-																																	c.selectedPath = ""
-																																}).
-																																Text(pathParts[i]),
-																														),
-																													)
-																											}),
-																										),
-																								),
+																								SelectedPath: c.selectedPath,
+																								SetSelectedPath: func(s string) {
+																									c.selectedPath = s
+																								},
+																							},
 																						),
 																				),
 																		),
@@ -267,7 +219,21 @@ func (c *FileExplorer) Render() app.UI {
 																																			OnClick(func(ctx app.Context, e app.Event) {
 																																				// Preseed the file picker and name input with the current path
 																																				c.OperationSetCurrentPath(path.Dir(c.selectedPath))
-																																				c.operationSelectedPath = c.selectedPath
+
+																																				// Check if the selected item is a file
+																																				selectedItemIsFile := false
+																																				for _, part := range c.Index {
+																																					if part.Name() == path.Base(c.selectedPath) && !part.IsDir() {
+																																						selectedItemIsFile = true
+																																					}
+																																				}
+
+																																				// Don't select the item as a destination if it is a file
+																																				if selectedItemIsFile {
+																																					c.operationSelectedPath = ""
+																																				} else {
+																																					c.operationSelectedPath = c.selectedPath
+																																				}
 
 																																				// Close the overflow menu
 																																				c.overflowMenuOpen = false
@@ -759,7 +725,8 @@ func (c *FileExplorer) Render() app.UI {
 					c.Update()
 				},
 
-				ID: "create-directory-modal-title",
+				ID:      "create-directory-modal-title",
+				Overlay: true, // It should be possible to create a directory from another modal
 
 				Title: "Create Directory",
 				Body: []app.UI{
@@ -769,7 +736,13 @@ func (c *FileExplorer) Render() app.UI {
 						OnSubmit(func(ctx app.Context, e app.Event) {
 							e.PreventDefault()
 
-							c.CreatePath(filepath.Join(c.CurrentPath, c.newDirectoryName))
+							// Switch the base path if in move operation
+							basePath := c.CurrentPath
+							if c.movePathModalOpen {
+								basePath = c.OperationCurrentPath
+							}
+
+							c.CreatePath(filepath.Join(basePath, c.newDirectoryName))
 
 							c.newDirectoryName = ""
 							c.createDirectoryModalOpen = false
@@ -944,6 +917,114 @@ func (c *FileExplorer) Render() app.UI {
 
 				Title: `Move "` + path.Base(c.selectedPath) + `"`,
 				Body: []app.UI{
+					app.Div().
+						Class("pf-c-toolbar pf-u-pt-0").
+						Body(
+							app.Div().
+								Class("pf-c-toolbar__content").
+								Body(
+									app.Div().
+										Class("pf-c-toolbar__content-section").
+										Body(
+											app.Div().
+												Class("pf-c-toolbar__item pf-m-overflow-menu").
+												Body(
+													app.Div().
+														Class("pf-c-overflow-menu").
+														Body(
+															app.Div().
+																Class("pf-c-overflow-menu__content").
+																Body(
+																	app.Div().
+																		Class("pf-c-overflow-menu__group pf-m-button-group").
+																		Body(
+																			app.Div().
+																				Class("pf-c-overflow-menu__item").
+																				Body(
+																					&Breadcrumbs{
+																						PathComponents: operationPathComponents,
+
+																						CurrentPath:    c.OperationCurrentPath,
+																						SetCurrentPath: c.OperationSetCurrentPath,
+
+																						SelectedPath: c.operationSelectedPath,
+																						SetSelectedPath: func(s string) {
+																							c.operationSelectedPath = s
+																						},
+																					},
+																				),
+																		),
+																),
+														),
+												),
+											app.Div().
+												Class("pf-c-toolbar__item pf-m-pagination").
+												Body(
+													app.Div().
+														Class("pf-c-pagination pf-m-compact").
+														Body(
+															app.Div().
+																Class("pf-c-pagination pf-m-compact pf-m-compact").
+																Body(
+																	app.Div().
+																		Class("pf-c-overflow-menu").
+																		Body(
+																			app.Div().
+																				Class("pf-c-overflow-menu__content").
+																				Body(
+																					app.Div().
+																						Class("pf-c-overflow-menu__group pf-m-button-group").
+																						Body(
+																							app.Div().
+																								Class("pf-c-overflow-menu__item").
+																								Body(
+																									app.Button().
+																										Type("button").
+																										Aria("label", "Create directory").
+																										Title("Create directory").
+																										Class("pf-c-button pf-m-plain").
+																										OnClick(func(ctx app.Context, e app.Event) {
+																											c.createDirectoryModalOpen = true
+																										}).
+																										Body(
+																											app.I().
+																												Class("fas fa-folder-plus").
+																												Aria("hidden", true),
+																										),
+																								),
+																						),
+																				),
+																			app.Div().
+																				Class("pf-c-divider pf-m-vertical pf-m-inset-md").
+																				Aria("role", "separator"),
+																			app.Div().
+																				Class("pf-c-overflow-menu__group pf-m-button-group").
+																				Body(
+																					app.Div().
+																						Class("pf-c-overflow-menu__item").
+																						Body(
+																							app.Button().
+																								Type("button").
+																								Aria("label", "Refresh").
+																								Title("Refresh").
+																								Class("pf-c-button pf-m-plain").
+																								OnClick(func(ctx app.Context, e app.Event) {
+																									c.RefreshIndex()
+																								}).
+																								Body(
+																									app.I().
+																										Class("fas fas fa-sync").
+																										Aria("hidden", true),
+																								),
+																						),
+																				),
+																		),
+																),
+														),
+												),
+										),
+								),
+						),
 					&FileGrid{
 						Index: c.OperationIndex,
 

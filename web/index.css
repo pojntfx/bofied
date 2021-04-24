@@ -1,3 +1,7 @@
 .pf-x-u-resize-vertical {
   resize: vertical;
 }
+
+.pf-x-m-modal-overlay {
+  z-index: calc(var(--pf-global--ZIndex--lg) + 1);
+}
