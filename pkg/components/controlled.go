@@ -14,9 +14,9 @@ func (c *Controlled) Render() app.UI {
 }
 
 func (c *Controlled) OnUpdate(ctx app.Context) {
-	for key, value := range c.Properties {
-		if c.JSValue() != nil {
+	ctx.Defer(func(_ app.Context) {
+		for key, value := range c.Properties {
 			c.JSValue().Set(key, value)
 		}
-	}
+	})
 }
