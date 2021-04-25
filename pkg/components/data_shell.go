@@ -1,7 +1,6 @@
 package components
 
 import (
-	"log"
 	"os"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
@@ -60,7 +59,14 @@ type DataShell struct {
 }
 
 func (c *DataShell) Render() app.UI {
-	log.Println(c.Events)
+	// Gather notifications
+	notifications := []Notification{}
+	for _, event := range c.Events {
+		notifications = append(notifications, Notification{
+			CreatedAt: event.CreatedAt.String(),
+			Message:   event.Message,
+		})
+	}
 
 	return app.Div().Body(
 		app.Section().
@@ -110,5 +116,10 @@ func (c *DataShell) Render() app.UI {
 					Ignore:  c.IgnoreFileExplorerError,
 				},
 			),
+		app.Section().Body(
+			&NotificationDrawer{
+				Notifications: notifications,
+			},
+		),
 	)
 }
