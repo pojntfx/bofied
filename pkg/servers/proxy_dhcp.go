@@ -1,10 +1,10 @@
 package servers
 
 import (
-	"log"
 	"net"
 
 	"github.com/pojntfx/bofied/pkg/config"
+	"github.com/pojntfx/bofied/pkg/eventing"
 	"github.com/pojntfx/bofied/pkg/transcoding"
 )
 
@@ -16,18 +16,18 @@ type ProxyDHCPServer struct {
 	UDPServer
 }
 
-func NewProxyDHCPServer(listenAddress string, advertisedIP string, configFileLocation string) *ProxyDHCPServer {
+func NewProxyDHCPServer(listenAddress string, advertisedIP string, configFileLocation string, eventHandler *eventing.EventHandler) *ProxyDHCPServer {
 	return &ProxyDHCPServer{
 		UDPServer: UDPServer{
 			listenAddress: listenAddress,
 			handlePacket: func(conn *net.UDPConn, raddr *net.UDPAddr, braddr *net.UDPAddr, rawIncomingUDPPacket []byte) (int, error) {
-				return handleProxyDHCPPacket(conn, raddr, braddr, rawIncomingUDPPacket, net.ParseIP(advertisedIP).To4(), configFileLocation)
+				return handleProxyDHCPPacket(conn, raddr, braddr, rawIncomingUDPPacket, net.ParseIP(advertisedIP).To4(), configFileLocation, eventHandler.Emit)
 			},
 		},
 	}
 }
 
-func handleProxyDHCPPacket(conn *net.UDPConn, raddr *net.UDPAddr, _ *net.UDPAddr, rawIncomingUDPPacket []byte, advertisedIP net.IP, configFileLocation string) (int, error) {
+func handleProxyDHCPPacket(conn *net.UDPConn, raddr *net.UDPAddr, _ *net.UDPAddr, rawIncomingUDPPacket []byte, advertisedIP net.IP, configFileLocation string, emit func(f string, v ...interface{})) (int, error) {
 	// Decode packet
 	incomingDHCPPacket, err := transcoding.DecodeDHCPPacket(rawIncomingUDPPacket)
 	if err != nil {
@@ -62,7 +62,7 @@ func handleProxyDHCPPacket(conn *net.UDPConn, raddr *net.UDPAddr, _ *net.UDPAddr
 		bootFileName,
 	)
 
-	log.Printf(`sending %v bytes of proxyDHCP packets to client "%v"`, len(outgoingDHCPPacket), raddr)
+	emit(`sending %v bytes of proxyDHCP packets to client "%v"`, len(outgoingDHCPPacket), raddr)
 
 	// Send the packet to the client
 	return conn.WriteToUDP(outgoingDHCPPacket, raddr)
