@@ -35,8 +35,6 @@ func (h *EventHandler) Emit(s string, v ...interface{}) {
 		CreatedAt:   time.Now(),
 		Description: msg,
 	})
-
-	h.messenger.Sub()
 }
 
 // Proxy to internal messenger
