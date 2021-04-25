@@ -54,6 +54,7 @@ type FileExplorer struct {
 	renamePathModalOpen      bool
 	movePathModalOpen        bool
 	copyPathModalOpen        bool
+	uploadModalOpen          bool
 
 	operationSelectedPath string
 }
@@ -324,6 +325,9 @@ func (c *FileExplorer) Render() app.UI {
 																												Aria("label", "Upload file").
 																												Title("Upload file").
 																												Class("pf-c-button pf-m-plain").
+																												OnClick(func(ctx app.Context, e app.Event) {
+																													c.uploadModalOpen = true
+																												}).
 																												Body(
 																													app.I().
 																														Class("fas fa-cloud-upload-alt").
@@ -405,6 +409,9 @@ func (c *FileExplorer) Render() app.UI {
 									Action: app.Button().
 										Class("pf-c-button pf-m-primary").
 										Type("button").
+										OnClick(func(ctx app.Context, e app.Event) {
+											c.uploadModalOpen = true
+										}).
 										Body(
 											app.Span().
 												Class("pf-c-button__icon pf-m-start").
@@ -419,35 +426,7 @@ func (c *FileExplorer) Render() app.UI {
 							),
 						),
 				),
-			app.Div().Body(
-				// Upload file
-				app.Input().
-					Type("file").
-					OnChange(func(ctx app.Context, e app.Event) {
-						reader := app.Window().JSValue().Get("FileReader").New()
-						fileName := ctx.JSSrc.Get("files").Get("0").Get("name").String()
 
-						reader.Set("onload", app.FuncOf(func(this app.Value, args []app.Value) interface{} {
-							go func() {
-								rawFileContent := app.Window().Get("Uint8Array").New(args[0].Get("target").Get("result"))
-
-								fileContent := make([]byte, rawFileContent.Get("length").Int())
-								app.CopyBytesToGo(fileContent, rawFileContent)
-
-								c.WriteToPath(filepath.Join(c.CurrentPath, fileName), fileContent)
-
-								// Manually refresh, as `c.WriteToPath` runs in a seperate goroutine
-								ctx.Emit(func() {
-									c.RefreshIndex()
-								})
-							}()
-
-							return nil
-						}))
-
-						reader.Call("readAsArrayBuffer", ctx.JSSrc.Get("files").Get("0"))
-					}),
-			),
 			&Modal{
 				Open: c.mountFolderModalOpen,
 				Close: func() {
@@ -1069,6 +1048,93 @@ func (c *FileExplorer) Render() app.UI {
 							c.copyPathModalOpen = false
 							c.OperationSetCurrentPath("/")
 							c.operationSelectedPath = ""
+						}).
+						Text("Cancel"),
+				},
+			},
+
+			&Modal{
+				Open: c.uploadModalOpen,
+				Close: func() {
+					c.uploadModalOpen = false
+
+					// This manual update is required as the event is fired from `app.Window`
+					c.Update()
+				},
+
+				ID: "upload-modal-title",
+
+				Title: "Upload",
+				Body: []app.UI{
+					app.Form().
+						Class("pf-c-form").
+						ID("upload").
+						OnSubmit(func(ctx app.Context, e app.Event) {
+							e.PreventDefault()
+
+							reader := app.Window().JSValue().Get("FileReader").New()
+							input := app.Window().GetElementByID("upload-file-input")
+							fileName := input.Get("files").Get("0").Get("name").String()
+
+							reader.Set("onload", app.FuncOf(func(this app.Value, args []app.Value) interface{} {
+								go func() {
+									rawFileContent := app.Window().Get("Uint8Array").New(args[0].Get("target").Get("result"))
+
+									fileContent := make([]byte, rawFileContent.Get("length").Int())
+									app.CopyBytesToGo(fileContent, rawFileContent)
+
+									c.WriteToPath(filepath.Join(c.CurrentPath, fileName), fileContent)
+
+									// Manually refresh, as `c.WriteToPath` runs in a seperate goroutine
+									ctx.Emit(func() {
+										c.RefreshIndex()
+									})
+								}()
+
+								return nil
+							}))
+
+							reader.Call("readAsArrayBuffer", input.Get("files").Get("0"))
+
+							// Clear the input
+							input.Set("value", app.Null())
+
+							c.uploadModalOpen = false
+						}).
+						Body(
+							&FormGroup{
+								Label: app.Label().
+									For("upload-file-input").
+									Class("pf-c-form__label").
+									Body(
+										app.
+											Span().
+											Class("pf-c-form__label-text").
+											Text("File to upload"),
+									),
+								Input: app.Input().
+									Name("upload-file-input").
+									ID("upload-file-input").
+									Type("file").
+									Required(true).
+									Class("pf-c-form-control"),
+							},
+						),
+				},
+				Footer: []app.UI{
+					app.Button().
+						Class("pf-c-button pf-m-primary").
+						Type("submit").
+						Form("upload").
+						Text("Upload"),
+					app.Button().
+						Class("pf-c-button pf-m-link").
+						Type("button").
+						OnClick(func(ctx app.Context, e app.Event) {
+							// Clear the input
+							app.Window().GetElementByID("upload-file-input").Set("value", app.Null())
+
+							c.uploadModalOpen = false
 						}).
 						Text("Cancel"),
 				},
