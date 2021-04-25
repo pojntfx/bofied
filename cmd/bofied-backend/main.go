@@ -16,17 +16,16 @@ import (
 )
 
 const (
-	configFileKey                   = "configFile"
-	workingDirKey                   = "workingDir"
-	advertisedIPKey                 = "advertisedIP"
-	dhcpListenAddressKey            = "dhcpListenAddress"
-	proxyDHCPListenAddressKey       = "proxyDHCPListenAddress"
-	tftpListenAddressKey            = "tftpListenAddress"
-	webDAVAndHTTPListenAddressKey   = "webDAVAndHTTPListenAddress"
-	oidcIssuerKey                   = "oidcIssuer"
-	oidcClientIDKey                 = "oidcClientID"
-	eventsListenAddressKey          = "eventsListenAddress"
-	eventsWebSocketListenAddressKey = "eventsWebSocketListenAddress"
+	configFileKey                 = "configFile"
+	workingDirKey                 = "workingDir"
+	advertisedIPKey               = "advertisedIP"
+	dhcpListenAddressKey          = "dhcpListenAddress"
+	proxyDHCPListenAddressKey     = "proxyDHCPListenAddress"
+	tftpListenAddressKey          = "tftpListenAddress"
+	webDAVAndHTTPListenAddressKey = "extendedHTTPListenAddress"
+	oidcIssuerKey                 = "oidcIssuer"
+	oidcClientIDKey               = "oidcClientID"
+	eventsListenAddressKey        = "eventsListenAddress"
 )
 
 func main() {
@@ -82,20 +81,20 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 				viper.GetString(tftpListenAddressKey),
 				eventsHandler,
 			)
-			webDAVAndHTTPServer := servers.NewWebDAVAndHTTPServer(viper.GetString(workingDirKey), viper.GetString(webDAVAndHTTPListenAddressKey), oidcValidator)
-			eventsServer := servers.NewEventsServer(viper.GetString(eventsListenAddressKey), viper.GetString(eventsWebSocketListenAddressKey), eventsService)
+			eventsServer, eventsServerHandler := servers.NewEventsServer(viper.GetString(eventsListenAddressKey), eventsService)
+			extendedHTTPServer := servers.NewExtendedHTTPServer(viper.GetString(workingDirKey), viper.GetString(webDAVAndHTTPListenAddressKey), oidcValidator, eventsServerHandler)
 
 			// Start servers
 			log.Printf(
-				"bofied backend listening on %v (DHCP), %v (proxyDHCP), %v (TFTP), %v (WebDAV on %v and HTTP on %v), %v (gRPC) and %v (gRPC-Web)\n",
+				"bofied backend listening on %v (DHCP), %v (proxyDHCP), %v (TFTP), %v (WebDAV on %v, HTTP on %v and gRPC-Web on %v) and %v (gRPC)\n",
 				viper.GetString(dhcpListenAddressKey),
 				viper.GetString(proxyDHCPListenAddressKey),
 				viper.GetString(tftpListenAddressKey),
 				viper.GetString(webDAVAndHTTPListenAddressKey),
 				servers.WebDAVPrefix,
 				servers.HTTPPrefix,
+				servers.EventsPrefix,
 				viper.GetString(eventsListenAddressKey),
-				viper.GetString(eventsWebSocketListenAddressKey),
 			)
 
 			go func() {
@@ -114,7 +113,7 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 				log.Fatal(eventsServer.ListenAndServe())
 			}()
 
-			return webDAVAndHTTPServer.ListenAndServe()
+			return extendedHTTPServer.ListenAndServe()
 		},
 	}
 
@@ -133,9 +132,8 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 	cmd.PersistentFlags().String(dhcpListenAddressKey, ":67", "Listen address for DHCP server")
 	cmd.PersistentFlags().String(proxyDHCPListenAddressKey, ":4011", "Listen address for proxyDHCP server")
 	cmd.PersistentFlags().String(tftpListenAddressKey, ":"+constants.TFTPPort, "Listen address for TFTP server")
-	cmd.PersistentFlags().String(webDAVAndHTTPListenAddressKey, ":15256", "Listen address for WebDAV and HTTP server")
+	cmd.PersistentFlags().String(webDAVAndHTTPListenAddressKey, ":15256", "Listen address for WebDAV, HTTP and gRPC-Web server")
 	cmd.PersistentFlags().String(eventsListenAddressKey, ":15257", "Listen address for events gRPC server")
-	cmd.PersistentFlags().String(eventsWebSocketListenAddressKey, ":15258", "Listen address for events gRPC server (WebSocket proxy)")
 
 	cmd.PersistentFlags().StringP(oidcIssuerKey, "i", "https://pojntfx.eu.auth0.com/", "OIDC issuer")
 	cmd.PersistentFlags().StringP(oidcClientIDKey, "t", "myoidcclientid", "OIDC client ID")

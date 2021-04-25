@@ -3,8 +3,7 @@ advertisedIP: "100.64.154.246"
 dhcpListenAddress: ":67"
 proxyDHCPListenAddress: ":4011"
 tftpListenAddress: ":69"
-webDAVAndHTTPListenAddress: ":15256"
+extendedHTTPListenAddress: ":15256"
 eventsListenAddress: ":15257"
-eventsWebSocketListenAddress: ":15258"
 oidcClientID: myoidcclientid
 oidcIssuer: https://pojntfx.eu.auth0.com/

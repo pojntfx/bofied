@@ -323,6 +323,9 @@ func (c *DataProvider) getWebDAVCredentials() (address string, username string, 
 		u.Scheme = "dav"
 	}
 
+	// Add the prefix
+	u.Path = path.Join(u.Path, servers.WebDAVPrefix)
+
 	// Add current folder
 	u.Path = path.Join(u.Path, c.currentPath)
 

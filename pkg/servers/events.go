@@ -6,34 +6,30 @@ import (
 
 	api "github.com/pojntfx/bofied/pkg/api/proto/v1"
 	"github.com/pojntfx/bofied/pkg/services"
-	"github.com/pojntfx/go-app-grpc-chat-backend/pkg/websocketproxy"
+	"github.com/pojntfx/bofied/pkg/websocketproxy"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
 type EventsServer struct {
-	listenAddress          string
-	webSocketListenAddress string
+	listenAddress string
 
 	service *services.EventsService
+	proxy   *websocketproxy.WebSocketProxyServer
 }
 
-func NewEventsServer(listenAddress string, webSocketListenAddress string, service *services.EventsService) *EventsServer {
+func NewEventsServer(listenAddress string, service *services.EventsService) (*EventsServer, *websocketproxy.WebSocketProxyServer) {
+	proxy := websocketproxy.NewWebSocketProxyServer()
+
 	return &EventsServer{
-		listenAddress:          listenAddress,
-		webSocketListenAddress: webSocketListenAddress,
-		service:                service,
-	}
+		listenAddress: listenAddress,
+		service:       service,
+		proxy:         proxy,
+	}, proxy
 }
 
 func (s *EventsServer) ListenAndServe() error {
 	listener, err := net.Listen("tcp", s.listenAddress)
-	if err != nil {
-		return err
-	}
-
-	proxy := websocketproxy.NewWebSocketProxyServer(s.webSocketListenAddress)
-	webSocketListener, err := proxy.Listen()
 	if err != nil {
 		return err
 	}
@@ -64,7 +60,7 @@ func (s *EventsServer) ListenAndServe() error {
 	}()
 
 	go func() {
-		if err := server.Serve(webSocketListener); err != nil {
+		if err := server.Serve(s.proxy); err != nil {
 			errChan <- err
 		}
 

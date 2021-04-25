@@ -21,4 +21,5 @@ require (
 	golang.org/x/oauth2 v0.0.0-20210413134643-5e61552d6c78
 	google.golang.org/grpc v1.36.1
 	google.golang.org/protobuf v1.26.0
+	nhooyr.io/websocket v1.8.6
 )
