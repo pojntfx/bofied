@@ -24,7 +24,9 @@ func NewWebSocketProxyServer() *WebSocketProxyServer {
 }
 
 func (p *WebSocketProxyServer) ServeHTTP(wr http.ResponseWriter, r *http.Request) {
-	conn, err := websocket.Accept(wr, r, &websocket.AcceptOptions{})
+	conn, err := websocket.Accept(wr, r, &websocket.AcceptOptions{
+		InsecureSkipVerify: true, // CORS
+	})
 	if err != nil {
 		log.Printf("could not accept on WebSocket: %v\n", err)
 

@@ -9,8 +9,8 @@ import (
 )
 
 type Event struct {
-	CreatedAt   time.Time
-	Description string
+	CreatedAt time.Time
+	Message   string
 }
 
 type EventHandler struct {
@@ -32,8 +32,8 @@ func (h *EventHandler) Emit(s string, v ...interface{}) {
 
 	// Broadcast the description
 	h.messenger.Broadcast(Event{
-		CreatedAt:   time.Now(),
-		Description: msg,
+		CreatedAt: time.Now(),
+		Message:   msg,
 	})
 }
 

@@ -1,14 +1,8 @@
 package components
 
 import (
-	"path"
-
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
-	"github.com/pojntfx/bofied/pkg/authorization"
-	"github.com/pojntfx/bofied/pkg/constants"
 	"github.com/pojntfx/bofied/pkg/providers"
-	"github.com/pojntfx/bofied/pkg/servers"
-	"github.com/studio-b12/gowebdav"
 )
 
 type Home struct {
@@ -69,16 +63,10 @@ func (c *Home) Render() app.UI {
 									return app.P().Text("Authorizing ...")
 								}
 
-								// Authorized WebDAV Client
-								webDAVClient := gowebdav.NewClient(path.Join(cpcp.BackendURL, servers.WebDAVPrefix), constants.OIDCOverBasicAuthUsername, ipcp.IDToken)
-								header, value := authorization.GetOIDCOverBasicAuthHeader(constants.OIDCOverBasicAuthUsername, ipcp.IDToken)
-								webDAVClient.SetHeader(header, value)
-
 								// Data provider
 								return &providers.DataProvider{
-									BackendURL:   cpcp.BackendURL,
-									IDToken:      ipcp.IDToken,
-									WebDAVClient: webDAVClient,
+									BackendURL: cpcp.BackendURL,
+									IDToken:    ipcp.IDToken,
 									Children: func(dpcp providers.DataProviderChildrenProps) app.UI {
 										// Data shell
 										return &DataShell{
@@ -122,6 +110,12 @@ func (c *Home) Render() app.UI {
 											FileExplorerError:        dpcp.FileExplorerError,
 											RecoverFileExplorerError: dpcp.RecoverFileExplorerError,
 											IgnoreFileExplorerError:  dpcp.IgnoreFileExplorerError,
+
+											Events: dpcp.Events,
+
+											EventsError:        dpcp.EventsError,
+											RecoverEventsError: dpcp.RecoverEventsError,
+											IgnoreEventsError:  dpcp.IgnoreEventsError,
 										}
 									},
 								}

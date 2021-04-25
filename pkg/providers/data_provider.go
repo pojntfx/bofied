@@ -1,18 +1,32 @@
 package providers
 
 import (
+	"context"
 	"net/url"
 	"os"
 	"path"
 	"path/filepath"
+	"time"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	api "github.com/pojntfx/bofied/pkg/api/proto/v1"
+	"github.com/pojntfx/bofied/pkg/authorization"
 	"github.com/pojntfx/bofied/pkg/constants"
 	"github.com/pojntfx/bofied/pkg/servers"
+	"github.com/pojntfx/bofied/pkg/services"
 	"github.com/pojntfx/bofied/pkg/validators"
+	"github.com/pojntfx/go-app-grpc-chat-frontend-web/pkg/websocketproxy"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/studio-b12/gowebdav"
 )
+
+type Event struct {
+	CreatedAt time.Time
+	Message   string
+}
 
 type DataProviderChildrenProps struct {
 	// Config file editor
@@ -55,15 +69,24 @@ type DataProviderChildrenProps struct {
 	FileExplorerError        error
 	RecoverFileExplorerError func()
 	IgnoreFileExplorerError  func()
+
+	Events []Event
+
+	EventsError        error
+	RecoverEventsError func(app.Context)
+	IgnoreEventsError  func()
 }
 
 type DataProvider struct {
 	app.Compo
 
-	BackendURL   string
-	IDToken      string
-	WebDAVClient *gowebdav.Client
-	Children     func(dpcp DataProviderChildrenProps) app.UI
+	BackendURL string
+	IDToken    string
+	Children   func(dpcp DataProviderChildrenProps) app.UI
+
+	webDAVClient         *gowebdav.Client
+	authenticatedContext context.Context
+	eventsService        api.EventsServiceClient
 
 	configFile    string
 	configFileErr error
@@ -76,6 +99,9 @@ type DataProvider struct {
 
 	operationCurrentPath string
 	operationIndex       []os.FileInfo
+
+	events    []Event
+	eventsErr error
 }
 
 func (c *DataProvider) Render() app.UI {
@@ -126,12 +152,54 @@ func (c *DataProvider) Render() app.UI {
 		FileExplorerError:        c.fileExplorerErr,
 		RecoverFileExplorerError: c.recoverFileExplorerError,
 		IgnoreFileExplorerError:  c.ignoreFileExplorerError,
+
+		Events: c.events,
+
+		EventsError:        c.eventsErr,
+		RecoverEventsError: c.recoverEventsError,
+		IgnoreEventsError:  c.ignoreEventsError,
 	})
 }
 
 func (c *DataProvider) OnMount(ctx app.Context) {
+	// Initialize events
+	c.events = []Event{}
+
+	// Create WebDAV client
+	webDAVClient := gowebdav.NewClient(path.Join(c.BackendURL, servers.WebDAVPrefix), constants.OIDCOverBasicAuthUsername, c.IDToken)
+	header, value := authorization.GetOIDCOverBasicAuthHeader(constants.OIDCOverBasicAuthUsername, c.IDToken)
+	webDAVClient.SetHeader(header, value)
+	c.webDAVClient = webDAVClient
+
+	// Parse URL for gRPC client
+	u, err := url.Parse(c.BackendURL)
+	if err != nil {
+		c.panicEventsError(err)
+
+		return
+	}
+
+	// Make it a WebSocket URL
+	if u.Scheme == "https" {
+		u.Scheme = "wss"
+	} else {
+		u.Scheme = "ws"
+	}
+
+	// Create gRPC client
+	conn, err := grpc.Dial(path.Join(u.String(), servers.EventsPrefix), grpc.WithContextDialer(websocketproxy.NewWebSocketProxyClient(time.Minute).Dialer), grpc.WithInsecure())
+	if err != nil {
+		c.panicEventsError(err)
+
+		return
+	}
+	c.eventsService = api.NewEventsServiceClient(conn)
+	c.authenticatedContext = metadata.AppendToOutgoingContext(context.Background(), services.AuthorizationMetadataKey, c.IDToken)
+
+	// Refresh/subscribe to data
 	c.refreshConfigFile()
 	c.refreshIndex()
+	go c.subscribeToEvents(ctx)
 }
 
 // Config file editor
@@ -160,7 +228,7 @@ func (c *DataProvider) formatConfigFile() {
 }
 
 func (c *DataProvider) refreshConfigFile() {
-	content, err := c.WebDAVClient.Read(constants.BootConfigFileName)
+	content, err := c.webDAVClient.Read(constants.BootConfigFileName)
 	if err != nil {
 		c.panicConfigFileError(err)
 	}
@@ -175,7 +243,7 @@ func (c *DataProvider) saveConfigFile() {
 		return
 	}
 
-	if err := c.WebDAVClient.Write(constants.BootConfigFileName, []byte(c.configFile), os.ModePerm); err != nil {
+	if err := c.webDAVClient.Write(constants.BootConfigFileName, []byte(c.configFile), os.ModePerm); err != nil {
 		c.panicConfigFileError(err)
 
 		return
@@ -194,7 +262,7 @@ func (c *DataProvider) panicConfigFileError(err error) {
 
 // File explorer
 func (c *DataProvider) setCurrentPath(path string, operationPath bool) {
-	rawDirs, err := c.WebDAVClient.ReadDir(path)
+	rawDirs, err := c.webDAVClient.ReadDir(path)
 	if err != nil {
 		c.panicFileExplorerError(err)
 
@@ -236,7 +304,7 @@ func (c *DataProvider) refreshIndex() {
 }
 
 func (c *DataProvider) writeToPath(path string, content []byte) {
-	if err := c.WebDAVClient.Write(path, content, os.ModePerm); err != nil {
+	if err := c.webDAVClient.Write(path, content, os.ModePerm); err != nil {
 		c.panicFileExplorerError(err)
 
 		return
@@ -251,11 +319,7 @@ func (c *DataProvider) sharePath(path string) {
 	}
 
 	// Replace `private` prefix with `public` prefix
-	pathParts := filepath.SplitList(u.Path)
-	if len(pathParts) > 0 {
-		pathParts = pathParts[1:]
-	}
-	u.Path = filepath.Join(filepath.Join(append([]string{servers.HTTPPrefix}, pathParts...)...), path)
+	u.Path = filepath.Join(filepath.Join(append([]string{servers.HTTPPrefix}, filepath.SplitList(u.Path)...)...), path)
 
 	// Set HTTP share link
 	c.httpShareLink = u.String()
@@ -268,7 +332,7 @@ func (c *DataProvider) sharePath(path string) {
 }
 
 func (c *DataProvider) createPath(path string) {
-	if err := c.WebDAVClient.MkdirAll(path, os.ModePerm); err != nil {
+	if err := c.webDAVClient.MkdirAll(path, os.ModePerm); err != nil {
 		c.panicFileExplorerError(err)
 
 		return
@@ -278,7 +342,7 @@ func (c *DataProvider) createPath(path string) {
 }
 
 func (c *DataProvider) deletePath(path string) {
-	if err := c.WebDAVClient.RemoveAll(path); err != nil {
+	if err := c.webDAVClient.RemoveAll(path); err != nil {
 		c.panicFileExplorerError(err)
 
 		return
@@ -288,7 +352,7 @@ func (c *DataProvider) deletePath(path string) {
 }
 
 func (c *DataProvider) movePath(src string, dst string) {
-	if err := c.WebDAVClient.Rename(src, dst, true); err != nil {
+	if err := c.webDAVClient.Rename(src, dst, true); err != nil {
 		c.panicFileExplorerError(err)
 
 		return
@@ -298,7 +362,7 @@ func (c *DataProvider) movePath(src string, dst string) {
 }
 
 func (c *DataProvider) copyPath(src string, dst string) {
-	if err := c.WebDAVClient.Copy(src, dst, true); err != nil {
+	if err := c.webDAVClient.Copy(src, dst, true); err != nil {
 		c.panicFileExplorerError(err)
 
 		return
@@ -344,4 +408,68 @@ func (c *DataProvider) ignoreFileExplorerError() {
 func (c *DataProvider) panicFileExplorerError(err error) {
 	// Set the error
 	c.fileExplorerErr = err
+}
+
+func (c *DataProvider) subscribeToEvents(ctx app.Context) {
+	// Get stream from service
+	events, err := c.eventsService.SubscribeToEvents(c.authenticatedContext, &emptypb.Empty{})
+	if err != nil {
+		// We have to use `Context.Emit` here as this runs from a separate Goroutine
+		ctx.Emit(func() {
+			c.panicEventsError(err)
+		})
+
+		return
+	}
+
+	// Process stream
+	for {
+		// Receive event from stream
+		event, err := events.Recv()
+		if err != nil {
+			// We have to use `Context.Emit` here as this runs from a separate Goroutine
+			ctx.Emit(func() {
+				c.panicEventsError(err)
+			})
+
+			return
+		}
+
+		// Parse the event's date
+		eventCreatedAt, err := time.Parse(time.RFC3339, event.GetCreatedAt())
+		if err != nil {
+			// We have to use `Context.Emit` here as this runs from a separate Goroutine
+			ctx.Emit(func() {
+				c.panicEventsError(err)
+			})
+
+			return
+		}
+
+		// Add the event (we have to use `Context.Emit` here as this runs from a separate Goroutine)
+		ctx.Emit(func() {
+			c.events = append(c.events, Event{
+				CreatedAt: eventCreatedAt,
+				Message:   event.GetMessage(),
+			})
+		})
+	}
+}
+
+func (c *DataProvider) recoverEventsError(ctx app.Context) {
+	// Clear the error
+	c.eventsErr = nil
+
+	// Resubscribe
+	c.OnMount(ctx)
+}
+
+func (c *DataProvider) ignoreEventsError() {
+	// Only clear the error
+	c.eventsErr = nil
+}
+
+func (c *DataProvider) panicEventsError(err error) {
+	// Set the error
+	c.eventsErr = err
 }
