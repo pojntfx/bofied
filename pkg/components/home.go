@@ -1,10 +1,13 @@
 package components
 
 import (
+	"path"
+
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
 	"github.com/pojntfx/bofied/pkg/authorization"
 	"github.com/pojntfx/bofied/pkg/constants"
 	"github.com/pojntfx/bofied/pkg/providers"
+	"github.com/pojntfx/bofied/pkg/servers"
 	"github.com/studio-b12/gowebdav"
 )
 
@@ -67,7 +70,7 @@ func (c *Home) Render() app.UI {
 								}
 
 								// Authorized WebDAV Client
-								webDAVClient := gowebdav.NewClient(cpcp.BackendURL, constants.OIDCOverBasicAuthUsername, ipcp.IDToken)
+								webDAVClient := gowebdav.NewClient(path.Join(cpcp.BackendURL, servers.WebDAVPrefix), constants.OIDCOverBasicAuthUsername, ipcp.IDToken)
 								header, value := authorization.GetOIDCOverBasicAuthHeader(constants.OIDCOverBasicAuthUsername, ipcp.IDToken)
 								webDAVClient.SetHeader(header, value)
 
