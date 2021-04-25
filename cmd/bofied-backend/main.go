@@ -7,12 +7,12 @@ import (
 
 	"github.com/pojntfx/bofied/pkg/config"
 	"github.com/pojntfx/bofied/pkg/constants"
+	"github.com/pojntfx/bofied/pkg/eventing"
 	"github.com/pojntfx/bofied/pkg/servers"
 	"github.com/pojntfx/bofied/pkg/services"
 	"github.com/pojntfx/liwasc/pkg/validators"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/ugjka/messenger"
 )
 
 const (
@@ -52,8 +52,8 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 				log.Fatal(err)
 			}
 
-			// Create generic utilities
-			eventsMessenger := messenger.New(0, true)
+			// Create eventing utilities
+			eventsHandler := eventing.NewEventHandler()
 
 			// Create auth utilities
 			oidcValidator := validators.NewOIDCValidator(viper.GetString(oidcIssuerKey), viper.GetString(oidcClientIDKey))
@@ -63,16 +63,25 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 			contextValidator := validators.NewContextValidator(services.AUTHORIZATION_METADATA_KEY, oidcValidator)
 
 			// Create services
-			eventsService := services.NewEventsService(eventsMessenger, contextValidator)
+			eventsService := services.NewEventsService(eventsHandler, contextValidator)
 
 			// Create servers
-			dhcpServer := servers.NewDHCPServer(viper.GetString(dhcpListenAddressKey), viper.GetString(advertisedIPKey))
+			dhcpServer := servers.NewDHCPServer(
+				viper.GetString(dhcpListenAddressKey),
+				viper.GetString(advertisedIPKey),
+				eventsHandler,
+			)
 			proxyDHCPServer := servers.NewProxyDHCPServer(
 				viper.GetString(proxyDHCPListenAddressKey),
 				viper.GetString(advertisedIPKey),
 				filepath.Join(viper.GetString(workingDirKey), constants.BootConfigFileName),
+				eventsHandler,
 			)
-			tftpServer := servers.NewTFTPServer(viper.GetString(workingDirKey), viper.GetString(tftpListenAddressKey))
+			tftpServer := servers.NewTFTPServer(
+				viper.GetString(workingDirKey),
+				viper.GetString(tftpListenAddressKey),
+				eventsHandler,
+			)
 			webDAVAndHTTPServer := servers.NewWebDAVAndHTTPServer(viper.GetString(workingDirKey), viper.GetString(webDAVAndHTTPListenAddressKey), oidcValidator)
 			eventsServer := servers.NewEventsServer(viper.GetString(eventsListenAddressKey), viper.GetString(eventsWebSocketListenAddressKey), eventsService)
 

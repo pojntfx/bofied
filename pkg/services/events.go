@@ -11,7 +11,6 @@ import (
 	api "github.com/pojntfx/bofied/pkg/api/proto/v1"
 	"github.com/pojntfx/bofied/pkg/eventing"
 	"github.com/pojntfx/liwasc/pkg/validators"
-	"github.com/ugjka/messenger"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -23,14 +22,14 @@ const (
 type EventsService struct {
 	api.UnimplementedEventsServiceServer
 
-	eventsMessenger *messenger.Messenger
+	eventsHandler *eventing.EventHandler
 
 	contextValidator *validators.ContextValidator
 }
 
-func NewEventsService(eventsMessenger *messenger.Messenger, contextValidator *validators.ContextValidator) *EventsService {
+func NewEventsService(eventsHandler *eventing.EventHandler, contextValidator *validators.ContextValidator) *EventsService {
 	return &EventsService{
-		eventsMessenger: eventsMessenger,
+		eventsHandler: eventsHandler,
 
 		contextValidator: contextValidator,
 	}
@@ -44,7 +43,7 @@ func (s *EventsService) SubscribeToEvents(_ *empty.Empty, stream api.EventsServi
 	}
 
 	// Subscribe to events
-	events, err := s.eventsMessenger.Sub()
+	events, err := s.eventsHandler.Sub()
 	if err != nil {
 		msg := fmt.Sprintf("could not get events from messenger: %v", err)
 
@@ -52,12 +51,12 @@ func (s *EventsService) SubscribeToEvents(_ *empty.Empty, stream api.EventsServi
 
 		return status.Error(codes.Unknown, msg)
 	}
-	defer s.eventsMessenger.Unsub(events)
+	defer s.eventsHandler.Unsub(events)
 
 	for {
 		// Receive event from bus
 		for event := range events {
-			e := event.(*eventing.Event)
+			e := event.(eventing.Event)
 
 			// Send event to client
 			stream.Send(&api.EventMessage{
