@@ -59,7 +59,7 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 			if err := oidcValidator.Open(); err != nil {
 				log.Fatal(err)
 			}
-			contextValidator := validators.NewContextValidator(services.AUTHORIZATION_METADATA_KEY, oidcValidator)
+			contextValidator := validators.NewContextValidator(services.AuthorizationMetadataKey, oidcValidator)
 
 			// Create services
 			eventsService := services.NewEventsService(eventsHandler, contextValidator)

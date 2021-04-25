@@ -12,5 +12,5 @@ service EventsService {
 
 message EventMessage {
   string CreatedAt = 1;
-  string Description = 2;
+  string Message = 2;
 }

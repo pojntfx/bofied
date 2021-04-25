@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	AUTHORIZATION_METADATA_KEY = "X-Bofied-Authorization"
+	AuthorizationMetadataKey = "X-Bofied-Authorization"
 )
 
 type EventsService struct {
@@ -59,8 +59,8 @@ func (s *EventsService) SubscribeToEvents(_ *empty.Empty, stream api.EventsServi
 
 		// Send event to client
 		if err := stream.Send(&api.EventMessage{
-			CreatedAt:   e.CreatedAt.Format(time.RFC3339),
-			Description: e.Description,
+			CreatedAt: e.CreatedAt.Format(time.RFC3339),
+			Message:   e.Message,
 		}); err != nil {
 			log.Printf("could send event to client: %v\n", err)
 

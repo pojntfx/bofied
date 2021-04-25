@@ -1,9 +1,11 @@
 package components
 
 import (
+	"log"
 	"os"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/pojntfx/bofied/pkg/providers"
 )
 
 type DataShell struct {
@@ -49,9 +51,17 @@ type DataShell struct {
 	FileExplorerError        error
 	RecoverFileExplorerError func()
 	IgnoreFileExplorerError  func()
+
+	Events []providers.Event
+
+	EventsError        error
+	RecoverEventsError func(app.Context)
+	IgnoreEventsError  func()
 }
 
 func (c *DataShell) Render() app.UI {
+	log.Println(c.Events)
+
 	return app.Div().Body(
 		app.Section().
 			Body(
