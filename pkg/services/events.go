@@ -53,16 +53,20 @@ func (s *EventsService) SubscribeToEvents(_ *empty.Empty, stream api.EventsServi
 	}
 	defer s.eventsHandler.Unsub(events)
 
-	for {
-		// Receive event from bus
-		for event := range events {
-			e := event.(eventing.Event)
+	// Receive event from bus
+	for event := range events {
+		e := event.(eventing.Event)
 
-			// Send event to client
-			stream.Send(&api.EventMessage{
-				CreatedAt:   e.CreatedAt.Format(time.RFC3339),
-				Description: e.Description,
-			})
+		// Send event to client
+		if err := stream.Send(&api.EventMessage{
+			CreatedAt:   e.CreatedAt.Format(time.RFC3339),
+			Description: e.Description,
+		}); err != nil {
+			log.Printf("could send event to client: %v\n", err)
+
+			return err
 		}
 	}
+
+	return nil
 }
