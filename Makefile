@@ -46,8 +46,12 @@ dev:
 
 clean:
 	rm -rf out
+	rm -rf pkg/api/proto/v1
 	rm -rf ~/.local/share/bofied
 
 depend:
+	# Setup CLIs
+	GO111MODULE=on go get github.com/golang/protobuf/protoc-gen-go@latest
+	GO111MODULE=on go get github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
 	# Generate bindings
 	go generate ./...

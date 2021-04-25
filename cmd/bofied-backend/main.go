@@ -8,21 +8,25 @@ import (
 	"github.com/pojntfx/bofied/pkg/config"
 	"github.com/pojntfx/bofied/pkg/constants"
 	"github.com/pojntfx/bofied/pkg/servers"
+	"github.com/pojntfx/bofied/pkg/services"
 	"github.com/pojntfx/liwasc/pkg/validators"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/ugjka/messenger"
 )
 
 const (
-	configFileKey                 = "configFile"
-	workingDirKey                 = "workingDir"
-	advertisedIPKey               = "advertisedIP"
-	dhcpListenAddressKey          = "dhcpListenAddress"
-	proxyDHCPListenAddressKey     = "proxyDHCPListenAddress"
-	tftpListenAddressKey          = "tftpListenAddress"
-	webDAVAndHTTPListenAddressKey = "webDAVAndHTTPListenAddress"
-	oidcIssuerKey                 = "oidcIssuer"
-	oidcClientIDKey               = "oidcClientID"
+	configFileKey                   = "configFile"
+	workingDirKey                   = "workingDir"
+	advertisedIPKey                 = "advertisedIP"
+	dhcpListenAddressKey            = "dhcpListenAddress"
+	proxyDHCPListenAddressKey       = "proxyDHCPListenAddress"
+	tftpListenAddressKey            = "tftpListenAddress"
+	webDAVAndHTTPListenAddressKey   = "webDAVAndHTTPListenAddress"
+	oidcIssuerKey                   = "oidcIssuer"
+	oidcClientIDKey                 = "oidcClientID"
+	eventsListenAddressKey          = "eventsListenAddress"
+	eventsWebSocketListenAddressKey = "eventsWebSocketListenAddress"
 )
 
 func main() {
@@ -48,11 +52,18 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 				log.Fatal(err)
 			}
 
+			// Create generic utilities
+			eventsMessenger := messenger.New(0, true)
+
 			// Create auth utilities
 			oidcValidator := validators.NewOIDCValidator(viper.GetString(oidcIssuerKey), viper.GetString(oidcClientIDKey))
 			if err := oidcValidator.Open(); err != nil {
 				log.Fatal(err)
 			}
+			contextValidator := validators.NewContextValidator(services.AUTHORIZATION_METADATA_KEY, oidcValidator)
+
+			// Create services
+			eventsService := services.NewEventsService(eventsMessenger, contextValidator)
 
 			// Create servers
 			dhcpServer := servers.NewDHCPServer(viper.GetString(dhcpListenAddressKey), viper.GetString(advertisedIPKey))
@@ -63,16 +74,19 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 			)
 			tftpServer := servers.NewTFTPServer(viper.GetString(workingDirKey), viper.GetString(tftpListenAddressKey))
 			webDAVAndHTTPServer := servers.NewWebDAVAndHTTPServer(viper.GetString(workingDirKey), viper.GetString(webDAVAndHTTPListenAddressKey), oidcValidator)
+			eventsServer := servers.NewEventsServer(viper.GetString(eventsListenAddressKey), viper.GetString(eventsWebSocketListenAddressKey), eventsService)
 
 			// Start servers
 			log.Printf(
-				"bofied backend listening on %v (DHCP), %v (proxyDHCP), %v (TFTP) and %v (WebDAV on %v and HTTP on %v)\n",
+				"bofied backend listening on %v (DHCP), %v (proxyDHCP), %v (TFTP), %v (WebDAV on %v and HTTP on %v), %v (gRPC) and %v (gRPC-Web)\n",
 				viper.GetString(dhcpListenAddressKey),
 				viper.GetString(proxyDHCPListenAddressKey),
 				viper.GetString(tftpListenAddressKey),
 				viper.GetString(webDAVAndHTTPListenAddressKey),
 				servers.WebDAVPrefix,
 				servers.HTTPPrefix,
+				viper.GetString(eventsListenAddressKey),
+				viper.GetString(eventsWebSocketListenAddressKey),
 			)
 
 			go func() {
@@ -85,6 +99,10 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 
 			go func() {
 				log.Fatal(tftpServer.ListenAndServe())
+			}()
+
+			go func() {
+				log.Fatal(eventsServer.ListenAndServe())
 			}()
 
 			return webDAVAndHTTPServer.ListenAndServe()
@@ -107,6 +125,8 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 	cmd.PersistentFlags().String(proxyDHCPListenAddressKey, ":4011", "Listen address for proxyDHCP server")
 	cmd.PersistentFlags().String(tftpListenAddressKey, ":"+constants.TFTPPort, "Listen address for TFTP server")
 	cmd.PersistentFlags().String(webDAVAndHTTPListenAddressKey, ":15256", "Listen address for WebDAV and HTTP server")
+	cmd.PersistentFlags().String(eventsListenAddressKey, ":15257", "Listen address for events gRPC server")
+	cmd.PersistentFlags().String(eventsWebSocketListenAddressKey, ":15258", "Listen address for events gRPC server (WebSocket proxy)")
 
 	cmd.PersistentFlags().StringP(oidcIssuerKey, "i", "https://pojntfx.eu.auth0.com/", "OIDC issuer")
 	cmd.PersistentFlags().StringP(oidcClientIDKey, "t", "myoidcclientid", "OIDC client ID")

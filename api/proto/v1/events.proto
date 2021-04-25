@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package com.pojtinger.felix.bofied;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/pojntfx/bofied/pkg/api/proto/v1";
+
+service EventsService {
+  rpc SubscribeToEvents(google.protobuf.Empty) returns (stream EventMessage);
+}
+
+message EventMessage {
+  string CreatedAt = 1;
+  string Description = 2;
+}
