@@ -7,7 +7,7 @@ require (
 	github.com/golang/protobuf v1.5.2
 	github.com/google/gopacket v1.1.19
 	github.com/kataras/compress v0.0.6
-	github.com/maxence-charriere/go-app/v9 v9.0.0-20210422141225-0e7d7c5630b2
+	github.com/maxence-charriere/go-app/v9 v9.0.0-20210424172519-841eccd01cdf
 	github.com/pin/tftp v2.1.0+incompatible
 	github.com/pojntfx/go-app-grpc-chat-frontend-web v0.0.0-20200914214440-b28bb959fef9
 	github.com/pojntfx/liwasc v0.0.0-20210418112916-18ce29ed848d

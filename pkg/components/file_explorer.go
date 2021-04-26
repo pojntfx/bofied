@@ -431,9 +431,6 @@ func (c *FileExplorer) Render() app.UI {
 				Open: c.mountFolderModalOpen,
 				Close: func() {
 					c.mountFolderModalOpen = false
-
-					// This manual update is required as the event is fired from `app.Window`
-					c.Update()
 				},
 
 				ID: "mount-folder-modal-title",
@@ -576,9 +573,6 @@ func (c *FileExplorer) Render() app.UI {
 				Open: c.sharePathModalOpen,
 				Close: func() {
 					c.sharePathModalOpen = false
-
-					// This manual update is required as the event is fired from `app.Window`
-					c.Update()
 				},
 
 				ID: "share-path-modal-title",
@@ -686,9 +680,6 @@ func (c *FileExplorer) Render() app.UI {
 				Close: func() {
 					c.createDirectoryModalOpen = false
 					c.newDirectoryName = ""
-
-					// This manual update is required as the event is fired from `app.Window`
-					c.Update()
 				},
 
 				ID:      "create-directory-modal-title",
@@ -765,9 +756,6 @@ func (c *FileExplorer) Render() app.UI {
 				Open: c.deletionConfirmModalOpen,
 				Close: func() {
 					c.deletionConfirmModalOpen = false
-
-					// This manual update is required as the event is fired from `app.Window`
-					c.Update()
 				},
 
 				ID: "deletion-confirm-modal-title",
@@ -801,9 +789,6 @@ func (c *FileExplorer) Render() app.UI {
 				Open: c.renamePathModalOpen,
 				Close: func() {
 					c.renamePathModalOpen = false
-
-					// This manual update is required as the event is fired from `app.Window`
-					c.Update()
 				},
 
 				ID: "rename-path-modal-title",
@@ -873,9 +858,6 @@ func (c *FileExplorer) Render() app.UI {
 				Open: c.movePathModalOpen,
 				Close: func() {
 					c.movePathModalOpen = false
-
-					// This manual update is required as the event is fired from `app.Window`
-					c.Update()
 				},
 
 				ID:    "move-path-modal-title",
@@ -965,9 +947,6 @@ func (c *FileExplorer) Render() app.UI {
 				Open: c.copyPathModalOpen,
 				Close: func() {
 					c.copyPathModalOpen = false
-
-					// This manual update is required as the event is fired from `app.Window`
-					c.Update()
 				},
 
 				ID:    "copy-path-modal-title",
@@ -1057,9 +1036,6 @@ func (c *FileExplorer) Render() app.UI {
 				Open: c.uploadModalOpen,
 				Close: func() {
 					c.uploadModalOpen = false
-
-					// This manual update is required as the event is fired from `app.Window`
-					c.Update()
 				},
 
 				ID: "upload-modal-title",
