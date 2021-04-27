@@ -3,6 +3,7 @@ package components
 import (
 	"os"
 
+	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
 	"github.com/pojntfx/bofied/pkg/providers"
 )
@@ -56,6 +57,16 @@ type DataShell struct {
 	EventsError        error
 	RecoverEventsError func(app.Context)
 	IgnoreEventsError  func()
+
+	// Identity
+	UserInfo oidc.UserInfo
+	Logout   func(app.Context)
+
+	// Internal state
+	aboutDialogOpen         bool
+	notificationsDrawerOpen bool
+	overflowMenuExpanded    bool
+	userMenuExpanded        bool
 }
 
 func (c *DataShell) Render() app.UI {
@@ -68,58 +79,138 @@ func (c *DataShell) Render() app.UI {
 		})
 	}
 
-	return app.Div().Body(
-		app.Section().
-			Body(
-				&ConfigFileEditor{
-					ConfigFile:    c.ConfigFile,
-					SetConfigFile: c.SetConfigFile,
+	return app.Div().
+		Class("pf-u-h-100").
+		Body(
+			app.Div().
+				Class("pf-c-page").
+				ID("page-layout-horizontal-nav").
+				Aria("hidden", c.aboutDialogOpen).
+				Body(
+					app.A().
+						Class("pf-c-skip-to-content pf-c-button pf-m-primary").
+						Href("#main-content-page-layout-horizontal-nav").
+						Text(
+							"Skip to content",
+						),
+					&Navbar{
+						NotificationsDrawerOpen: c.notificationsDrawerOpen,
+						ToggleNotificationsDrawerOpen: func() {
+							c.notificationsDrawerOpen = !c.notificationsDrawerOpen
+							c.overflowMenuExpanded = false
+						},
 
-					FormatConfigFile:  c.FormatConfigFile,
-					RefreshConfigFile: c.RefreshConfigFile,
-					SaveConfigFile:    c.SaveConfigFile,
+						ToggleAbout: func() {
+							c.aboutDialogOpen = true
+							c.overflowMenuExpanded = false
+						},
 
-					Error:  c.ConfigFileError,
-					Ignore: c.IgnoreConfigFileError,
-				},
-			),
-		app.Section().
-			Body(
-				&FileExplorer{
-					CurrentPath:    c.CurrentPath,
-					SetCurrentPath: c.SetCurrentPath,
+						OverflowMenuExpanded: c.overflowMenuExpanded,
+						ToggleOverflowMenuExpanded: func() {
+							c.overflowMenuExpanded = !c.overflowMenuExpanded
+							c.userMenuExpanded = false
+						},
 
-					Index:        c.Index,
-					RefreshIndex: c.RefreshIndex,
-					WriteToPath:  c.WriteToPath,
+						UserMenuExpanded: c.userMenuExpanded,
+						ToggleUserMenuExpanded: func() {
+							c.userMenuExpanded = !c.userMenuExpanded
+							c.overflowMenuExpanded = false
+						},
 
-					HTTPShareLink: c.HTTPShareLink,
-					TFTPShareLink: c.TFTPShareLink,
-					SharePath:     c.SharePath,
+						UserEmail: c.UserInfo.Email,
+						Logout: func(ctx app.Context) {
+							c.Logout(ctx)
+						},
+					},
+					app.Div().
+						Class("pf-c-page__drawer").
+						Body(
+							app.Div().
+								Class(func() string {
+									classes := "pf-c-drawer"
 
-					CreatePath: c.CreatePath,
-					DeletePath: c.DeletePath,
-					MovePath:   c.MovePath,
-					CopyPath:   c.CopyPath,
+									if c.notificationsDrawerOpen {
+										classes += " pf-m-expanded"
+									}
 
-					WebDAVAddress:  c.WebDAVAddress,
-					WebDAVUsername: c.WebDAVUsername,
-					WebDAVPassword: c.WebDAVPassword,
+									return classes
+								}()).
+								Body(
+									app.Div().
+										Class("pf-c-drawer__main").
+										Body(
+											app.Div().
+												Class("pf-c-drawer__content").
+												Body(
+													app.Div().Class("pf-c-drawer__body").Body(
+														app.Main().
+															Class("pf-c-page__main pf-u-h-100").
+															ID("main-content-page-layout-horizontal-nav").
+															TabIndex(-1).
+															Body(
+																app.Section().
+																	Class("pf-c-page__main-section").
+																	Body(
+																		&ConfigFileEditor{
+																			ConfigFile:    c.ConfigFile,
+																			SetConfigFile: c.SetConfigFile,
 
-					OperationIndex: c.OperationIndex,
+																			FormatConfigFile:  c.FormatConfigFile,
+																			RefreshConfigFile: c.RefreshConfigFile,
+																			SaveConfigFile:    c.SaveConfigFile,
 
-					OperationCurrentPath:    c.OperationCurrentPath,
-					OperationSetCurrentPath: c.OperationSetCurrentPath,
+																			Error:  c.ConfigFileError,
+																			Ignore: c.IgnoreConfigFileError,
+																		},
 
-					Error:   c.FileExplorerError,
-					Recover: c.RecoverFileExplorerError,
-					Ignore:  c.IgnoreFileExplorerError,
-				},
-			),
-		app.Section().Body(
-			&NotificationDrawer{
-				Notifications: notifications,
-			},
-		),
-	)
+																		&FileExplorer{
+																			CurrentPath:    c.CurrentPath,
+																			SetCurrentPath: c.SetCurrentPath,
+
+																			Index:        c.Index,
+																			RefreshIndex: c.RefreshIndex,
+																			WriteToPath:  c.WriteToPath,
+
+																			HTTPShareLink: c.HTTPShareLink,
+																			TFTPShareLink: c.TFTPShareLink,
+																			SharePath:     c.SharePath,
+
+																			CreatePath: c.CreatePath,
+																			DeletePath: c.DeletePath,
+																			MovePath:   c.MovePath,
+																			CopyPath:   c.CopyPath,
+
+																			WebDAVAddress:  c.WebDAVAddress,
+																			WebDAVUsername: c.WebDAVUsername,
+																			WebDAVPassword: c.WebDAVPassword,
+
+																			OperationIndex: c.OperationIndex,
+
+																			OperationCurrentPath:    c.OperationCurrentPath,
+																			OperationSetCurrentPath: c.OperationSetCurrentPath,
+
+																			Error:   c.FileExplorerError,
+																			Recover: c.RecoverFileExplorerError,
+																			Ignore:  c.IgnoreFileExplorerError,
+																		},
+																	),
+															),
+													),
+												),
+											app.Div().
+												Class("pf-c-drawer__panel").
+												Body(
+													app.Div().
+														Class("pf-c-drawer__body pf-m-no-padding").
+														Body(
+															&NotificationDrawer{
+																Notifications: notifications,
+															},
+														),
+												),
+										),
+								),
+						),
+				),
+		)
 }
