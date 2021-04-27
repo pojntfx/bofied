@@ -116,6 +116,9 @@ func (c *Home) Render() app.UI {
 											EventsError:        dpcp.EventsError,
 											RecoverEventsError: dpcp.RecoverEventsError,
 											IgnoreEventsError:  dpcp.IgnoreEventsError,
+
+											UserInfo: ipcp.UserInfo,
+											Logout:   ipcp.Logout,
 										}
 									},
 								}
