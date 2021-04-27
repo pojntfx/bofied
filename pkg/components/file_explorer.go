@@ -37,10 +37,6 @@ type FileExplorer struct {
 	OperationCurrentPath    string
 	OperationSetCurrentPath func(string)
 
-	Error   error
-	Recover func()
-	Ignore  func()
-
 	selectedPath     string
 	newDirectoryName string
 	newFileName      string
