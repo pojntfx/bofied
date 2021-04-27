@@ -7,12 +7,12 @@
 <meta name="description" content="Network boot nodes in a network.">
 <meta name="keywords" content="pxe-boot, ipxe, netboot, network-boot, http-server, dhcp-server, pxe, webdav-server, tftp-server, proxy-dhcp">
 <meta name="theme-color" content="#151515">
-<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover" name="viewport">
-<meta content="http://127.0.0.1:32781/" property="og:url">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
+<meta property="og:url" content="http://127.0.0.1:36721/">
 <meta property="og:title" content="bofied">
-<meta property="og:description" content="Network boot nodes in a network.">
+<meta content="Network boot nodes in a network." property="og:description">
 <meta property="og:type" content="website">
-<meta property="og:image" content>
+<meta content property="og:image">
 <title>
 bofied
 </title>
@@ -21,10 +21,10 @@ bofied
 <link rel="manifest" href="/bofied/manifest.webmanifest">
 <link type="text/css" rel="stylesheet" href="/bofied/app.css">
 <script defer src="/bofied/wasm_exec.js"></script>
-<script defer src="/bofied/app.js"></script>
+<script src="/bofied/app.js" defer></script>
 <link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly.css">
-<link rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly-addons.css" type="text/css">
-<link type="text/css" rel="stylesheet" href="/bofied/web/index.css">
+<link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly-addons.css">
+<link href="/bofied/web/index.css" type="text/css" rel="stylesheet">
 <meta property="og:url" content="https://pojntfx.github.io/bofied/">
 <meta property="og:title" content="bofied">
 <meta property="og:description" content="Network boot nodes in a network.">
@@ -101,7 +101,7 @@ Backend URL
 </div>
 <div class="pf-c-form__group">
 <div class="pf-c-form__group-label">
-<label class="pf-c-form__label" for="oidcIssuer">
+<label for="oidcIssuer" class="pf-c-form__label">
 <span class="pf-c-form__label-text">
 OIDC Issuer
 </span>
@@ -111,7 +111,7 @@ OIDC Issuer
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input aria-invalid="false" name="oidcIssuer" id="oidcIssuer" type="url" required placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control">
+<input required placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false" name="oidcIssuer" id="oidcIssuer" type="url">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -126,7 +126,7 @@ OIDC Client ID
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input name="oidcClientID" id="oidcClientID" type="text" required class="pf-c-form-control" aria-invalid="false">
+<input class="pf-c-form-control" aria-invalid="false" name="oidcClientID" id="oidcClientID" type="text" required>
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -141,7 +141,7 @@ OIDC Redirect URL
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input class="pf-c-form-control" aria-invalid="false" name="oidcRedirectURL" id="oidcRedirectURL" type="url" required placeholder="http://localhost:15125/">
+<input placeholder="http://localhost:15125/" class="pf-c-form-control" aria-invalid="false" name="oidcRedirectURL" id="oidcRedirectURL" type="url" required>
 </div>
 </div>
 <div class="pf-c-form__group pf-m-action">
@@ -168,7 +168,7 @@ bofied is a network boot server. It provides everything you need to PXE boot a n
 </p>
 <ul class="pf-c-list pf-m-inline">
 <li>
-<a href="https://github.com/pojntfx/bofied#Usage" target="_blank">
+<a target="_blank" href="https://github.com/pojntfx/bofied#Usage">
 Documentation
 </a>
 </li>
