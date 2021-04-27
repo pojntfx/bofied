@@ -28,7 +28,7 @@ func (c *FileGrid) Render() app.UI {
 			if c.Standalone {
 				classes += " pf-m-all-4-col-on-md pf-m-all-3-col-on-xl pf-u-py-md"
 			} else {
-				classes += " pf-m-all-4-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-2-col-on-xl"
+				classes += " pf-m-all-4-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-3-col-on-xl"
 			}
 
 			return classes

@@ -151,44 +151,56 @@ func (c *DataShell) Render() app.UI {
 																app.Section().
 																	Class("pf-c-page__main-section").
 																	Body(
-																		&ConfigFileEditor{
-																			ConfigFile:    c.ConfigFile,
-																			SetConfigFile: c.SetConfigFile,
+																		app.Div().
+																			Class("pf-l-grid pf-m-gutter").
+																			Body(
+																				app.Div().
+																					Class("pf-l-grid__item pf-m-12-col pf-m-12-col-on-md pf-m-5-col-on-xl").
+																					Body(
+																						&ConfigFileEditor{
+																							ConfigFile:    c.ConfigFile,
+																							SetConfigFile: c.SetConfigFile,
 
-																			FormatConfigFile:  c.FormatConfigFile,
-																			RefreshConfigFile: c.RefreshConfigFile,
-																			SaveConfigFile:    c.SaveConfigFile,
+																							FormatConfigFile:  c.FormatConfigFile,
+																							RefreshConfigFile: c.RefreshConfigFile,
+																							SaveConfigFile:    c.SaveConfigFile,
 
-																			Error:  c.ConfigFileError,
-																			Ignore: c.IgnoreConfigFileError,
-																		},
+																							Error:  c.ConfigFileError,
+																							Ignore: c.IgnoreConfigFileError,
+																						},
+																					),
 
-																		&FileExplorer{
-																			CurrentPath:    c.CurrentPath,
-																			SetCurrentPath: c.SetCurrentPath,
+																				app.Div().
+																					Class("pf-l-grid__item pf-m-12-col pf-m-12-col-on-md pf-m-7-col-on-xl").
+																					Body(
+																						&FileExplorer{
+																							CurrentPath:    c.CurrentPath,
+																							SetCurrentPath: c.SetCurrentPath,
 
-																			Index:        c.Index,
-																			RefreshIndex: c.RefreshIndex,
-																			WriteToPath:  c.WriteToPath,
+																							Index:        c.Index,
+																							RefreshIndex: c.RefreshIndex,
+																							WriteToPath:  c.WriteToPath,
 
-																			HTTPShareLink: c.HTTPShareLink,
-																			TFTPShareLink: c.TFTPShareLink,
-																			SharePath:     c.SharePath,
+																							HTTPShareLink: c.HTTPShareLink,
+																							TFTPShareLink: c.TFTPShareLink,
+																							SharePath:     c.SharePath,
 
-																			CreatePath: c.CreatePath,
-																			DeletePath: c.DeletePath,
-																			MovePath:   c.MovePath,
-																			CopyPath:   c.CopyPath,
+																							CreatePath: c.CreatePath,
+																							DeletePath: c.DeletePath,
+																							MovePath:   c.MovePath,
+																							CopyPath:   c.CopyPath,
 
-																			WebDAVAddress:  c.WebDAVAddress,
-																			WebDAVUsername: c.WebDAVUsername,
-																			WebDAVPassword: c.WebDAVPassword,
+																							WebDAVAddress:  c.WebDAVAddress,
+																							WebDAVUsername: c.WebDAVUsername,
+																							WebDAVPassword: c.WebDAVPassword,
 
-																			OperationIndex: c.OperationIndex,
+																							OperationIndex: c.OperationIndex,
 
-																			OperationCurrentPath:    c.OperationCurrentPath,
-																			OperationSetCurrentPath: c.OperationSetCurrentPath,
-																		},
+																							OperationCurrentPath:    c.OperationCurrentPath,
+																							OperationSetCurrentPath: c.OperationSetCurrentPath,
+																						},
+																					),
+																			),
 																	),
 															),
 													),
