@@ -188,10 +188,6 @@ func (c *DataShell) Render() app.UI {
 
 																			OperationCurrentPath:    c.OperationCurrentPath,
 																			OperationSetCurrentPath: c.OperationSetCurrentPath,
-
-																			Error:   c.FileExplorerError,
-																			Recover: c.RecoverFileExplorerError,
-																			Ignore:  c.IgnoreFileExplorerError,
 																		},
 																	),
 															),
@@ -211,6 +207,47 @@ func (c *DataShell) Render() app.UI {
 										),
 								),
 						),
+
+					app.Ul().
+						Class("pf-c-alert-group pf-m-toast").
+						Body(
+							app.If(
+								c.FileExplorerError != nil,
+								app.Li().
+									Class("pf-c-alert-group__item").
+									Body(
+										&Status{
+											Error:       c.FileExplorerError,
+											ErrorText:   "Fatal Error",
+											Recover:     c.RecoverFileExplorerError,
+											RecoverText: "Reconnect",
+											Ignore:      c.IgnoreFileExplorerError,
+										},
+									),
+							),
+						),
+
+					&AboutModal{
+						Open: c.aboutDialogOpen,
+						Close: func() {
+							c.aboutDialogOpen = false
+						},
+
+						ID: "about-modal-title",
+
+						LogoSrc: "/web/logo.svg",
+						LogoAlt: "Logo",
+						Title:   "bofied",
+
+						Body: app.Dl().
+							Body(
+								app.Dt().Text("Frontend version"),
+								app.Dd().Text("main"),
+								app.Dt().Text("Backend version"),
+								app.Dd().Text("main"),
+							),
+						Footer: "Copyright © 2021 Felicitas Pojtinger and contributors (SPDX-License-Identifier: AGPL-3.0)",
+					},
 				),
 		)
 }
