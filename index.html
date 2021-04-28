@@ -8,7 +8,7 @@
 <meta name="keywords" content="pxe-boot, ipxe, netboot, network-boot, http-server, dhcp-server, pxe, webdav-server, tftp-server, proxy-dhcp">
 <meta name="theme-color" content="#151515">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
-<meta property="og:url" content="http://127.0.0.1:46235/">
+<meta property="og:url" content="http://127.0.0.1:40209/">
 <meta property="og:title" content="bofied">
 <meta property="og:description" content="Network boot nodes in a network.">
 <meta property="og:type" content="website">
@@ -22,7 +22,7 @@ bofied
 <link type="text/css" rel="stylesheet" href="/bofied/app.css">
 <script defer src="/bofied/wasm_exec.js"></script>
 <script defer src="/bofied/app.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly.css" type="text/css">
+<link href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly.css" type="text/css" rel="stylesheet">
 <link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly-addons.css">
 <link type="text/css" rel="stylesheet" href="/bofied/web/index.css">
 <meta property="og:url" content="https://pojntfx.github.io/bofied/">
@@ -86,7 +86,7 @@ Network boot nodes in a network.
 <form class="pf-c-form">
 <div class="pf-c-form__group">
 <div class="pf-c-form__group-label">
-<label for="backendURLName" class="pf-c-form__label">
+<label class="pf-c-form__label" for="backendURLName">
 <span class="pf-c-form__label-text">
 Backend URL
 </span>
@@ -96,7 +96,7 @@ Backend URL
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input required placeholder="ws://localhost:15124" class="pf-c-form-control" aria-invalid="false" name="backendURLName" id="backendURLName" type="url">
+<input id="backendURLName" type="url" required placeholder="ws://localhost:15124" class="pf-c-form-control" aria-invalid="false" name="backendURLName">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -106,12 +106,12 @@ Backend URL
 OIDC Issuer
 </span>
 </label>
-<span class="pf-c-form__label-required" aria-hidden="true">
+<span aria-hidden="true" class="pf-c-form__label-required">
 *
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input class="pf-c-form-control" aria-invalid="false" name="oidcIssuer" id="oidcIssuer" type="url" required placeholder="https://pojntfx.eu.auth0.com/">
+<input name="oidcIssuer" id="oidcIssuer" type="url" required placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -126,7 +126,7 @@ OIDC Client ID
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input name="oidcClientID" id="oidcClientID" type="text" required class="pf-c-form-control" aria-invalid="false">
+<input aria-invalid="false" name="oidcClientID" id="oidcClientID" type="text" required class="pf-c-form-control">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -141,7 +141,7 @@ OIDC Redirect URL
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input required placeholder="http://localhost:15125/" class="pf-c-form-control" aria-invalid="false" name="oidcRedirectURL" id="oidcRedirectURL" type="url">
+<input name="oidcRedirectURL" id="oidcRedirectURL" type="url" required placeholder="http://localhost:15125/" class="pf-c-form-control" aria-invalid="false">
 </div>
 </div>
 <div class="pf-c-form__group pf-m-action">
@@ -155,7 +155,7 @@ Log in
 <div class="pf-c-login__main-footer-band">
 <p class="pf-c-login__main-footer-band-item">
 Not sure what to do? 
-<a href="https://github.com/pojntfx/liwasc#Usage" target="_blank">
+<a target="_blank" href="https://github.com/pojntfx/liwasc#Usage">
 Get help.
 </a>
 </p>
@@ -168,12 +168,12 @@ bofied is a network boot server. It provides everything you need to PXE boot a n
 </p>
 <ul class="pf-c-list pf-m-inline">
 <li>
-<a href="https://github.com/pojntfx/bofied#Usage" target="_blank">
+<a target="_blank" href="https://github.com/pojntfx/bofied#Usage">
 Documentation
 </a>
 </li>
 <li>
-<a target="_blank" href="https://github.com/pojntfx/bofied/blob/main/LICENSE">
+<a href="https://github.com/pojntfx/bofied/blob/main/LICENSE" target="_blank">
 License
 </a>
 </li>
