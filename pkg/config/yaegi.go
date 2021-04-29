@@ -42,6 +42,7 @@ func GetFileName(
 	ip string,
 	macAddress string,
 	arch int,
+	pure bool,
 ) (string, error) {
 	// Read the config file (we are re-reading each time so that a server restart is unnecessary)
 	src, err := ioutil.ReadFile(configFileLocation)
@@ -80,6 +81,11 @@ func GetFileName(
 				useStdlib = true
 			}
 		}
+	}
+
+	// Manually prevent stdlib use if set to pure
+	if pure {
+		useStdlib = false
 	}
 
 	// Start the interpreter (for file name)

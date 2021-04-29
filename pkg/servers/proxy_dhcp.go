@@ -12,18 +12,18 @@ type ProxyDHCPServer struct {
 	UDPServer
 }
 
-func NewProxyDHCPServer(listenAddress string, advertisedIP string, configFileLocation string, eventHandler *eventing.EventHandler) *ProxyDHCPServer {
+func NewProxyDHCPServer(listenAddress string, advertisedIP string, configFileLocation string, eventHandler *eventing.EventHandler, pureConfig bool) *ProxyDHCPServer {
 	return &ProxyDHCPServer{
 		UDPServer: UDPServer{
 			listenAddress: listenAddress,
 			handlePacket: func(conn *net.UDPConn, raddr *net.UDPAddr, braddr *net.UDPAddr, rawIncomingUDPPacket []byte) (int, error) {
-				return handleProxyDHCPPacket(conn, raddr, braddr, rawIncomingUDPPacket, net.ParseIP(advertisedIP).To4(), configFileLocation, eventHandler.Emit)
+				return handleProxyDHCPPacket(conn, raddr, braddr, rawIncomingUDPPacket, net.ParseIP(advertisedIP).To4(), configFileLocation, eventHandler.Emit, pureConfig)
 			},
 		},
 	}
 }
 
-func handleProxyDHCPPacket(conn *net.UDPConn, raddr *net.UDPAddr, _ *net.UDPAddr, rawIncomingUDPPacket []byte, advertisedIP net.IP, configFileLocation string, emit func(f string, v ...interface{})) (int, error) {
+func handleProxyDHCPPacket(conn *net.UDPConn, raddr *net.UDPAddr, _ *net.UDPAddr, rawIncomingUDPPacket []byte, advertisedIP net.IP, configFileLocation string, emit func(f string, v ...interface{}), pureConfig bool) (int, error) {
 	// Decode packet
 	incomingDHCPPacket, err := transcoding.DecodeDHCPPacket(rawIncomingUDPPacket)
 	if err != nil {
@@ -41,6 +41,7 @@ func handleProxyDHCPPacket(conn *net.UDPConn, raddr *net.UDPAddr, _ *net.UDPAddr
 		raddr.IP.String(),
 		incomingDHCPPacket.ClientHWAddr.String(),
 		incomingDHCPPacket.Arch,
+		pureConfig,
 	)
 	if err != nil {
 		return 0, err
