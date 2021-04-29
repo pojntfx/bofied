@@ -46,7 +46,6 @@ func handleProxyDHCPPacket(conn *net.UDPConn, raddr *net.UDPAddr, _ *net.UDPAddr
 		raddr.IP.String(),
 		incomingDHCPPacket.ClientHWAddr.String(),
 		incomingDHCPPacket.Arch,
-		incomingDHCPPacket.Undi,
 	)
 	if err != nil {
 		return 0, err

@@ -94,7 +94,7 @@ func (c *ConfigFileEditor) Render() app.UI {
 								),
 							&Controlled{
 								Component: app.Textarea().
-									Class("pf-c-code-editor__main pf-u-w-100 pf-x-u-resize-vertical").
+									Class("pf-c-code-editor__main pf-u-w-100 pf-x-u-resize-vertical pf-u-p-sm").
 									Rows(25).
 									OnInput(func(ctx app.Context, e app.Event) {
 										c.SetConfigFile(ctx.JSSrc.Get("value").String())

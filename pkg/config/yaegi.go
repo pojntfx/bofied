@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/traefik/yaegi/interp"
+	"github.com/traefik/yaegi/stdlib"
 )
 
 const initialConfigFileContent = `package config
@@ -15,7 +16,6 @@ func GetFileName(
 	ip string,
 	macAddress string,
 	arch int,
-	undi int,
 ) string {
 	switch arch {
 	case 7:
@@ -32,10 +32,10 @@ func GetFileName(
 	ip string,
 	macAddress string,
 	arch int,
-	undi int,
 ) (string, error) {
 	// Start the interpreter
 	i := interp.New(interp.Options{})
+	i.Use(stdlib.Symbols)
 
 	// Read the config file (we are re-reading each time so that a server restart is unnecessary)
 	src, err := ioutil.ReadFile(configFileLocation)
@@ -59,7 +59,6 @@ func GetFileName(
 		ip string,
 		macAddress string,
 		arch int,
-		undi int,
 	) string)
 	if !ok {
 		return "", errors.New("could not parse config function: invalid config function signature")
@@ -70,7 +69,6 @@ func GetFileName(
 		ip,
 		macAddress,
 		arch,
-		undi,
 	), nil
 }
 
