@@ -8,10 +8,6 @@ import (
 	"github.com/pojntfx/bofied/pkg/transcoding"
 )
 
-const (
-	ConfigFunctionIdentifier = "config.GetFileName"
-)
-
 type ProxyDHCPServer struct {
 	UDPServer
 }
@@ -41,7 +37,6 @@ func handleProxyDHCPPacket(conn *net.UDPConn, raddr *net.UDPAddr, _ *net.UDPAddr
 
 	// Get the boot file name
 	bootFileName, err := config.GetFileName(
-		ConfigFunctionIdentifier,
 		configFileLocation,
 		raddr.IP.String(),
 		incomingDHCPPacket.ClientHWAddr.String(),
