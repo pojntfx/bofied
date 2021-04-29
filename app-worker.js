@@ -1,7 +1,7 @@
-const cacheName = "app-" + "b5bd111610489db345e7689e6c5957f1bab8b3b3";
+const cacheName = "app-" + "85d9108a9e1823ddc67d50836c51b277ca190380";
 
 self.addEventListener("install", event => {
-  console.log("installing app worker b5bd111610489db345e7689e6c5957f1bab8b3b3");
+  console.log("installing app worker 85d9108a9e1823ddc67d50836c51b277ca190380");
   self.skipWaiting();
 
   event.waitUntil(
@@ -16,8 +16,8 @@ self.addEventListener("install", event => {
         "/bofied/web/app.wasm",
         "/bofied/web/icon.png",
         "/bofied/web/index.css",
-        "https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly-addons.css",
-        "https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly.css",
+        "https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly-addons.css",
+        "https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly.css",
         
       ]);
     })
@@ -36,7 +36,7 @@ self.addEventListener("activate", event => {
       );
     })
   );
-  console.log("app worker b5bd111610489db345e7689e6c5957f1bab8b3b3 is activated");
+  console.log("app worker 85d9108a9e1823ddc67d50836c51b277ca190380 is activated");
 });
 
 self.addEventListener("fetch", event => {
