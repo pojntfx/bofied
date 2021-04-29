@@ -60,8 +60,8 @@ func main() {
 				`<meta property="og:image" content="https://pojntfx.github.io/bofied/web/icon.png">`,
 			},
 			Styles: []string{
-				`https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly.css`,
-				`https://unpkg.com/@patternfly/patternfly@4.96.2/patternfly-addons.css`,
+				`https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly.css`,
+				`https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly-addons.css`,
 				`/web/index.css`,
 			},
 			ThemeColor: "#151515",
