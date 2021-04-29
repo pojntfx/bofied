@@ -6,13 +6,13 @@
 <meta name="author" content="Felicitas Pojtinger">
 <meta name="description" content="Network boot nodes in a network.">
 <meta name="keywords" content="pxe-boot, ipxe, netboot, network-boot, http-server, dhcp-server, pxe, webdav-server, tftp-server, proxy-dhcp">
-<meta content="#151515" name="theme-color">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
-<meta property="og:url" content="http://127.0.0.1:32801/">
-<meta property="og:title" content="bofied">
+<meta name="theme-color" content="#151515">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover" name="viewport">
+<meta property="og:url" content="http://127.0.0.1:41853/">
+<meta content="bofied" property="og:title">
 <meta property="og:description" content="Network boot nodes in a network.">
-<meta property="og:type" content="website">
-<meta content property="og:image">
+<meta content="website" property="og:type">
+<meta property="og:image" content>
 <title>
 bofied
 </title>
@@ -22,9 +22,9 @@ bofied
 <link type="text/css" rel="stylesheet" href="/bofied/app.css">
 <script defer src="/bofied/wasm_exec.js"></script>
 <script defer src="/bofied/app.js"></script>
-<link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly.css">
-<link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly-addons.css">
-<link type="text/css" rel="stylesheet" href="/bofied/web/index.css">
+<link rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly.css" type="text/css">
+<link rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly-addons.css" type="text/css">
+<link href="/bofied/web/index.css" type="text/css" rel="stylesheet">
 <meta property="og:url" content="https://pojntfx.github.io/bofied/">
 <meta property="og:title" content="bofied">
 <meta property="og:description" content="Network boot nodes in a network.">
@@ -96,22 +96,22 @@ Backend URL
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input name="backendURLName" id="backendURLName" type="url" required placeholder="ws://localhost:15124" class="pf-c-form-control" aria-invalid="false">
+<input id="backendURLName" type="url" required placeholder="ws://localhost:15124" class="pf-c-form-control" aria-invalid="false" name="backendURLName">
 </div>
 </div>
 <div class="pf-c-form__group">
 <div class="pf-c-form__group-label">
-<label for="oidcIssuer" class="pf-c-form__label">
+<label class="pf-c-form__label" for="oidcIssuer">
 <span class="pf-c-form__label-text">
 OIDC Issuer
 </span>
 </label>
-<span aria-hidden="true" class="pf-c-form__label-required">
+<span class="pf-c-form__label-required" aria-hidden="true">
 *
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input required placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false" name="oidcIssuer" id="oidcIssuer" type="url">
+<input name="oidcIssuer" id="oidcIssuer" type="url" required placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -121,12 +121,12 @@ OIDC Issuer
 OIDC Client ID
 </span>
 </label>
-<span aria-hidden="true" class="pf-c-form__label-required">
+<span class="pf-c-form__label-required" aria-hidden="true">
 *
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input aria-invalid="false" name="oidcClientID" id="oidcClientID" type="text" required class="pf-c-form-control">
+<input required class="pf-c-form-control" aria-invalid="false" name="oidcClientID" id="oidcClientID" type="text">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -136,12 +136,12 @@ OIDC Client ID
 OIDC Redirect URL
 </span>
 </label>
-<span class="pf-c-form__label-required" aria-hidden="true">
+<span aria-hidden="true" class="pf-c-form__label-required">
 *
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input class="pf-c-form-control" aria-invalid="false" name="oidcRedirectURL" id="oidcRedirectURL" type="url" required placeholder="http://localhost:15125/">
+<input placeholder="http://localhost:15125/" class="pf-c-form-control" aria-invalid="false" name="oidcRedirectURL" id="oidcRedirectURL" type="url" required>
 </div>
 </div>
 <div class="pf-c-form__group pf-m-action">
@@ -155,7 +155,7 @@ Log in
 <div class="pf-c-login__main-footer-band">
 <p class="pf-c-login__main-footer-band-item">
 Not sure what to do? 
-<a target="_blank" href="https://github.com/pojntfx/liwasc#Usage">
+<a href="https://github.com/pojntfx/liwasc#Usage" target="_blank">
 Get help.
 </a>
 </p>
