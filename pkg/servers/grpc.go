@@ -11,24 +11,27 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-type EventsServer struct {
+type GRPCServer struct {
 	listenAddress string
 
-	service *services.EventsService
-	proxy   *websocketproxy.WebSocketProxyServer
+	eventsService   *services.EventsService
+	metadataService *services.MetadataService
+
+	proxy *websocketproxy.WebSocketProxyServer
 }
 
-func NewEventsServer(listenAddress string, service *services.EventsService) (*EventsServer, *websocketproxy.WebSocketProxyServer) {
+func NewGRPCServer(listenAddress string, eventsService *services.EventsService, metadataService *services.MetadataService) (*GRPCServer, *websocketproxy.WebSocketProxyServer) {
 	proxy := websocketproxy.NewWebSocketProxyServer()
 
-	return &EventsServer{
-		listenAddress: listenAddress,
-		service:       service,
-		proxy:         proxy,
+	return &GRPCServer{
+		listenAddress:   listenAddress,
+		eventsService:   eventsService,
+		metadataService: metadataService,
+		proxy:           proxy,
 	}, proxy
 }
 
-func (s *EventsServer) ListenAndServe() error {
+func (s *GRPCServer) ListenAndServe() error {
 	listener, err := net.Listen("tcp", s.listenAddress)
 	if err != nil {
 		return err
@@ -37,7 +40,8 @@ func (s *EventsServer) ListenAndServe() error {
 	server := grpc.NewServer()
 	reflection.Register(server)
 
-	api.RegisterEventsServiceServer(server, s.service)
+	api.RegisterEventsServiceServer(server, s.eventsService)
+	api.RegisterMetadataServiceServer(server, s.metadataService)
 
 	doneChan := make(chan struct{})
 	errChan := make(chan error)

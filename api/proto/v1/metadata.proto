@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package com.pojtinger.felicitas.bofied;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/pojntfx/bofied/pkg/api/proto/v1";
+
+service MetadataService {
+  rpc GetMetadata(google.protobuf.Empty) returns (MetadataMessage);
+}
+
+message MetadataMessage { string AdvertisedIP = 1; }

@@ -25,7 +25,7 @@ const (
 	webDAVAndHTTPListenAddressKey = "extendedHTTPListenAddress"
 	oidcIssuerKey                 = "oidcIssuer"
 	oidcClientIDKey               = "oidcClientID"
-	eventsListenAddressKey        = "eventsListenAddress"
+	grpcListenAddressKey          = "grpcListenAddress"
 	pureConfigKey                 = "pureConfig"
 )
 
@@ -64,6 +64,7 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 
 			// Create services
 			eventsService := services.NewEventsService(eventsHandler, contextValidator)
+			metadataService := services.NewMetadataService(viper.GetString(advertisedIPKey), contextValidator)
 
 			// Create servers
 			dhcpServer := servers.NewDHCPServer(
@@ -83,20 +84,21 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 				viper.GetString(tftpListenAddressKey),
 				eventsHandler,
 			)
-			eventsServer, eventsServerHandler := servers.NewEventsServer(viper.GetString(eventsListenAddressKey), eventsService)
-			extendedHTTPServer := servers.NewExtendedHTTPServer(viper.GetString(workingDirKey), viper.GetString(webDAVAndHTTPListenAddressKey), oidcValidator, eventsServerHandler)
+			grpcServer, grpcServerHandler := servers.NewGRPCServer(viper.GetString(grpcListenAddressKey), eventsService, metadataService)
+			extendedHTTPServer := servers.NewExtendedHTTPServer(viper.GetString(workingDirKey), viper.GetString(webDAVAndHTTPListenAddressKey), oidcValidator, grpcServerHandler)
 
 			// Start servers
 			log.Printf(
-				"bofied backend listening on %v (DHCP), %v (proxyDHCP), %v (TFTP), %v (WebDAV on %v, HTTP on %v and gRPC-Web on %v) and %v (gRPC)\n",
+				"bofied backend listening on %v (DHCP), %v (proxyDHCP), %v (TFTP), %v (WebDAV on %v, HTTP on %v and gRPC-Web on %v) and %v (gRPC), advertising IP %v to DHCP clients\n",
 				viper.GetString(dhcpListenAddressKey),
 				viper.GetString(proxyDHCPListenAddressKey),
 				viper.GetString(tftpListenAddressKey),
 				viper.GetString(webDAVAndHTTPListenAddressKey),
 				servers.WebDAVPrefix,
 				servers.HTTPPrefix,
-				servers.EventsPrefix,
-				viper.GetString(eventsListenAddressKey),
+				servers.GRPCPrefix,
+				viper.GetString(grpcListenAddressKey),
+				viper.GetString(advertisedIPKey),
 			)
 
 			go func() {
@@ -112,7 +114,7 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 			}()
 
 			go func() {
-				log.Fatal(eventsServer.ListenAndServe())
+				log.Fatal(grpcServer.ListenAndServe())
 			}()
 
 			return extendedHTTPServer.ListenAndServe()
@@ -135,7 +137,7 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 	cmd.PersistentFlags().String(proxyDHCPListenAddressKey, ":4011", "Listen address for proxyDHCP server")
 	cmd.PersistentFlags().String(tftpListenAddressKey, ":"+constants.TFTPPort, "Listen address for TFTP server")
 	cmd.PersistentFlags().String(webDAVAndHTTPListenAddressKey, ":15256", "Listen address for WebDAV, HTTP and gRPC-Web server")
-	cmd.PersistentFlags().String(eventsListenAddressKey, ":15257", "Listen address for events gRPC server")
+	cmd.PersistentFlags().String(grpcListenAddressKey, ":15257", "Listen address for gRPC server")
 
 	cmd.PersistentFlags().StringP(oidcIssuerKey, "i", "https://pojntfx.eu.auth0.com/", "OIDC issuer")
 	cmd.PersistentFlags().StringP(oidcClientIDKey, "t", "myoidcclientid", "OIDC client ID")
