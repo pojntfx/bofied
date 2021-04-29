@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func ParsePXEClassIdentifier(classID string) (isPXE bool, arch int, undi int, err error) {
+func ParsePXEClassIdentifier(classID string) (isPXE bool, arch int, err error) {
 	parts := strings.Split(classID, ":")
 
 	for i, part := range parts {
@@ -15,13 +15,6 @@ func ParsePXEClassIdentifier(classID string) (isPXE bool, arch int, undi int, er
 		case "Arch":
 			if len(parts) > i {
 				arch, err = strconv.Atoi(parts[i+1])
-				if err != nil {
-					return
-				}
-			}
-		case "UNDI":
-			if len(parts) > i {
-				undi, err = strconv.Atoi(parts[i+1])
 				if err != nil {
 					return
 				}

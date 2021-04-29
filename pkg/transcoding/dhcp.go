@@ -20,7 +20,6 @@ type DecodedDHCPPacket struct {
 	Xid                 uint32
 	ClientIdentifierOpt layers.DHCPOption
 	Arch                int
-	Undi                int
 }
 
 func DecodeDHCPPacket(rawIncomingUDPPacket []byte) (DecodedDHCPPacket, error) {
@@ -40,20 +39,18 @@ func DecodeDHCPPacket(rawIncomingUDPPacket []byte) (DecodedDHCPPacket, error) {
 	// Parse DHCP options
 	isPXE := false
 	arch := 0
-	undi := 0
 	clientIdentifierOpt := layers.DHCPOption{}
 	if incomingDHCPPacket.Operation == layers.DHCPOpRequest {
 		for _, option := range incomingDHCPPacket.Options {
 			switch option.Type {
 			case layers.DHCPOptClassID:
-				pxe, a, u, err := ParsePXEClassIdentifier(string(option.Data))
+				pxe, a, err := ParsePXEClassIdentifier(string(option.Data))
 				if err != nil {
 					return DecodedDHCPPacket{}, err
 				}
 
 				isPXE = pxe
 				arch = a
-				undi = u
 			case DHCPOptUUIDGUIDClientIdentifier:
 				clientIdentifierOpt = option
 			}
@@ -66,7 +63,6 @@ func DecodeDHCPPacket(rawIncomingUDPPacket []byte) (DecodedDHCPPacket, error) {
 		Xid:                 incomingDHCPPacket.Xid,
 		ClientIdentifierOpt: clientIdentifierOpt,
 		Arch:                arch,
-		Undi:                undi,
 	}, nil
 }
 
