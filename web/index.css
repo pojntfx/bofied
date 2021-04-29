@@ -10,8 +10,8 @@
   height: 100vh;
 }
 
-.pf-x-u-resize-vertical {
-  resize: vertical;
+.pf-x-u-resize-none {
+  resize: none;
 }
 
 .pf-x-m-modal-overlay {

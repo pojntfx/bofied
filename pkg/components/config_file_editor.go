@@ -20,7 +20,7 @@ type ConfigFileEditor struct {
 
 func (c *ConfigFileEditor) Render() app.UI {
 	return app.Div().
-		Class("pf-c-card").
+		Class("pf-c-card pf-u-h-100").
 		Body(
 			app.Div().
 				Class("pf-c-card__title").
@@ -29,7 +29,7 @@ func (c *ConfigFileEditor) Render() app.UI {
 				Class("pf-c-card__body").
 				Body(
 					app.Div().
-						Class("pf-c-code-editor").
+						Class("pf-c-code-editor pf-u-h-100 pf-u-display-flex pf-u-flex-direction-column").
 						Body(
 							app.Div().
 								Class("pf-c-code-editor__header").
@@ -94,7 +94,7 @@ func (c *ConfigFileEditor) Render() app.UI {
 								),
 							&Controlled{
 								Component: app.Textarea().
-									Class("pf-c-code-editor__main pf-u-w-100 pf-x-u-resize-vertical pf-u-p-sm").
+									Class("pf-c-code-editor__main pf-u-w-100 pf-x-u-resize-none pf-u-p-sm pf-u-p-sm pf-u-flex-fill").
 									Rows(25).
 									OnInput(func(ctx app.Context, e app.Event) {
 										c.SetConfigFile(ctx.JSSrc.Get("value").String())

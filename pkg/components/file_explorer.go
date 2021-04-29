@@ -75,9 +75,10 @@ func (c *FileExplorer) Render() app.UI {
 	}
 
 	return app.Div().
+		Class("pf-u-h-100").
 		Body(
 			app.Div().
-				Class("pf-c-card").
+				Class("pf-c-card pf-u-h-100").
 				Body(
 					app.Div().
 						Class("pf-c-card__title").
