@@ -721,7 +721,7 @@ func (c *FileExplorer) Render() app.UI {
 											Required(true).
 											Class("pf-c-form-control").
 											OnInput(func(ctx app.Context, e app.Event) {
-												c.newDirectoryName = ctx.JSSrc.Get("value").String()
+												c.newDirectoryName = ctx.JSSrc().Get("value").String()
 											}),
 									},
 									Properties: map[string]interface{}{
@@ -823,7 +823,7 @@ func (c *FileExplorer) Render() app.UI {
 											Required(true).
 											Class("pf-c-form-control").
 											OnInput(func(ctx app.Context, e app.Event) {
-												c.newFileName = ctx.JSSrc.Get("value").String()
+												c.newFileName = ctx.JSSrc().Get("value").String()
 											}),
 									},
 									Properties: map[string]interface{}{

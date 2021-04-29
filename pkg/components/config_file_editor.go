@@ -97,7 +97,7 @@ func (c *ConfigFileEditor) Render() app.UI {
 									Class("pf-c-code-editor__main pf-u-w-100 pf-x-u-resize-none pf-u-p-sm pf-u-p-sm pf-u-flex-fill").
 									Rows(25).
 									OnInput(func(ctx app.Context, e app.Event) {
-										c.SetConfigFile(ctx.JSSrc.Get("value").String())
+										c.SetConfigFile(ctx.JSSrc().Get("value").String())
 									}).
 									Text(c.ConfigFile),
 								Properties: map[string]interface{}{
