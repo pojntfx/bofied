@@ -4,6 +4,6 @@ dhcpListenAddress: ":67"
 proxyDHCPListenAddress: ":4011"
 tftpListenAddress: ":69"
 extendedHTTPListenAddress: ":15256"
-eventsListenAddress: ":15257"
+grpcListenAddress: ":15257"
 oidcClientID: myoidcclientid
 oidcIssuer: https://pojntfx.eu.auth0.com/

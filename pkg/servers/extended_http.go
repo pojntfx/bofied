@@ -14,7 +14,7 @@ const (
 	WebDAVRealmDescription = `bofied protected area. You can find your credentials (username and password/token) with the "Mount Folder" option in the frontend.`
 	HTTPPrefix             = "/public"
 	WebDAVPrefix           = "/private"
-	EventsPrefix           = "/events"
+	GRPCPrefix             = "/grpc"
 )
 
 type ExtendedHTTPServer struct {
@@ -88,7 +88,7 @@ func (s *ExtendedHTTPServer) ListenAndServe() error {
 		),
 	)
 	mux.Handle(
-		EventsPrefix,
+		GRPCPrefix,
 		s.eventsServerHandler,
 	)
 

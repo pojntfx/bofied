@@ -187,7 +187,7 @@ func (c *DataProvider) OnMount(ctx app.Context) {
 	}
 
 	// Create gRPC client
-	conn, err := grpc.Dial(path.Join(u.String(), servers.EventsPrefix), grpc.WithContextDialer(websocketproxy.NewWebSocketProxyClient(time.Minute).Dialer), grpc.WithInsecure())
+	conn, err := grpc.Dial(path.Join(u.String(), servers.GRPCPrefix), grpc.WithContextDialer(websocketproxy.NewWebSocketProxyClient(time.Minute).Dialer), grpc.WithInsecure())
 	if err != nil {
 		c.panicEventsError(err)
 
