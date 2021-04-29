@@ -119,6 +119,9 @@ func (c *Home) Render() app.UI {
 
 											UserInfo: ipcp.UserInfo,
 											Logout:   ipcp.Logout,
+
+											// Metadata
+											AdvertisedIP: dpcp.AdvertisedIP,
 										}
 									},
 								}

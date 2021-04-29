@@ -75,6 +75,9 @@ type DataProviderChildrenProps struct {
 	EventsError        error
 	RecoverEventsError func(app.Context)
 	IgnoreEventsError  func()
+
+	// Metadata
+	AdvertisedIP string
 }
 
 type DataProvider struct {
@@ -87,6 +90,7 @@ type DataProvider struct {
 	webDAVClient         *gowebdav.Client
 	authenticatedContext context.Context
 	eventsService        api.EventsServiceClient
+	metadataService      api.MetadataServiceClient
 
 	configFile    string
 	configFileErr error
@@ -102,6 +106,8 @@ type DataProvider struct {
 
 	events    []Event
 	eventsErr error
+
+	advertisedIP string
 }
 
 func (c *DataProvider) Render() app.UI {
@@ -158,6 +164,9 @@ func (c *DataProvider) Render() app.UI {
 		EventsError:        c.eventsErr,
 		RecoverEventsError: c.recoverEventsError,
 		IgnoreEventsError:  c.ignoreEventsError,
+
+		// Metadata
+		AdvertisedIP: c.advertisedIP,
 	})
 }
 
@@ -194,12 +203,14 @@ func (c *DataProvider) OnMount(ctx app.Context) {
 		return
 	}
 	c.eventsService = api.NewEventsServiceClient(conn)
+	c.metadataService = api.NewMetadataServiceClient(conn)
 	c.authenticatedContext = metadata.AppendToOutgoingContext(context.Background(), services.AuthorizationMetadataKey, c.IDToken)
 
 	// Refresh/subscribe to data
 	c.refreshConfigFile()
 	c.refreshIndex()
 	go c.subscribeToEvents(ctx)
+	go c.getMetadata(ctx)
 }
 
 // Config file editor
@@ -472,4 +483,22 @@ func (c *DataProvider) ignoreEventsError() {
 func (c *DataProvider) panicEventsError(err error) {
 	// Set the error
 	c.eventsErr = err
+}
+
+// Metadata
+func (c *DataProvider) getMetadata(ctx app.Context) {
+	metadata, err := c.metadataService.GetMetadata(c.authenticatedContext, &emptypb.Empty{})
+	if err != nil {
+		// We have to use `Context.Emit` here as this runs from a separate Goroutine
+		ctx.Emit(func() {
+			c.panicEventsError(err)
+		})
+
+		return
+	}
+
+	// We have to use `Context.Emit` here as this runs from a separate Goroutine
+	ctx.Emit(func() {
+		c.advertisedIP = metadata.GetAdvertisedIP()
+	})
 }

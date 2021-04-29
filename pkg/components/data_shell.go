@@ -1,6 +1,7 @@
 package components
 
 import (
+	"log"
 	"os"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -62,6 +63,9 @@ type DataShell struct {
 	UserInfo oidc.UserInfo
 	Logout   func(app.Context)
 
+	// Metadata
+	AdvertisedIP string
+
 	// Internal state
 	aboutDialogOpen         bool
 	notificationsDrawerOpen bool
@@ -78,6 +82,9 @@ func (c *DataShell) Render() app.UI {
 			Message:   event.Message,
 		})
 	}
+
+	// TODO: Remove this once a proper display has been added
+	log.Println(c.AdvertisedIP)
 
 	return app.Div().
 		Class("pf-u-h-100").
