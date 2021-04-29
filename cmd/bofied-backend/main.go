@@ -26,6 +26,7 @@ const (
 	oidcIssuerKey                 = "oidcIssuer"
 	oidcClientIDKey               = "oidcClientID"
 	eventsListenAddressKey        = "eventsListenAddress"
+	pureConfigKey                 = "pureConfig"
 )
 
 func main() {
@@ -75,6 +76,7 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 				viper.GetString(advertisedIPKey),
 				filepath.Join(viper.GetString(workingDirKey), constants.BootConfigFileName),
 				eventsHandler,
+				viper.GetBool(pureConfigKey),
 			)
 			tftpServer := servers.NewTFTPServer(
 				viper.GetString(workingDirKey),
@@ -137,6 +139,8 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 
 	cmd.PersistentFlags().StringP(oidcIssuerKey, "i", "https://pojntfx.eu.auth0.com/", "OIDC issuer")
 	cmd.PersistentFlags().StringP(oidcClientIDKey, "t", "myoidcclientid", "OIDC client ID")
+
+	cmd.PersistentFlags().BoolP(pureConfigKey, "p", false, "Prevent usage of stdlib in configuration file, even if enabled in `Configuration` function.")
 
 	// Bind env variables
 	if err := viper.BindPFlags(cmd.PersistentFlags()); err != nil {
