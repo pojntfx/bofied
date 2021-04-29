@@ -152,7 +152,7 @@ func (c *DataShell) Render() app.UI {
 																	Class("pf-c-page__main-section").
 																	Body(
 																		app.Div().
-																			Class("pf-l-grid pf-m-gutter").
+																			Class("pf-l-grid pf-m-gutter pf-u-h-100").
 																			Body(
 																				app.Div().
 																					Class("pf-l-grid__item pf-m-12-col pf-m-12-col-on-md pf-m-5-col-on-xl").
