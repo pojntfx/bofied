@@ -77,7 +77,8 @@ type DataProviderChildrenProps struct {
 	IgnoreEventsError  func()
 
 	// Metadata
-	AdvertisedIP string
+	UseAdvertisedIP    bool
+	SetUseAdvertisedIP func(bool)
 }
 
 type DataProvider struct {
@@ -107,7 +108,8 @@ type DataProvider struct {
 	events    []Event
 	eventsErr error
 
-	advertisedIP string
+	advertisedIP    string
+	useAdvertisedIP bool
 }
 
 func (c *DataProvider) Render() app.UI {
@@ -166,7 +168,8 @@ func (c *DataProvider) Render() app.UI {
 		IgnoreEventsError:  c.ignoreEventsError,
 
 		// Metadata
-		AdvertisedIP: c.advertisedIP,
+		UseAdvertisedIP:    c.useAdvertisedIP,
+		SetUseAdvertisedIP: c.setUseAdvertisedIP,
 	})
 }
 
@@ -501,4 +504,8 @@ func (c *DataProvider) getMetadata(ctx app.Context) {
 	ctx.Emit(func() {
 		c.advertisedIP = metadata.GetAdvertisedIP()
 	})
+}
+
+func (c *DataProvider) setUseAdvertisedIP(b bool) {
+	c.useAdvertisedIP = b
 }

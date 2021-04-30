@@ -121,7 +121,8 @@ func (c *Home) Render() app.UI {
 											Logout:   ipcp.Logout,
 
 											// Metadata
-											AdvertisedIP: dpcp.AdvertisedIP,
+											UseAdvertisedIP:    dpcp.UseAdvertisedIP,
+											SetUseAdvertisedIP: dpcp.SetUseAdvertisedIP,
 										}
 									},
 								}
