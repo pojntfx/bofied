@@ -37,6 +37,9 @@ type FileExplorer struct {
 	OperationCurrentPath    string
 	OperationSetCurrentPath func(string)
 
+	UseAdvertisedIP    bool
+	SetUseAdvertisedIP func(bool)
+
 	selectedPath     string
 	newDirectoryName string
 	newFileName      string
@@ -53,6 +56,8 @@ type FileExplorer struct {
 	uploadModalOpen          bool
 
 	operationSelectedPath string
+
+	shareExpandableSectionOpen bool
 }
 
 func (c *FileExplorer) Render() app.UI {
@@ -659,6 +664,28 @@ func (c *FileExplorer) Render() app.UI {
 													},
 												),
 										),
+									&ExpandableSection{
+										Open: c.shareExpandableSectionOpen,
+										OnToggle: func() {
+											c.shareExpandableSectionOpen = !c.shareExpandableSectionOpen
+										},
+										Title:       "Advanced",
+										ClosedTitle: "Show advanced options",
+										OpenTitle:   "Hide advanced options",
+										Body: []app.UI{
+											&Switch{
+												ID: "advertised-project",
+
+												Open: c.shareExpandableSectionOpen,
+												ToggleOpen: func() {
+													c.shareExpandableSectionOpen = !c.shareExpandableSectionOpen
+												},
+
+												OnMessage:  "Use advertised IP address",
+												OffMessage: "Don't use advertised IP address",
+											},
+										},
+									},
 								),
 						),
 				},
