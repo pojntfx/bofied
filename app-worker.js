@@ -1,13 +1,12 @@
-const cacheName = "app-" + "421686851eede5ab5490dae326dd7e349308a5d4";
+const cacheName = "app-" + "8c5e4a228c25377003e62ca3f89ad1f246ec2212";
 
 self.addEventListener("install", event => {
-  console.log("installing app worker 421686851eede5ab5490dae326dd7e349308a5d4");
+  console.log("installing app worker 8c5e4a228c25377003e62ca3f89ad1f246ec2212");
   self.skipWaiting();
 
   event.waitUntil(
     caches.open(cacheName).then(cache => {
       return cache.addAll([
-        "",
         "/bofied",
         "/bofied/app.css",
         "/bofied/app.js",
@@ -36,7 +35,7 @@ self.addEventListener("activate", event => {
       );
     })
   );
-  console.log("app worker 421686851eede5ab5490dae326dd7e349308a5d4 is activated");
+  console.log("app worker 8c5e4a228c25377003e62ca3f89ad1f246ec2212 is activated");
 });
 
 self.addEventListener("fetch", event => {
