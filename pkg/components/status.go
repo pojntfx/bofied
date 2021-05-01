@@ -7,7 +7,7 @@ type Status struct {
 
 	Error       error
 	ErrorText   string
-	Recover     func()
+	Recover     func(app.Context)
 	RecoverText string
 	Ignore      func()
 }
@@ -71,7 +71,7 @@ func (c *Status) Render() app.UI {
 							Class("pf-c-button pf-m-link pf-m-inline").
 							Type("button").
 							OnClick(func(ctx app.Context, e app.Event) {
-								c.Recover()
+								c.Recover(ctx)
 							}).
 							Text(c.RecoverText),
 					),

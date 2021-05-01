@@ -50,7 +50,7 @@ type DataShell struct {
 	OperationSetCurrentPath func(string)
 
 	FileExplorerError        error
-	RecoverFileExplorerError func()
+	RecoverFileExplorerError func(app.Context)
 	IgnoreFileExplorerError  func()
 
 	Events []providers.Event
@@ -88,6 +88,22 @@ func (c *DataShell) Render() app.UI {
 			CreatedAt: event.CreatedAt.String(),
 			Message:   event.Message,
 		})
+	}
+
+	// Reduce errors to global error
+	globalError := c.FileExplorerError
+	if c.EventsError != nil {
+		globalError = c.EventsError
+	}
+
+	recoverGlobalError := c.RecoverFileExplorerError
+	if c.EventsError != nil {
+		recoverGlobalError = c.RecoverEventsError
+	}
+
+	ignoreGlobalError := c.IgnoreFileExplorerError
+	if c.EventsError != nil {
+		ignoreGlobalError = c.IgnoreEventsError
 	}
 
 	return app.Div().
@@ -244,16 +260,16 @@ func (c *DataShell) Render() app.UI {
 						Class("pf-c-alert-group pf-m-toast").
 						Body(
 							app.If(
-								c.FileExplorerError != nil,
+								globalError != nil,
 								app.Li().
 									Class("pf-c-alert-group__item").
 									Body(
 										&Status{
-											Error:       c.FileExplorerError,
+											Error:       globalError,
 											ErrorText:   "Fatal Error",
-											Recover:     c.RecoverFileExplorerError,
+											Recover:     recoverGlobalError,
 											RecoverText: "Reconnect",
-											Ignore:      c.IgnoreFileExplorerError,
+											Ignore:      ignoreGlobalError,
 										},
 									),
 							),
