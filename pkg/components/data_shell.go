@@ -249,6 +249,23 @@ func (c *DataShell) Render() app.UI {
 														Body(
 															&NotificationDrawer{
 																Notifications: notifications,
+																EmptyState: app.Div().
+																	Class("pf-c-empty-state").
+																	Body(
+																		app.Div().
+																			Class("pf-c-empty-state__content").
+																			Body(
+																				app.I().
+																					Class("fas fa-inbox pf-c-empty-state__icon").
+																					Aria("hidden", true),
+																				app.H1().
+																					Class("pf-c-title pf-m-lg").
+																					Text("No events yet"),
+																				app.Div().
+																					Class("pf-c-empty-state__body").
+																					Text("Network boot a node to see events here."),
+																			),
+																	),
 															},
 														),
 												),
