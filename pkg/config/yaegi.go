@@ -20,10 +20,11 @@ const initialConfigFileContent = `package config
 func Filename(
 	ip string,
 	macAddress string,
-	arch int,
+	arch string,
+	archID int,
 ) string {
 	switch arch {
-	case 7:
+	case "x64 UEFI":
 		return "ipxe.efi"
 	default:
 		return "undionly.kpxe"
@@ -32,7 +33,7 @@ func Filename(
 
 func Configure() map[string]string {
 	return map[string]string{
-		"useStdlib": "true",
+		"useStdlib": "false",
 	}
 }
 `
@@ -41,7 +42,7 @@ func GetFileName(
 	configFileLocation string,
 	ip string,
 	macAddress string,
-	arch int,
+	archID int,
 	pure bool,
 ) (string, error) {
 	// Read the config file (we are re-reading each time so that a server restart is unnecessary)
@@ -109,7 +110,8 @@ func GetFileName(
 	getFileName, ok := w.Interface().(func(
 		ip string,
 		macAddress string,
-		arch int,
+		arch string,
+		archID int,
 	) string)
 	if !ok {
 		return "", errors.New("could not parse file name function: invalid file name function signature")
@@ -119,7 +121,8 @@ func GetFileName(
 	return getFileName(
 		ip,
 		macAddress,
-		arch,
+		GetNameForArchId(archID),
+		archID,
 	), nil
 }
 
