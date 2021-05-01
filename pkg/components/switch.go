@@ -1,6 +1,8 @@
 package components
 
-import "github.com/maxence-charriere/go-app/v9/pkg/app"
+import (
+	"github.com/maxence-charriere/go-app/v9/pkg/app"
+)
 
 type Switch struct {
 	app.Compo
@@ -16,7 +18,7 @@ type Switch struct {
 
 func (c *Switch) Render() app.UI {
 	return app.Label().
-		Class("pf-c-switch pf-u-mb-md").
+		Class("pf-c-switch").
 		For(c.ID).
 		Body(
 			&Controlled{
@@ -26,22 +28,31 @@ func (c *Switch) Render() app.UI {
 					ID(c.ID).
 					Aria("labelledby", c.ID+"-on").
 					Name(c.ID).
-					Checked(c.Open),
+					Checked(c.Open).
+					OnInput(func(ctx app.Context, e app.Event) {
+						c.ToggleOpen()
+					}),
 				Properties: map[string]interface{}{
 					"checked": c.Open,
 				},
 			},
 			app.Span().
 				Class("pf-c-switch__toggle"),
-			app.Span().
-				Class("pf-c-switch__label pf-m-on").
-				ID(c.ID+"-on").
-				Aria("hidden", true).
-				Text(c.OnMessage),
-			app.Span().
-				Class("pf-c-switch__label pf-m-off").
-				ID(c.ID+"-off").
-				Aria("hidden", true).
-				Text(c.OffMessage),
+			app.If(
+				c.OnMessage != "",
+				app.Span().
+					Class("pf-c-switch__label pf-m-on").
+					ID(c.ID+"-on").
+					Aria("hidden", true).
+					Text(c.OnMessage),
+			),
+			app.If(
+				c.OffMessage != "",
+				app.Span().
+					Class("pf-c-switch__label pf-m-off").
+					ID(c.ID+"-off").
+					Aria("hidden", true).
+					Text(c.OffMessage),
+			),
 		)
 }

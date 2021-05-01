@@ -673,17 +673,34 @@ func (c *FileExplorer) Render() app.UI {
 										ClosedTitle: "Show advanced options",
 										OpenTitle:   "Hide advanced options",
 										Body: []app.UI{
-											&Switch{
-												ID: "advertised-project",
+											app.Form().
+												NoValidate(true).
+												Class("pf-c-form pf-m-horizontal pf-u-mb-md").
+												Body(
+													&FormGroup{
+														NoTopPadding: true,
+														Label: app.Label().
+															For("use-advertised-ip").
+															Class("pf-c-form__label").
+															Body(
+																app.
+																	Span().
+																	Class("pf-c-form__label-text").
+																	Text("Use advertised IP"),
+															),
+														Input: &Switch{
+															ID: "use-advertised-ip",
 
-												Open: c.shareExpandableSectionOpen,
-												ToggleOpen: func() {
-													c.shareExpandableSectionOpen = !c.shareExpandableSectionOpen
-												},
+															Open: c.UseAdvertisedIP,
+															ToggleOpen: func() {
+																c.SetUseAdvertisedIP(!c.UseAdvertisedIP)
+															},
 
-												OnMessage:  "Use advertised IP address",
-												OffMessage: "Don't use advertised IP address",
-											},
+															OnMessage:  "Using advertised IP",
+															OffMessage: "Not using advertised IP",
+														},
+													},
+												),
 										},
 									},
 								),
