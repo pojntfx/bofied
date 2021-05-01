@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta httpequiv="Content-Type" content="text/html; charset=utf-8">
-<meta content="Felicitas Pojtinger" name="author">
-<meta name="description" content="Network boot nodes in a network.">
+<meta name="author" content="Felicitas Pojtinger">
+<meta content="Network boot nodes in a network." name="description">
 <meta name="keywords" content="pxe-boot, ipxe, netboot, network-boot, http-server, dhcp-server, pxe, webdav-server, tftp-server, proxy-dhcp">
 <meta name="theme-color" content="#151515">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
-<meta property="og:url" content="http://127.0.0.1:45063/">
+<meta property="og:url" content="http://127.0.0.1:36777/">
 <meta property="og:title" content="bofied">
-<meta property="og:description" content="Network boot nodes in a network.">
+<meta content="Network boot nodes in a network." property="og:description">
 <meta property="og:type" content="website">
 <meta property="og:image" content>
 <title>
@@ -19,12 +19,12 @@ bofied
 <link rel="icon" type="image/png" href="/bofied/web/icon.png">
 <link rel="apple-touch-icon" href="/bofied/web/icon.png">
 <link rel="manifest" href="/bofied/manifest.webmanifest">
-<link type="text/css" rel="stylesheet" href="/bofied/app.css">
+<link rel="stylesheet" href="/bofied/app.css" type="text/css">
 <script defer src="/bofied/wasm_exec.js"></script>
 <script defer src="/bofied/app.js"></script>
 <link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly.css">
-<link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly-addons.css">
-<link href="/bofied/web/index.css" type="text/css" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly-addons.css" type="text/css">
+<link type="text/css" rel="stylesheet" href="/bofied/web/index.css">
 <meta property="og:url" content="https://pojntfx.github.io/bofied/">
 <meta property="og:title" content="bofied">
 <meta property="og:description" content="Network boot nodes in a network.">
@@ -71,7 +71,7 @@ bofied
 <div class="pf-c-login">
 <div class="pf-c-login__container">
 <header class="pf-c-login__header">
-<img src="/bofied/web/logo.svg" alt="Logo" class="pf-c-brand pf-x-c-brand--main">
+<img class="pf-c-brand pf-x-c-brand--main" src="/bofied/web/logo.svg" alt="Logo">
 </header>
 <main class="pf-c-login__main">
 <header class="pf-c-login__main-header">
@@ -111,7 +111,7 @@ OIDC Issuer
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false" name="oidcIssuer" id="oidcIssuer" type="url" required>
+<input id="oidcIssuer" type="url" required placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false" name="oidcIssuer">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -126,7 +126,7 @@ OIDC Client ID
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input required class="pf-c-form-control" aria-invalid="false" name="oidcClientID" id="oidcClientID" type="text">
+<input aria-invalid="false" name="oidcClientID" id="oidcClientID" type="text" required class="pf-c-form-control">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -136,16 +136,16 @@ OIDC Client ID
 OIDC Redirect URL
 </span>
 </label>
-<span aria-hidden="true" class="pf-c-form__label-required">
+<span class="pf-c-form__label-required" aria-hidden="true">
 *
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input name="oidcRedirectURL" id="oidcRedirectURL" type="url" required placeholder="http://localhost:15125/" class="pf-c-form-control" aria-invalid="false">
+<input class="pf-c-form-control" aria-invalid="false" name="oidcRedirectURL" id="oidcRedirectURL" type="url" required placeholder="http://localhost:15125/">
 </div>
 </div>
 <div class="pf-c-form__group pf-m-action">
-<button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+<button class="pf-c-button pf-m-primary pf-m-block" type="submit">
 Log in
 </button>
 </div>
@@ -178,7 +178,7 @@ License
 </a>
 </li>
 <li>
-<a href="https://github.com/pojntfx/bofied" target="_blank">
+<a target="_blank" href="https://github.com/pojntfx/bofied">
 Source Code
 </a>
 </li>
@@ -189,7 +189,7 @@ Source Code
 </div>
 </div>
 </div>
-<div class="goapp-app-info" id="app-wasm-loader">
+<div id="app-wasm-loader" class="goapp-app-info">
 <img id="app-wasm-loader-icon" class="goapp-logo goapp-spin" src="/bofied/web/icon.png">
 <p id="app-wasm-loader-label" class="goapp-label">
 Network boot nodes in a network.
