@@ -1,6 +1,7 @@
 package components
 
 import (
+	"net/url"
 	"os"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -30,8 +31,8 @@ type DataShell struct {
 	RefreshIndex func()
 	WriteToPath  func(string, []byte)
 
-	HTTPShareLink string
-	TFTPShareLink string
+	HTTPShareLink url.URL
+	TFTPShareLink url.URL
 	SharePath     func(string)
 
 	CreatePath func(string)
@@ -63,8 +64,9 @@ type DataShell struct {
 	Logout   func(app.Context)
 
 	// Metadata
-	UseAdvertisedIP    bool
-	SetUseAdvertisedIP func(bool)
+	UseAdvertisedIP      bool
+	SetUseAdvertisedIP   func(bool)
+	SetUseSecureProtocol func(bool)
 
 	// Internal state
 	aboutDialogOpen         bool
@@ -205,6 +207,8 @@ func (c *DataShell) Render() app.UI {
 
 																							UseAdvertisedIP:    c.UseAdvertisedIP,
 																							SetUseAdvertisedIP: c.SetUseAdvertisedIP,
+
+																							SetUseSecureProtocol: c.SetUseSecureProtocol,
 																						},
 																					),
 																			),

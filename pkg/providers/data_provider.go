@@ -48,8 +48,8 @@ type DataProviderChildrenProps struct {
 	RefreshIndex func()
 	WriteToPath  func(string, []byte)
 
-	HTTPShareLink string
-	TFTPShareLink string
+	HTTPShareLink url.URL
+	TFTPShareLink url.URL
 	SharePath     func(string)
 
 	CreatePath func(string)
@@ -79,6 +79,8 @@ type DataProviderChildrenProps struct {
 	// Metadata
 	UseAdvertisedIP    bool
 	SetUseAdvertisedIP func(bool)
+
+	SetUseSecureProtocol func(bool)
 }
 
 type DataProvider struct {
@@ -108,8 +110,10 @@ type DataProvider struct {
 	events    []Event
 	eventsErr error
 
-	advertisedIP    string
-	useAdvertisedIP bool
+	advertisedIP string
+
+	useAdvertisedIP   bool
+	useSecureProtocol bool
 }
 
 func (c *DataProvider) Render() app.UI {
@@ -137,23 +141,27 @@ func (c *DataProvider) Render() app.UI {
 		RefreshIndex: c.refreshIndex,
 		WriteToPath:  c.writeToPath,
 
-		HTTPShareLink: func() string {
+		HTTPShareLink: func() url.URL {
 			u := c.httpShareLink
 
 			if c.useAdvertisedIP {
 				u.Host = c.advertisedIP
 			}
 
-			return u.String()
+			if c.useSecureProtocol {
+				u.Scheme = "https"
+			}
+
+			return u
 		}(),
-		TFTPShareLink: func() string {
+		TFTPShareLink: func() url.URL {
 			u := c.tftpShareLink
 
 			if c.useAdvertisedIP {
 				u.Host = c.advertisedIP
 			}
 
-			return u.String()
+			return u
 		}(),
 		SharePath: c.sharePath,
 
@@ -186,6 +194,8 @@ func (c *DataProvider) Render() app.UI {
 		// Metadata
 		UseAdvertisedIP:    c.useAdvertisedIP,
 		SetUseAdvertisedIP: c.setUseAdvertisedIP,
+
+		SetUseSecureProtocol: c.setUseSecureProtocol,
 	})
 }
 
@@ -346,6 +356,11 @@ func (c *DataProvider) sharePath(path string) {
 	u, err := url.Parse(c.BackendURL)
 	if err != nil {
 		c.panicFileExplorerError(err)
+	}
+
+	// Sync with the share options
+	if u.Host == c.advertisedIP {
+		c.useAdvertisedIP = true
 	}
 
 	// Replace `private` prefix with `public` prefix
@@ -524,4 +539,8 @@ func (c *DataProvider) getMetadata(ctx app.Context) {
 
 func (c *DataProvider) setUseAdvertisedIP(b bool) {
 	c.useAdvertisedIP = b
+}
+
+func (c *DataProvider) setUseSecureProtocol(b bool) {
+	c.useSecureProtocol = b
 }

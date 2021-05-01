@@ -123,6 +123,8 @@ func (c *Home) Render() app.UI {
 											// Metadata
 											UseAdvertisedIP:    dpcp.UseAdvertisedIP,
 											SetUseAdvertisedIP: dpcp.SetUseAdvertisedIP,
+
+											SetUseSecureProtocol: dpcp.SetUseSecureProtocol,
 										}
 									},
 								}
