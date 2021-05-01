@@ -29,7 +29,7 @@ type FileExplorer struct {
 	MovePath   func(string, string)
 	CopyPath   func(string, string)
 
-	WebDAVAddress  string
+	WebDAVAddress  url.URL
 	WebDAVUsername string
 	WebDAVPassword string
 
@@ -41,7 +41,11 @@ type FileExplorer struct {
 	UseAdvertisedIP    bool
 	SetUseAdvertisedIP func(bool)
 
-	SetUseSecureProtocol func(bool)
+	UseAdvertisedIPForWebDAV    bool
+	SetUseAdvertisedIPForWebDAV func(bool)
+
+	SetUseHTTPS func(bool)
+	SetUseDavs  func(bool)
 
 	selectedPath     string
 	newDirectoryName string
@@ -61,6 +65,7 @@ type FileExplorer struct {
 	operationSelectedPath string
 
 	shareExpandableSectionOpen bool
+	mountExpandableSectionOpen bool
 }
 
 func (c *FileExplorer) Render() app.UI {
@@ -82,10 +87,15 @@ func (c *FileExplorer) Render() app.UI {
 		}
 	}
 
-	// Check if we are using a secure protocol for the HTTP share link
-	useSecureProtocol := false
+	// Check if we are using a secure protocols
+	useHTTPS := false
 	if c.HTTPShareLink.Scheme == "https" {
-		useSecureProtocol = true
+		useHTTPS = true
+	}
+
+	useDavs := false
+	if c.WebDAVAddress.Scheme == "davs" {
+		useDavs = true
 	}
 
 	return app.Div().
@@ -442,6 +452,7 @@ func (c *FileExplorer) Render() app.UI {
 				Open: c.mountFolderModalOpen,
 				Close: func() {
 					c.mountFolderModalOpen = false
+					c.mountExpandableSectionOpen = false
 				},
 
 				ID: "mount-folder-modal-title",
@@ -483,12 +494,12 @@ func (c *FileExplorer) Render() app.UI {
 																Class("pf-c-form-control").
 																ReadOnly(true).
 																Type("text").
-																Value(c.WebDAVAddress).
+																Value(c.WebDAVAddress.String()).
 																Aria("label", "WebDAV server address").
 																Name("webdav-address").
 																ID("webdav-address"),
 															Properties: map[string]interface{}{
-																"value": c.WebDAVAddress,
+																"value": c.WebDAVAddress.String(),
 															},
 														},
 														ID: "webdav-address",
@@ -567,6 +578,68 @@ func (c *FileExplorer) Render() app.UI {
 													},
 												),
 										),
+									&ExpandableSection{
+										Open: c.mountExpandableSectionOpen,
+										OnToggle: func() {
+											c.mountExpandableSectionOpen = !c.mountExpandableSectionOpen
+										},
+										Title:       "Advanced",
+										ClosedTitle: "Show advanced options",
+										OpenTitle:   "Hide advanced options",
+										Body: []app.UI{
+											app.Form().
+												NoValidate(true).
+												Class("pf-c-form pf-m-horizontal pf-u-mb-md").
+												Body(
+													&FormGroup{
+														NoTopPadding: true,
+														Label: app.Label().
+															For("use-advertised-ip-for-webdav").
+															Class("pf-c-form__label").
+															Body(
+																app.
+																	Span().
+																	Class("pf-c-form__label-text").
+																	Text("Use advertised IP"),
+															),
+														Input: &Switch{
+															ID: "use-advertised-ip-for-webdav",
+
+															Open: c.UseAdvertisedIPForWebDAV,
+															ToggleOpen: func() {
+																c.SetUseAdvertisedIPForWebDAV(!c.UseAdvertisedIPForWebDAV)
+															},
+
+															OnMessage:  "Using advertised IP",
+															OffMessage: "Not using advertised IP",
+														},
+													},
+													&FormGroup{
+														NoTopPadding: true,
+														Label: app.Label().
+															For("use-davs").
+															Class("pf-c-form__label").
+															Body(
+																app.
+																	Span().
+																	Class("pf-c-form__label-text").
+																	Text("Use secure protocol"),
+															),
+														Input: &Switch{
+															ID: "use-davs",
+
+															Open: useDavs,
+															ToggleOpen: func() {
+																c.SetUseDavs(!useDavs)
+															},
+
+															OnMessage:  "Using secure protocol",
+															OffMessage: "Not using secure protocol",
+														},
+													},
+												),
+										},
+									},
 								),
 						),
 				},
@@ -584,6 +657,7 @@ func (c *FileExplorer) Render() app.UI {
 				Open: c.sharePathModalOpen,
 				Close: func() {
 					c.sharePathModalOpen = false
+					c.shareExpandableSectionOpen = false
 				},
 
 				ID: "share-path-modal-title",
@@ -712,7 +786,7 @@ func (c *FileExplorer) Render() app.UI {
 													&FormGroup{
 														NoTopPadding: true,
 														Label: app.Label().
-															For("use-secure-scheme").
+															For("use-https").
 															Class("pf-c-form__label").
 															Body(
 																app.
@@ -721,11 +795,11 @@ func (c *FileExplorer) Render() app.UI {
 																	Text("Use secure protocol"),
 															),
 														Input: &Switch{
-															ID: "use-secure-scheme",
+															ID: "use-https",
 
-															Open: useSecureProtocol,
+															Open: useHTTPS,
 															ToggleOpen: func() {
-																c.SetUseSecureProtocol(!useSecureProtocol)
+																c.SetUseHTTPS(!useHTTPS)
 															},
 
 															OnMessage:  "Using secure protocol",

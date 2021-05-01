@@ -40,7 +40,7 @@ type DataShell struct {
 	MovePath   func(string, string)
 	CopyPath   func(string, string)
 
-	WebDAVAddress  string
+	WebDAVAddress  url.URL
 	WebDAVUsername string
 	WebDAVPassword string
 
@@ -64,9 +64,14 @@ type DataShell struct {
 	Logout   func(app.Context)
 
 	// Metadata
-	UseAdvertisedIP      bool
-	SetUseAdvertisedIP   func(bool)
-	SetUseSecureProtocol func(bool)
+	UseAdvertisedIP    bool
+	SetUseAdvertisedIP func(bool)
+
+	UseAdvertisedIPForWebDAV    bool
+	SetUseAdvertisedIPForWebDAV func(bool)
+
+	SetUseHTTPS func(bool)
+	SetUseDavs  func(bool)
 
 	// Internal state
 	aboutDialogOpen         bool
@@ -208,7 +213,11 @@ func (c *DataShell) Render() app.UI {
 																							UseAdvertisedIP:    c.UseAdvertisedIP,
 																							SetUseAdvertisedIP: c.SetUseAdvertisedIP,
 
-																							SetUseSecureProtocol: c.SetUseSecureProtocol,
+																							UseAdvertisedIPForWebDAV:    c.UseAdvertisedIPForWebDAV,
+																							SetUseAdvertisedIPForWebDAV: c.SetUseAdvertisedIPForWebDAV,
+
+																							SetUseHTTPS: c.SetUseHTTPS,
+																							SetUseDavs:  c.SetUseDavs,
 																						},
 																					),
 																			),

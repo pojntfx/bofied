@@ -57,7 +57,7 @@ type DataProviderChildrenProps struct {
 	MovePath   func(string, string)
 	CopyPath   func(string, string)
 
-	WebDAVAddress  string
+	WebDAVAddress  url.URL
 	WebDAVUsername string
 	WebDAVPassword string
 
@@ -80,7 +80,11 @@ type DataProviderChildrenProps struct {
 	UseAdvertisedIP    bool
 	SetUseAdvertisedIP func(bool)
 
-	SetUseSecureProtocol func(bool)
+	UseAdvertisedIPForWebDAV    bool
+	SetUseAdvertisedIPForWebDAV func(bool)
+
+	SetUseHTTPS func(bool)
+	SetUseDavs  func(bool)
 }
 
 type DataProvider struct {
@@ -112,8 +116,10 @@ type DataProvider struct {
 
 	advertisedIP string
 
-	useAdvertisedIP   bool
-	useSecureProtocol bool
+	useAdvertisedIP          bool
+	useAdvertisedIPForWebDAV bool
+	useHTTPS                 bool
+	useDavs                  bool
 }
 
 func (c *DataProvider) Render() app.UI {
@@ -148,8 +154,10 @@ func (c *DataProvider) Render() app.UI {
 				u.Host = c.advertisedIP
 			}
 
-			if c.useSecureProtocol {
+			if c.useHTTPS {
 				u.Scheme = "https"
+			} else {
+				u.Scheme = "http"
 			}
 
 			return u
@@ -170,7 +178,21 @@ func (c *DataProvider) Render() app.UI {
 		MovePath:   c.movePath,
 		CopyPath:   c.copyPath,
 
-		WebDAVAddress:  address,
+		WebDAVAddress: func() url.URL {
+			u := address
+
+			if c.useAdvertisedIPForWebDAV {
+				u.Host = c.advertisedIP
+			}
+
+			if c.useDavs {
+				u.Scheme = "davs"
+			} else {
+				u.Scheme = "dav"
+			}
+
+			return u
+		}(),
 		WebDAVUsername: username,
 		WebDAVPassword: password,
 
@@ -195,7 +217,11 @@ func (c *DataProvider) Render() app.UI {
 		UseAdvertisedIP:    c.useAdvertisedIP,
 		SetUseAdvertisedIP: c.setUseAdvertisedIP,
 
-		SetUseSecureProtocol: c.setUseSecureProtocol,
+		UseAdvertisedIPForWebDAV:    c.useAdvertisedIPForWebDAV,
+		SetUseAdvertisedIPForWebDAV: c.setUseAdvertisedIPForWebDAV,
+
+		SetUseHTTPS: c.setUseHTTPS,
+		SetUseDavs:  c.setUseDavs,
 	})
 }
 
@@ -217,11 +243,15 @@ func (c *DataProvider) OnMount(ctx app.Context) {
 		return
 	}
 
-	// Make it a WebSocket URL
+	// Prefix defaults
 	if u.Scheme == "https" {
 		u.Scheme = "wss"
+		c.useHTTPS = true
+		c.useDavs = true
 	} else {
 		u.Scheme = "ws"
+
+		// Not need to set useHTTPS or useDavs as they are false by default
 	}
 
 	// Create gRPC client
@@ -416,13 +446,13 @@ func (c *DataProvider) copyPath(src string, dst string) {
 	c.refreshIndex()
 }
 
-func (c *DataProvider) getWebDAVCredentials() (address string, username string, password string) {
+func (c *DataProvider) getWebDAVCredentials() (address url.URL, username string, password string) {
 	// Parse URL
 	u, err := url.Parse(c.BackendURL)
 	if err != nil {
 		c.panicFileExplorerError(err)
 
-		return "", "", ""
+		return url.URL{}, "", ""
 	}
 
 	// Make it a WebDAV URL
@@ -438,7 +468,7 @@ func (c *DataProvider) getWebDAVCredentials() (address string, username string, 
 	// Add current folder
 	u.Path = path.Join(u.Path, c.currentPath)
 
-	return u.String(), constants.OIDCOverBasicAuthUsername, c.IDToken
+	return *u, constants.OIDCOverBasicAuthUsername, c.IDToken
 }
 
 func (c *DataProvider) recoverFileExplorerError() {
@@ -541,6 +571,14 @@ func (c *DataProvider) setUseAdvertisedIP(b bool) {
 	c.useAdvertisedIP = b
 }
 
-func (c *DataProvider) setUseSecureProtocol(b bool) {
-	c.useSecureProtocol = b
+func (c *DataProvider) setUseAdvertisedIPForWebDAV(b bool) {
+	c.useAdvertisedIPForWebDAV = b
+}
+
+func (c *DataProvider) setUseHTTPS(b bool) {
+	c.useHTTPS = b
+}
+
+func (c *DataProvider) setUseDavs(b bool) {
+	c.useDavs = b
 }
