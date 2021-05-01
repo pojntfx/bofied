@@ -8,7 +8,7 @@
 <meta name="keywords" content="pxe-boot, ipxe, netboot, network-boot, http-server, dhcp-server, pxe, webdav-server, tftp-server, proxy-dhcp">
 <meta name="theme-color" content="#151515">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
-<meta property="og:url" content="http://127.0.0.1:41899/">
+<meta property="og:url" content="http://127.0.0.1:45063/">
 <meta property="og:title" content="bofied">
 <meta property="og:description" content="Network boot nodes in a network.">
 <meta property="og:type" content="website">
@@ -16,15 +16,15 @@
 <title>
 bofied
 </title>
-<link type="image/png" href="/bofied/web/icon.png" rel="icon">
+<link rel="icon" type="image/png" href="/bofied/web/icon.png">
 <link rel="apple-touch-icon" href="/bofied/web/icon.png">
-<link href="/bofied/manifest.webmanifest" rel="manifest">
+<link rel="manifest" href="/bofied/manifest.webmanifest">
 <link type="text/css" rel="stylesheet" href="/bofied/app.css">
 <script defer src="/bofied/wasm_exec.js"></script>
 <script defer src="/bofied/app.js"></script>
 <link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly.css">
-<link href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly-addons.css" type="text/css" rel="stylesheet">
-<link type="text/css" rel="stylesheet" href="/bofied/web/index.css">
+<link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly-addons.css">
+<link href="/bofied/web/index.css" type="text/css" rel="stylesheet">
 <meta property="og:url" content="https://pojntfx.github.io/bofied/">
 <meta property="og:title" content="bofied">
 <meta property="og:description" content="Network boot nodes in a network.">
@@ -71,7 +71,7 @@ bofied
 <div class="pf-c-login">
 <div class="pf-c-login__container">
 <header class="pf-c-login__header">
-<img class="pf-c-brand pf-x-c-brand--main" src="/bofied/web/logo.svg" alt="Logo">
+<img src="/bofied/web/logo.svg" alt="Logo" class="pf-c-brand pf-x-c-brand--main">
 </header>
 <main class="pf-c-login__main">
 <header class="pf-c-login__main-header">
@@ -96,7 +96,7 @@ Backend URL
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input name="backendURLName" id="backendURLName" type="url" required placeholder="ws://localhost:15124" class="pf-c-form-control" aria-invalid="false">
+<input id="backendURLName" type="url" required placeholder="ws://localhost:15124" class="pf-c-form-control" aria-invalid="false" name="backendURLName">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -111,7 +111,7 @@ OIDC Issuer
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input name="oidcIssuer" id="oidcIssuer" type="url" required placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false">
+<input placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false" name="oidcIssuer" id="oidcIssuer" type="url" required>
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -126,7 +126,7 @@ OIDC Client ID
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input name="oidcClientID" id="oidcClientID" type="text" required class="pf-c-form-control" aria-invalid="false">
+<input required class="pf-c-form-control" aria-invalid="false" name="oidcClientID" id="oidcClientID" type="text">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -136,7 +136,7 @@ OIDC Client ID
 OIDC Redirect URL
 </span>
 </label>
-<span class="pf-c-form__label-required" aria-hidden="true">
+<span aria-hidden="true" class="pf-c-form__label-required">
 *
 </span>
 </div>
@@ -178,7 +178,7 @@ License
 </a>
 </li>
 <li>
-<a target="_blank" href="https://github.com/pojntfx/bofied">
+<a href="https://github.com/pojntfx/bofied" target="_blank">
 Source Code
 </a>
 </li>
@@ -189,8 +189,8 @@ Source Code
 </div>
 </div>
 </div>
-<div id="app-wasm-loader" class="goapp-app-info">
-<img class="goapp-logo goapp-spin" src="/bofied/web/icon.png" id="app-wasm-loader-icon">
+<div class="goapp-app-info" id="app-wasm-loader">
+<img id="app-wasm-loader-icon" class="goapp-logo goapp-spin" src="/bofied/web/icon.png">
 <p id="app-wasm-loader-label" class="goapp-label">
 Network boot nodes in a network.
 </p>
