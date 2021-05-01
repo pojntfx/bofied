@@ -124,7 +124,11 @@ func (c *Home) Render() app.UI {
 											UseAdvertisedIP:    dpcp.UseAdvertisedIP,
 											SetUseAdvertisedIP: dpcp.SetUseAdvertisedIP,
 
-											SetUseSecureProtocol: dpcp.SetUseSecureProtocol,
+											UseAdvertisedIPForWebDAV:    dpcp.UseAdvertisedIPForWebDAV,
+											SetUseAdvertisedIPForWebDAV: dpcp.SetUseAdvertisedIPForWebDAV,
+
+											SetUseHTTPS: dpcp.SetUseHTTPS,
+											SetUseDavs:  dpcp.SetUseDavs,
 										}
 									},
 								}
