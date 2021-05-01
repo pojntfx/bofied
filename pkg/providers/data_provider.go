@@ -67,7 +67,7 @@ type DataProviderChildrenProps struct {
 	OperationSetCurrentPath func(string)
 
 	FileExplorerError        error
-	RecoverFileExplorerError func()
+	RecoverFileExplorerError func(app.Context)
 	IgnoreFileExplorerError  func()
 
 	Events []Event
@@ -471,8 +471,12 @@ func (c *DataProvider) getWebDAVCredentials() (address url.URL, username string,
 	return *u, constants.OIDCOverBasicAuthUsername, c.IDToken
 }
 
-func (c *DataProvider) recoverFileExplorerError() {
-	c.ignoreFileExplorerError()
+func (c *DataProvider) recoverFileExplorerError(ctx app.Context) {
+	// Clear the error
+	c.fileExplorerErr = nil
+
+	// Reload data
+	c.OnMount(ctx)
 }
 
 func (c *DataProvider) ignoreFileExplorerError() {
@@ -535,7 +539,7 @@ func (c *DataProvider) recoverEventsError(ctx app.Context) {
 	// Clear the error
 	c.eventsErr = nil
 
-	// Resubscribe
+	// Reload data
 	c.OnMount(ctx)
 }
 
