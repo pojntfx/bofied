@@ -202,6 +202,9 @@ func (c *DataShell) Render() app.UI {
 
 																							OperationCurrentPath:    c.OperationCurrentPath,
 																							OperationSetCurrentPath: c.OperationSetCurrentPath,
+
+																							UseAdvertisedIP:    c.UseAdvertisedIP,
+																							SetUseAdvertisedIP: c.SetUseAdvertisedIP,
 																						},
 																					),
 																			),

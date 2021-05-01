@@ -98,8 +98,8 @@ type DataProvider struct {
 
 	currentPath     string
 	index           []os.FileInfo
-	httpShareLink   string
-	tftpShareLink   string
+	httpShareLink   url.URL
+	tftpShareLink   url.URL
 	fileExplorerErr error
 
 	operationCurrentPath string
@@ -137,9 +137,25 @@ func (c *DataProvider) Render() app.UI {
 		RefreshIndex: c.refreshIndex,
 		WriteToPath:  c.writeToPath,
 
-		HTTPShareLink: c.httpShareLink,
-		TFTPShareLink: c.tftpShareLink,
-		SharePath:     c.sharePath,
+		HTTPShareLink: func() string {
+			u := c.httpShareLink
+
+			if c.useAdvertisedIP {
+				u.Host = c.advertisedIP
+			}
+
+			return u.String()
+		}(),
+		TFTPShareLink: func() string {
+			u := c.tftpShareLink
+
+			if c.useAdvertisedIP {
+				u.Host = c.advertisedIP
+			}
+
+			return u.String()
+		}(),
+		SharePath: c.sharePath,
 
 		CreatePath: c.createPath,
 		DeletePath: c.deletePath,
@@ -336,13 +352,13 @@ func (c *DataProvider) sharePath(path string) {
 	u.Path = filepath.Join(filepath.Join(append([]string{servers.HTTPPrefix}, filepath.SplitList(u.Path)...)...), path)
 
 	// Set HTTP share link
-	c.httpShareLink = u.String()
+	c.httpShareLink = *u
 
 	u.Scheme = "tftp"
 	u.Host = u.Hostname() + ":" + constants.TFTPPort
 
 	// Set TFTP share link
-	c.tftpShareLink = u.String()
+	c.tftpShareLink = *u
 }
 
 func (c *DataProvider) createPath(path string) {
