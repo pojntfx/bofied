@@ -1,6 +1,7 @@
 package components
 
 import (
+	"net/url"
 	"os"
 	"path"
 	"path/filepath"
@@ -19,8 +20,8 @@ type FileExplorer struct {
 	RefreshIndex func()
 	WriteToPath  func(string, []byte)
 
-	HTTPShareLink string
-	TFTPShareLink string
+	HTTPShareLink url.URL
+	TFTPShareLink url.URL
 	SharePath     func(string)
 
 	CreatePath func(string)
@@ -39,6 +40,8 @@ type FileExplorer struct {
 
 	UseAdvertisedIP    bool
 	SetUseAdvertisedIP func(bool)
+
+	SetUseSecureProtocol func(bool)
 
 	selectedPath     string
 	newDirectoryName string
@@ -77,6 +80,12 @@ func (c *FileExplorer) Render() app.UI {
 		if pathPart != "" {
 			operationPathComponents = append(operationPathComponents, pathPart)
 		}
+	}
+
+	// Check if we are using a secure protocol for the HTTP share link
+	useSecureProtocol := false
+	if c.HTTPShareLink.Scheme == "https" {
+		useSecureProtocol = true
 	}
 
 	return app.Div().
@@ -616,12 +625,12 @@ func (c *FileExplorer) Render() app.UI {
 																Class("pf-c-form-control").
 																ReadOnly(true).
 																Type("text").
-																Value(c.HTTPShareLink).
+																Value(c.HTTPShareLink.String()).
 																Aria("label", "HTTP address").
 																Name("http-address").
 																ID("http-address"),
 															Properties: map[string]interface{}{
-																"value": c.HTTPShareLink,
+																"value": c.HTTPShareLink.String(),
 															},
 														},
 														ID: "http-address",
@@ -652,12 +661,12 @@ func (c *FileExplorer) Render() app.UI {
 																Class("pf-c-form-control").
 																ReadOnly(true).
 																Type("text").
-																Value(c.TFTPShareLink).
+																Value(c.TFTPShareLink.String()).
 																Aria("label", "TFTP address").
 																Name("tftp-address").
 																ID("tftp-address"),
 															Properties: map[string]interface{}{
-																"value": c.TFTPShareLink,
+																"value": c.TFTPShareLink.String(),
 															},
 														},
 														ID: "tftp-address",
@@ -698,6 +707,29 @@ func (c *FileExplorer) Render() app.UI {
 
 															OnMessage:  "Using advertised IP",
 															OffMessage: "Not using advertised IP",
+														},
+													},
+													&FormGroup{
+														NoTopPadding: true,
+														Label: app.Label().
+															For("use-secure-scheme").
+															Class("pf-c-form__label").
+															Body(
+																app.
+																	Span().
+																	Class("pf-c-form__label-text").
+																	Text("Use secure protocol"),
+															),
+														Input: &Switch{
+															ID: "use-secure-scheme",
+
+															Open: useSecureProtocol,
+															ToggleOpen: func() {
+																c.SetUseSecureProtocol(!useSecureProtocol)
+															},
+
+															OnMessage:  "Using secure protocol",
+															OffMessage: "Not using secure protocol",
 														},
 													},
 												),
