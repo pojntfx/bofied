@@ -35,15 +35,31 @@ func handleProxyDHCPPacket(conn *net.UDPConn, raddr *net.UDPAddr, _ *net.UDPAddr
 		return 0, nil
 	}
 
+	emit(
+		`handling proxyDHCP for client with IP %v, MAC %v, architecture %v and architecture ID %v`,
+		raddr.IP.String(),
+		incomingDHCPPacket.ClientHWAddr.String(),
+		config.GetNameForArchId(incomingDHCPPacket.Arch),
+		incomingDHCPPacket.Arch,
+	)
+
 	// Get the boot file name
 	bootFileName, err := config.GetFileName(
 		configFileLocation,
 		raddr.IP.String(),
 		incomingDHCPPacket.ClientHWAddr.String(),
+		config.GetNameForArchId(incomingDHCPPacket.Arch),
 		incomingDHCPPacket.Arch,
 		pureConfig,
+		func(s string) {
+			if s != "" {
+				emit("from config: %v", s)
+			}
+		},
 	)
 	if err != nil {
+		emit("could not process config: %v", err)
+
 		return 0, err
 	}
 
