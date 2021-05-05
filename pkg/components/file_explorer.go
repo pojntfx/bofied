@@ -114,7 +114,7 @@ func (c *FileExplorer) Render() app.UI {
 										Class("pf-c-toolbar__content").
 										Body(
 											app.Div().
-												Class("pf-c-toolbar__content-section").
+												Class("pf-c-toolbar__content-section pf-x-m-gap-md").
 												Body(
 													app.Div().
 														Class("pf-c-toolbar__item pf-m-overflow-menu").
