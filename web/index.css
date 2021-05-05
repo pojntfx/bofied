@@ -17,3 +17,7 @@
 .pf-x-m-modal-overlay {
   z-index: calc(var(--pf-global--ZIndex--lg) + 1);
 }
+
+.pf-x-m-gap-md {
+  gap: var(--pf-global--spacer--md);
+}
