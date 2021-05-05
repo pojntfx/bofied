@@ -14,8 +14,14 @@
   resize: none;
 }
 
+/* A nested dialog */
 .pf-x-m-modal-overlay {
   z-index: calc(var(--pf-global--ZIndex--lg) + 1);
+}
+
+/* Show the header behind modals */
+.pf-x-c-page__header--behind-modals {
+  z-index: calc(var(--pf-global--ZIndex--md) - 200);
 }
 
 .pf-x-m-gap-md {
