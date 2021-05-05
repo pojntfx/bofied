@@ -3,6 +3,7 @@ package components
 import (
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
 )
@@ -19,6 +20,8 @@ type FileGrid struct {
 	SetCurrentPath func(string)
 
 	Standalone bool
+
+	hasInitiatedClick bool
 }
 
 func (c *FileGrid) Render() app.UI {
@@ -51,19 +54,25 @@ func (c *FileGrid) Render() app.UI {
 							OnClick(func(ctx app.Context, e app.Event) {
 								newSelectedPath := filepath.Join(c.CurrentPath, c.Index[i].Name())
 								if c.SelectedPath == newSelectedPath {
+									// Handle double click
+									if c.hasInitiatedClick && c.Index[i].IsDir() {
+										c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
+
+										c.SetSelectedPath("")
+
+										return
+									}
+
 									newSelectedPath = ""
 								}
 
 								c.SetSelectedPath(newSelectedPath)
-							}).
-							OnDblClick(func(ctx app.Context, e app.Event) {
-								if c.Index[i].IsDir() {
-									e.PreventDefault()
 
-									c.SetCurrentPath(filepath.Join(c.CurrentPath, c.Index[i].Name()))
-
-									c.SetSelectedPath("")
-								}
+								// Prepare for double click
+								c.hasInitiatedClick = true
+								time.AfterFunc(time.Second, func() {
+									c.hasInitiatedClick = false
+								})
 							}).
 							Aria("role", "button").
 							TabIndex(0).
