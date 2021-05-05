@@ -19,9 +19,11 @@
   z-index: calc(var(--pf-global--ZIndex--lg) + 1);
 }
 
-/* Show the header behind modals */
-.pf-x-c-page__header--behind-modals {
-  z-index: calc(var(--pf-global--ZIndex--md) - 200);
+/* Backdrop which doesn't overlap */
+.pf-x-c-backdrop--nested {
+  padding-top: var(
+    --pf-c-page__header--MinHeight
+  ); /* TODO: This does depend on the navbar being no higher than the min value; in the future, object queries might be used. */
 }
 
 .pf-x-m-gap-md {
