@@ -19,6 +19,8 @@ type Modal struct {
 
 	Large   bool
 	Overlay bool
+
+	Nested bool
 }
 
 func (c *Modal) Render() app.UI {
@@ -36,6 +38,10 @@ func (c *Modal) Render() app.UI {
 
 			if c.Overlay {
 				classes += " pf-x-m-modal-overlay"
+			}
+
+			if c.Nested {
+				classes += " pf-x-c-backdrop--nested"
 			}
 
 			return classes

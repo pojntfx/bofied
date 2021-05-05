@@ -234,6 +234,8 @@ func (c *DataShell) Render() app.UI {
 
 																							SetUseHTTPS: c.SetUseHTTPS,
 																							SetUseDavs:  c.SetUseDavs,
+
+																							Nested: true,
 																						},
 																					),
 																			),

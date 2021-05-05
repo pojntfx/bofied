@@ -47,6 +47,8 @@ type FileExplorer struct {
 	SetUseHTTPS func(bool)
 	SetUseDavs  func(bool)
 
+	Nested bool
+
 	selectedPath     string
 	newDirectoryName string
 	newFileName      string
@@ -558,7 +560,8 @@ func (c *FileExplorer) Render() app.UI {
 					c.mountExpandableSectionOpen = false
 				},
 
-				ID: "mount-folder-modal-title",
+				ID:     "mount-folder-modal-title",
+				Nested: c.Nested,
 
 				Title: "Mount Folder",
 				Body: []app.UI{
@@ -763,7 +766,8 @@ func (c *FileExplorer) Render() app.UI {
 					c.shareExpandableSectionOpen = false
 				},
 
-				ID: "share-path-modal-title",
+				ID:     "share-path-modal-title",
+				Nested: c.Nested,
 
 				Title: `Share "` + path.Base(c.selectedPath) + `"`,
 				Body: []app.UI{
@@ -934,6 +938,7 @@ func (c *FileExplorer) Render() app.UI {
 
 				ID:      "create-directory-modal-title",
 				Overlay: true, // It should be possible to create a directory from another modal
+				Nested:  true,
 
 				Title: "Create Directory",
 				Body: []app.UI{
@@ -1008,7 +1013,8 @@ func (c *FileExplorer) Render() app.UI {
 					c.deletionConfirmModalOpen = false
 				},
 
-				ID: "deletion-confirm-modal-title",
+				ID:     "deletion-confirm-modal-title",
+				Nested: c.Nested,
 
 				Title: `Permanently delete "` + path.Base(c.selectedPath) + `"?`,
 				Body: []app.UI{
@@ -1041,7 +1047,8 @@ func (c *FileExplorer) Render() app.UI {
 					c.renamePathModalOpen = false
 				},
 
-				ID: "rename-path-modal-title",
+				ID:     "rename-path-modal-title",
+				Nested: c.Nested,
 
 				Title: `Rename "` + path.Base(c.selectedPath) + `"`,
 				Body: []app.UI{
@@ -1110,8 +1117,9 @@ func (c *FileExplorer) Render() app.UI {
 					c.movePathModalOpen = false
 				},
 
-				ID:    "move-path-modal-title",
-				Large: true,
+				ID:     "move-path-modal-title",
+				Large:  true,
+				Nested: c.Nested,
 
 				Title: `Move "` + path.Base(c.selectedPath) + `"`,
 				Body: []app.UI{
@@ -1199,8 +1207,9 @@ func (c *FileExplorer) Render() app.UI {
 					c.copyPathModalOpen = false
 				},
 
-				ID:    "copy-path-modal-title",
-				Large: true,
+				ID:     "copy-path-modal-title",
+				Large:  true,
+				Nested: c.Nested,
 
 				Title: `Copy "` + path.Base(c.selectedPath) + `"`,
 				Body: []app.UI{
@@ -1288,7 +1297,8 @@ func (c *FileExplorer) Render() app.UI {
 					c.uploadModalOpen = false
 				},
 
-				ID: "upload-modal-title",
+				ID:     "upload-modal-title",
+				Nested: c.Nested,
 
 				Title: "Upload",
 				Body: []app.UI{
