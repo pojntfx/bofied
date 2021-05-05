@@ -2,6 +2,7 @@ package providers
 
 import (
 	"context"
+	"net"
 	"net/url"
 	"os"
 	"path"
@@ -151,7 +152,7 @@ func (c *DataProvider) Render() app.UI {
 			u := c.httpShareLink
 
 			if c.useAdvertisedIP {
-				u.Host = c.advertisedIP
+				u.Host = net.JoinHostPort(c.advertisedIP, u.Port())
 			}
 
 			if c.useHTTPS {
@@ -166,7 +167,7 @@ func (c *DataProvider) Render() app.UI {
 			u := c.tftpShareLink
 
 			if c.useAdvertisedIP {
-				u.Host = c.advertisedIP
+				u.Host = net.JoinHostPort(c.advertisedIP, u.Port())
 			}
 
 			return u
@@ -182,7 +183,7 @@ func (c *DataProvider) Render() app.UI {
 			u := address
 
 			if c.useAdvertisedIPForWebDAV {
-				u.Host = c.advertisedIP
+				u.Host = net.JoinHostPort(c.advertisedIP, u.Port())
 			}
 
 			if c.useDavs {
