@@ -28,7 +28,7 @@ func (c *PathPickerToolbar) Render() app.UI {
 		Class("pf-c-toolbar pf-u-pt-0").
 		Body(
 			app.Div().
-				Class("pf-c-toolbar__content").
+				Class("pf-c-toolbar__content pf-x-m-gap-md").
 				Body(
 					app.Div().
 						Class("pf-c-toolbar__content-section").
