@@ -31,7 +31,7 @@ func (c *Navbar) Render() app.UI {
 	avatarHash := md5.Sum([]byte(c.UserEmail))
 
 	return app.Header().
-		Class("pf-c-page__header").
+		Class("pf-c-page__header pf-x-c-page__header--behind-modals").
 		Body(
 			app.Div().
 				Class("pf-c-page__header-brand").
