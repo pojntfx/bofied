@@ -230,33 +230,47 @@ func (c *DataProvider) OnMount(ctx app.Context) {
 	// Initialize events
 	c.events = []Event{}
 
-	// Create WebDAV client
-	webDAVClient := gowebdav.NewClient(path.Join(c.BackendURL, servers.WebDAVPrefix), constants.OIDCOverBasicAuthUsername, c.IDToken)
-	header, value := authorization.GetOIDCOverBasicAuthHeader(constants.OIDCOverBasicAuthUsername, c.IDToken)
-	webDAVClient.SetHeader(header, value)
-	c.webDAVClient = webDAVClient
-
 	// Parse URL for gRPC client
-	u, err := url.Parse(c.BackendURL)
+	backendURL, err := url.Parse(c.BackendURL)
 	if err != nil {
 		c.panicEventsError(err)
 
 		return
 	}
 
+	// Create WebDAV client
+	webdavPrefix, err := url.Parse(servers.WebDAVPrefix)
+	if err != nil {
+		c.panicEventsError(err)
+
+		return
+	}
+
+	webDAVClient := gowebdav.NewClient(backendURL.ResolveReference(webdavPrefix).String(), constants.OIDCOverBasicAuthUsername, c.IDToken)
+	header, value := authorization.GetOIDCOverBasicAuthHeader(constants.OIDCOverBasicAuthUsername, c.IDToken)
+	webDAVClient.SetHeader(header, value)
+	c.webDAVClient = webDAVClient
+
 	// Prefix defaults
-	if u.Scheme == "https" {
-		u.Scheme = "wss"
+	if backendURL.Scheme == "https" {
+		backendURL.Scheme = "wss"
 		c.useHTTPS = true
 		c.useDavs = true
 	} else {
-		u.Scheme = "ws"
+		backendURL.Scheme = "ws"
 
 		// Not need to set useHTTPS or useDavs as they are false by default
 	}
 
 	// Create gRPC client
-	conn, err := grpc.Dial(path.Join(u.String(), servers.GRPCPrefix), grpc.WithContextDialer(websocketproxy.NewWebSocketProxyClient(time.Minute).Dialer), grpc.WithInsecure())
+	grpcPrefix, err := url.Parse(servers.GRPCPrefix)
+	if err != nil {
+		c.panicEventsError(err)
+
+		return
+	}
+
+	conn, err := grpc.Dial(backendURL.ResolveReference(grpcPrefix).String(), grpc.WithContextDialer(websocketproxy.NewWebSocketProxyClient(time.Minute).Dialer), grpc.WithInsecure())
 	if err != nil {
 		c.panicEventsError(err)
 
