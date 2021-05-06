@@ -27,6 +27,9 @@ const (
 	oidcClientIDKey               = "oidcClientID"
 	grpcListenAddressKey          = "grpcListenAddress"
 	pureConfigKey                 = "pureConfig"
+	netbootBIOSURLKey             = "netbootBIOSURL"
+	netbootUEFIURLKey             = "netbootUEFIURL"
+	skipNetbootDownloadKey        = "skipNetbootDownload"
 )
 
 func main() {
@@ -48,8 +51,16 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 			}
 
 			// Initialize the working directory
-			if err := config.CreateConfigIfNotExists(filepath.Join(viper.GetString(workingDirKey), constants.BootConfigFileName)); err != nil {
+			firstRun, err := config.CreateConfigIfNotExists(filepath.Join(viper.GetString(workingDirKey), constants.BootConfigFileName))
+			if err != nil {
 				log.Fatal(err)
+			}
+
+			// On the first run, download https://netboot.xyz/ if it doesn't exist
+			if firstRun && !viper.GetBool(skipNetbootDownloadKey) {
+				if err := config.GetNetbootXYZIfNotExists(viper.GetString(netbootBIOSURLKey), viper.GetString(netbootUEFIURLKey), viper.GetString(workingDirKey)); err != nil {
+					log.Fatal(err)
+				}
 			}
 
 			// Create eventing utilities
@@ -142,7 +153,11 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 	cmd.PersistentFlags().StringP(oidcIssuerKey, "i", "https://pojntfx.eu.auth0.com/", "OIDC issuer")
 	cmd.PersistentFlags().StringP(oidcClientIDKey, "t", "myoidcclientid", "OIDC client ID")
 
-	cmd.PersistentFlags().BoolP(pureConfigKey, "p", false, "Prevent usage of stdlib in configuration file, even if enabled in `Configuration` function.")
+	cmd.PersistentFlags().BoolP(pureConfigKey, "p", false, "Prevent usage of stdlib in configuration file, even if enabled in `Configuration` function")
+
+	cmd.PersistentFlags().String(netbootBIOSURLKey, "https://boot.netboot.xyz/ipxe/netboot.xyz.kpxe", "Download URL for the BIOS https://netboot.xyz/ build of iPXE")
+	cmd.PersistentFlags().String(netbootUEFIURLKey, "https://boot.netboot.xyz/ipxe/netboot.xyz.efi", "Download URL for the UEFI https://netboot.xyz/ build of iPXE")
+	cmd.PersistentFlags().BoolP(skipNetbootDownloadKey, "s", false, "Don't initialize by downloading https://netboot.xyz/ on the first run")
 
 	// Bind env variables
 	if err := viper.BindPFlags(cmd.PersistentFlags()); err != nil {
