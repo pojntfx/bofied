@@ -1117,9 +1117,10 @@ func (c *FileExplorer) Render() app.UI {
 					c.movePathModalOpen = false
 				},
 
-				ID:     "move-path-modal-title",
-				Large:  true,
-				Nested: c.Nested,
+				ID:           "move-path-modal-title",
+				Large:        true,
+				PaddedBottom: true,
+				Nested:       c.Nested,
 
 				Title: `Move "` + path.Base(c.selectedPath) + `"`,
 				Body: []app.UI{

@@ -14,6 +14,8 @@ type ConfigFileEditor struct {
 	RefreshConfigFile func()
 	SaveConfigFile    func()
 
+	HelpLink string
+
 	Error  error
 	Ignore func()
 }
@@ -23,8 +25,26 @@ func (c *ConfigFileEditor) Render() app.UI {
 		Class("pf-c-card pf-u-h-100").
 		Body(
 			app.Div().
-				Class("pf-c-card__title").
-				Text("Config"),
+				Class("pf-c-card__header pf-x-m-gap-md").
+				Body(
+					app.Div().
+						Class("pf-c-card__actions").
+						Body(
+							app.A().
+								Class("pf-c-button pf-m-plain").
+								Aria("label", "Help").
+								Target("_blank").
+								Href(c.HelpLink).
+								Body(
+									app.I().
+										Class("fas fa-question-circle").
+										Aria("hidden", true),
+								),
+						),
+					app.Div().
+						Class("pf-c-card__title").
+						Text("Config"),
+				),
 			app.Div().
 				Class("pf-c-card__body").
 				Body(

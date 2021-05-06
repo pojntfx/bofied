@@ -17,8 +17,9 @@ type Modal struct {
 	Body   []app.UI
 	Footer []app.UI
 
-	Large   bool
-	Overlay bool
+	Large        bool
+	PaddedBottom bool
+	Overlay      bool
 
 	Nested bool
 }
@@ -85,7 +86,14 @@ func (c *Modal) Render() app.UI {
 										Text(c.Title),
 								),
 							app.Div().
-								Class("pf-c-modal-box__body").
+								Class(func() string {
+									classes := "pf-c-modal-box__body"
+									if c.PaddedBottom {
+										classes += " pf-u-pb-md"
+									}
+
+									return classes
+								}()).
 								Body(c.Body...),
 							app.If(
 								c.Footer != nil,
