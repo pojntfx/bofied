@@ -164,6 +164,15 @@ func (c *SetupShell) Render() app.UI {
 								),
 						),
 				),
-		)
+			app.Ul().
+				Class("pf-c-alert-group pf-m-toast").
+				Body(
+					&UpdateNotification{
+						UpdateTitle: "An update for bofied is available",
 
+						StartUpdateText:  "Upgrade now",
+						IgnoreUpdateText: "Maybe later",
+					},
+				),
+		)
 }
