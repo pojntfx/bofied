@@ -280,6 +280,12 @@ func (c *DataShell) Render() app.UI {
 					app.Ul().
 						Class("pf-c-alert-group pf-m-toast").
 						Body(
+							&UpdateNotification{
+								UpdateTitle: "An update for bofied is available",
+
+								StartUpdateText:  "Upgrade now",
+								IgnoreUpdateText: "Maybe later",
+							},
 							app.If(
 								globalError != nil,
 								app.Li().
