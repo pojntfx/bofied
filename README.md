@@ -1,6 +1,6 @@
 # bofied
 
-🚧 This project is a work-in-progress! The documentation is not complete yet. 🚧
+https://user-images.githubusercontent.com/28832235/117546130-42745500-b029-11eb-804d-134ff5049ccc.mp4
 
 Network boot nodes in a network.
 
@@ -10,6 +10,8 @@ Network boot nodes in a network.
 [![Matrix](https://img.shields.io/matrix/bofied:matrix.org)](https://matrix.to/#/#bofied:matrix.org?via=matrix.org)
 
 ## Overview
+
+🚧 This project is a work-in-progress! The documentation is not complete yet. 🚧
 
 bofied is a network boot server. It provides everything you need to PXE boot a node, from a (proxy)DHCP server for PXE service to a TFTP and HTTP server to serve boot files.
 
