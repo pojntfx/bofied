@@ -178,19 +178,31 @@ Finally, click on `Login`, and if everything worked out fine you should be prese
 
 ## Screenshots
 
-Click on a screenshot to see a larger version.
+Click on an image to see a larger version.
 
-[<img src="./assets/syntax-validation.png" width="33%" alt="Screenshot of syntax validation" title="Screenshot of syntax validation">](./assets/syntax-validation.png)
+<a display="inline" href="./assets/syntax-validation.png">
+<img src="./assets/syntax-validation.png" width="33%" alt="Screenshot of syntax validation" title="Screenshot of syntax validation">
+</a>
 
-[<img src="./assets/monitoring.png" width="33%" alt="Screenshot of monitoring" title="Screenshot of monitoring">](./assets/monitoring.png)
+<a display="inline" href="./assets/monitoring.png">
+<img src="./assets/monitoring.png" width="33%" alt="Screenshot of monitoring" title="Screenshot of monitoring">
+</a>
 
-[<img src="./assets/file-operations-2.png" width="33%" alt="Screenshot 2 of file operations" title="Screenshot 2 of file operations">](./assets/file-operations-2.png)
+<a display="inline" href="./assets/file-operations-2.png">
+<img src="./assets/file-operations-2.png" width="33%" alt="Screenshot 2 of file operations" title="Screenshot 2 of file operations">
+</a>
 
-[<img src="./assets/file-operations-3.png" width="33%" alt="Screenshot 3 of file operations" title="Screenshot 3 of file operations">](./assets/file-operations-3.png)
+<a display="inline" href="./assets/file-operations-3.png">
+<img src="./assets/file-operations-3.png" width="33%" alt="Screenshot 3 of file operations" title="Screenshot 3 of file operations">
+</a>
 
-[<img src="./assets/sharing.png" width="33%" alt="Screenshot of sharing" title="Screenshot of sharing">](./assets/sharing.png)
+<a display="inline" href="./assets/sharing.png">
+<img src="./assets/sharing.png" width="33%" alt="Screenshot of sharing" title="Screenshot of sharing">
+</a>
 
-[<img src="./assets/about-modal.png" width="33%" alt="Screenshot of about modal" title="Screenshot of about modal">](./assets/about-modal.png)
+<a display="inline" href="./assets/about-modal.png">
+<img src="./assets/about-modal.png" width="33%" alt="Screenshot of about modal" title="Screenshot of about modal">
+</a>
 
 ## Reference
 
