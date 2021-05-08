@@ -18,7 +18,7 @@ It enables you to ...
 - **Boot nodes from the network**: Using (proxy)DHCP for PXE service, it can configure nodes which are set to network boot
 - **Serve boot files**: The integrated TFTP and HTTP servers can provide the iPXE network bootloader, Linux distros or other boot files
 - **Easily manage and script the network boot config**: By using the browser or WebDAV, boot files can be managed and the scriptable configuration can be edited
-- **Monitor network boot**: By monitoring (proxy)DHCP and TFTP traffic, bofied can give an insight to the network boot process using a browser or the gRPC API
+- **Monitor network boot**: By monitoring it's (proxy)DHCP and TFTP traffic, bofied can give an insight to the network boot process using a browser or the gRPC API
 - **Remotely provision nodes**: Because bofied is based on open web technologies and supports OpenID Connect authentication, it can be securely exposed to the public internet and be used to manage network boot in a offsite location
 
 ## Installation
@@ -45,7 +45,9 @@ $ sudo setcap cap_net_bind_service+ep /usr/local/bin/bofied-backend # This allow
 
 ### About the Frontend
 
-The frontend is also available on [GitHub releases](https://github.com/pojntfx/bofied/releases) in the form of a static `.tar.gz` archive; to deploy it, simply upload it to a CDN or copy it to a web server. For most users, this shouldn't be necessary though; thanks to [@maxence-charriere](https://github.com/maxence-charriere)'s [go-app package](https://go-app.dev/), bofied is a progressive web app. By simply visiting the [public deployment](https://pojntfx.github.io/bofied/) once, it will be available for offline use whenever you need it.
+The frontend is also available on [GitHub releases](https://github.com/pojntfx/bofied/releases) in the form of a static `.tar.gz` archive; to deploy it, simply upload it to a CDN or copy it to a web server. For most users, this shouldn't be necessary though; thanks to [@maxence-charriere](https://github.com/maxence-charriere)'s [go-app package](https://go-app.dev/), bofied is a progressive web app. By simply visiting the [public deployment](https://pojntfx.github.io/bofied/) once, it will be available for offline use whenever you need it:
+
+[<img src="https://github.com/alphahorizonio/webnetesctl/raw/main/img/launch.png" width="240">](https://pojntfx.github.io/bofied/)
 
 ## Usage
 
@@ -53,7 +55,7 @@ The frontend is also available on [GitHub releases](https://github.com/pojntfx/b
 
 bofied uses [OpenID Connect](https://en.wikipedia.org/wiki/OpenID_Connect) for authentication, which means you can use almost any authentication provider, both self-hosted and as a service, that you want to. We've created a short tutorial video which shows how to set up [Auth0](https://auth0.com/) for this purpose, but feel free to use something like [Ory](https://github.com/ory/hydra) if you prefer a self-hosted solution:
 
-[<img src="https://img.youtube.com/vi/N3cocCOsrGw/0.jpg" width="512" alt="Setting up OpenID Connect for Internal Apps YouTube Video" title="Setting up OpenID Connect for Internal Apps YouTube Video">](https://www.youtube.com/watch?v=N3cocCOsrGw)
+[<img src="https://img.youtube.com/vi/N3cocCOsrGw/0.jpg" width="256" alt="Setting up OpenID Connect for Internal Apps YouTube Video" title="Setting up OpenID Connect for Internal Apps YouTube Video">](https://www.youtube.com/watch?v=N3cocCOsrGw)
 
 ### Verifying Port Availability
 
@@ -72,12 +74,11 @@ bofied integrates a (proxy)DHCP server, which advertises the IP address of the i
 
 ```bash
 $ ip -4 a
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
+# ...
 2: enp0s13f0u1u3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
     inet 192.168.178.147/24 brd 192.168.178.255 scope global dynamic noprefixroute enp0s13f0u1u3
        valid_lft 862274sec preferred_lft 862274sec
+# ...
 ```
 
 In the following, we'll assume that `192.168.178.147` is the IP address of this node.
@@ -85,6 +86,9 @@ In the following, we'll assume that `192.168.178.147` is the IP address of this 
 ### Starting the Backend (Containerized)
 
 Using Docker (or an alternative like Podman), you can now easily start & configure the backend; see the [Reference](#reference) for more configuration parameters:
+
+<details>
+  <summary>Expand containerized installation instructions</summary>
 
 ```shell
 $ docker run \
@@ -110,9 +114,14 @@ The logs are available like so:
 $ docker logs bofied-backend
 ```
 
+</details>
+
 ### Starting the Backend (Natively)
 
 If you prefer a native setup, a non-containerized installation is also possible.
+
+<details>
+  <summary>Expand native installation instructions</summary>
 
 First, set up a config file at `~/.local/share/bofied/etc/bofied/bofied-backend-config.yaml`; see the [Reference](#reference) for more configuration parameters:
 
@@ -153,6 +162,8 @@ You can get the logs like so:
 ```shell
 $ journalctl --user -u bofied-backend
 ```
+
+  </details>
 
 ### Setting up the Firewall
 
@@ -277,6 +288,9 @@ func Configure() map[string]string {
 
 The script is just a small [Go](https://go.dev/) program which exports two functions: **`Filename`** and **`Configure`**. **`Configure`** is called to configure the interpreter; for example, if you want to use the standard library, i.e. to log information with `log.Println` or to make a HTTP request with `http.Get`, you can set `"useStdlib": "true",`. **`Filename`** is called with the IP address, MAC address and architecture (as a string and as an ID), and should return the name of the file to send to the booting node. The following architecture values are available (see [IANA Processor Architecture Types](https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml#processor-architecture)):
 
+<details>
+  <summary>Expand available architecture values</summary>
+
 | `archID` Parameter | `arch` Parameter                   |
 | ------------------ | ---------------------------------- |
 | 0x00               | x86 BIOS                           |
@@ -316,6 +330,8 @@ The script is just a small [Go](https://go.dev/) program which exports two funct
 | 0x22               | MIPS 64-bit UEFI                   |
 | 0x23               | Sunway 32-bit UEFI                 |
 | 0x24               | Sunway 64-bit UEFI                 |
+
+</details>
 
 When bofied is first started, it automatically downloads [netboot.xyz](https://netboot.xyz/) to the boot file directory, so without configuring anything you can already network boot many Linux distros and other operating systems. This behavior can of course also be disabled; see [Reference](#reference).
 
