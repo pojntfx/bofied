@@ -8,16 +8,16 @@
 <meta name="keywords" content="pxe-boot, ipxe, netboot, network-boot, http-server, dhcp-server, pxe, webdav-server, tftp-server, proxy-dhcp">
 <meta name="theme-color" content="#151515">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
-<meta property="og:url" content="http://127.0.0.1:34777/">
-<meta content="bofied" property="og:title">
+<meta property="og:url" content="http://127.0.0.1:40381/">
+<meta property="og:title" content="bofied">
 <meta property="og:description" content="Network boot nodes in a network.">
-<meta content="website" property="og:type">
-<meta content property="og:image">
+<meta property="og:type" content="website">
+<meta property="og:image" content>
 <title>
 bofied
 </title>
 <link rel="icon" type="image/png" href="/bofied/web/icon.png">
-<link rel="apple-touch-icon" href="/bofied/web/icon.png">
+<link href="/bofied/web/icon.png" rel="apple-touch-icon">
 <link rel="manifest" href="/bofied/manifest.webmanifest">
 <link type="text/css" rel="stylesheet" href="/bofied/app.css">
 <script defer src="/bofied/wasm_exec.js"></script>
@@ -71,7 +71,7 @@ bofied
 <div class="pf-c-login">
 <div class="pf-c-login__container">
 <header class="pf-c-login__header">
-<img class="pf-c-brand pf-x-c-brand--main" src="/bofied/web/logo.svg" alt="Logo">
+<img alt="Logo" class="pf-c-brand pf-x-c-brand--main" src="/bofied/web/logo.svg">
 </header>
 <main class="pf-c-login__main">
 <header class="pf-c-login__main-header">
@@ -96,12 +96,12 @@ Backend URL
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input name="backendURLName" id="backendURLName" type="url" required placeholder="ws://localhost:15124" class="pf-c-form-control" aria-invalid="false">
+<input class="pf-c-form-control" aria-invalid="false" name="backendURLName" id="backendURLName" type="url" required placeholder="ws://localhost:15124">
 </div>
 </div>
 <div class="pf-c-form__group">
 <div class="pf-c-form__group-label">
-<label for="oidcIssuer" class="pf-c-form__label">
+<label class="pf-c-form__label" for="oidcIssuer">
 <span class="pf-c-form__label-text">
 OIDC Issuer
 </span>
@@ -111,7 +111,7 @@ OIDC Issuer
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input name="oidcIssuer" id="oidcIssuer" type="url" required placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false">
+<input required placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false" name="oidcIssuer" id="oidcIssuer" type="url">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -121,12 +121,12 @@ OIDC Issuer
 OIDC Client ID
 </span>
 </label>
-<span aria-hidden="true" class="pf-c-form__label-required">
+<span class="pf-c-form__label-required" aria-hidden="true">
 *
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input type="text" required class="pf-c-form-control" aria-invalid="false" name="oidcClientID" id="oidcClientID">
+<input required class="pf-c-form-control" aria-invalid="false" name="oidcClientID" id="oidcClientID" type="text">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -136,16 +136,16 @@ OIDC Client ID
 OIDC Redirect URL
 </span>
 </label>
-<span class="pf-c-form__label-required" aria-hidden="true">
+<span aria-hidden="true" class="pf-c-form__label-required">
 *
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input required placeholder="http://localhost:15125/" class="pf-c-form-control" aria-invalid="false" name="oidcRedirectURL" id="oidcRedirectURL" type="url">
+<input id="oidcRedirectURL" type="url" required placeholder="http://localhost:15125/" class="pf-c-form-control" aria-invalid="false" name="oidcRedirectURL">
 </div>
 </div>
 <div class="pf-c-form__group pf-m-action">
-<button class="pf-c-button pf-m-primary pf-m-block" type="submit">
+<button type="submit" class="pf-c-button pf-m-primary pf-m-block">
 Log in
 </button>
 </div>
@@ -168,12 +168,12 @@ bofied is a network boot server. It provides everything you need to PXE boot a n
 </p>
 <ul class="pf-c-list pf-m-inline">
 <li>
-<a target="_blank" href="https://github.com/pojntfx/bofied#Usage">
+<a href="https://github.com/pojntfx/bofied#Usage" target="_blank">
 Documentation
 </a>
 </li>
 <li>
-<a href="https://github.com/pojntfx/bofied/blob/main/LICENSE" target="_blank">
+<a target="_blank" href="https://github.com/pojntfx/bofied/blob/main/LICENSE">
 License
 </a>
 </li>
@@ -194,7 +194,7 @@ Source Code
 </div>
 <div id="app-wasm-loader" class="goapp-app-info">
 <img id="app-wasm-loader-icon" class="goapp-logo goapp-spin" src="/bofied/web/icon.png">
-<p class="goapp-label" id="app-wasm-loader-label">
+<p id="app-wasm-loader-label" class="goapp-label">
 Network boot nodes in a network.
 </p>
 </div>
