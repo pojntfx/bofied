@@ -192,7 +192,7 @@ func (c *DataShell) Render() app.UI {
 																							RefreshConfigFile: c.RefreshConfigFile,
 																							SaveConfigFile:    c.SaveConfigFile,
 
-																							HelpLink: "https://github.com/pojntfx/bofied#configuration-file",
+																							HelpLink: "https://github.com/pojntfx/bofied#config-script",
 
 																							Error:  c.ConfigFileError,
 																							Ignore: c.IgnoreConfigFileError,

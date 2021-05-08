@@ -215,6 +215,78 @@ All command line arguments described above can also be set using environment var
 
 Just like with the environment variables, bofied can also be configured using a configuration file; see [examples/bofied-backend-config.yaml](./examples/bofied-backend-config.yaml) for an example configuration file.
 
+### Config Script
+
+The config script is separate from the config file and is used to dynamically decide which file to send to which node based on it's IP address, MAC address and processor architecture. It can be set & validated using either the frontend or WebDAV. The default config script returns a PC x86 executable for x86 BIOS nodes and an EFI executable for all other nodes:
+
+```go
+package config
+
+func Filename(
+	ip string,
+	macAddress string,
+	arch string,
+	archID int,
+) string {
+	switch arch {
+	case "x86 BIOS":
+		return "netboot.xyz.kpxe"
+	default:
+		return "netboot.xyz.efi"
+	}
+}
+
+func Configure() map[string]string {
+	return map[string]string{
+		"useStdlib": "false",
+	}
+}
+```
+
+The script is just a small [Go](https://go.dev/) program which exports two functions: **`Filename`** and **`Configure`**. **`Configure`** is called to configure the interpreter; for example, if you want to use the standard library, i.e. to log information with `log.Println` or to make a HTTP request with `http.Get`, you can set `"useStdlib": "true",`. **`Filename`** is called with the IP address, MAC address and architecture (as a string and as an ID), and should return the name of the file to send to the booting node. The following architecture values are available (see [IANA Processor Architecture Types](https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml#processor-architecture)):
+
+| `archID` Parameter | `arch` Parameter                   |
+| ------------------ | ---------------------------------- |
+| 0x00               | x86 BIOS                           |
+| 0x01               | NEC/PC98 (DEPRECATED)              |
+| 0x02               | Itanium                            |
+| 0x03               | DEC Alpha (DEPRECATED)             |
+| 0x04               | Arc x86 (DEPRECATED)               |
+| 0x05               | Intel Lean Client (DEPRECATED)     |
+| 0x06               | x86 UEFI                           |
+| 0x07               | x64 UEFI                           |
+| 0x08               | EFI Xscale (DEPRECATED)            |
+| 0x09               | EBC                                |
+| 0x0a               | ARM 32-bit UEFI                    |
+| 0x0b               | ARM 64-bit UEFI                    |
+| 0x0c               | PowerPC Open Firmware              |
+| 0x0d               | PowerPC ePAPR                      |
+| 0x0e               | POWER OPAL v3                      |
+| 0x0f               | x86 uefi boot from http            |
+| 0x10               | x64 uefi boot from http            |
+| 0x11               | ebc boot from http                 |
+| 0x12               | arm uefi 32 boot from http         |
+| 0x13               | arm uefi 64 boot from http         |
+| 0x14               | pc/at bios boot from http          |
+| 0x15               | arm 32 uboot                       |
+| 0x16               | arm 64 uboot                       |
+| 0x17               | arm uboot 32 boot from http        |
+| 0x18               | arm uboot 64 boot from http        |
+| 0x19               | RISC-V 32-bit UEFI                 |
+| 0x1a               | RISC-V 32-bit UEFI boot from http  |
+| 0x1b               | RISC-V 64-bit UEFI                 |
+| 0x1c               | RISC-V 64-bit UEFI boot from http  |
+| 0x1d               | RISC-V 128-bit UEFI                |
+| 0x1e               | RISC-V 128-bit UEFI boot from http |
+| 0x1f               | s390 Basic                         |
+| 0x20               | s390 Extended                      |
+| 0x21               | MIPS 32-bit UEFI                   |
+| 0x22               | MIPS 64-bit UEFI                   |
+| 0x23               | Sunway 32-bit UEFI                 |
+| 0x24               | Sunway 64-bit UEFI                 |
+
+When bofied is first started, it automatically downloads [netboot.xyz](https://netboot.xyz/) to the boot file directory, so without configuring anything you can already network boot many Linux distros and other operating systems. This behavior can of course also be disabled; see [Reference](#reference).
+
 ### WebDAV
 
 In addition to using the frontend to manage boot files, you can also mount them using [WebDAV](https://en.wikipedia.org/wiki/WebDAV). You can the required credentials by using the `Mount directory` button in the frontend:
@@ -239,6 +311,7 @@ bofied exposes a streaming gRPC and gRPC-Web API for monitoring network boot, wh
 - The open source [PatternFly design system](https://www.patternfly.org/v4/) provides a professional design and reduced the need for custom CSS to a minimium (less than 30 SLOC!).
 - [pin/tftp](https://github.com/pin/tftp) provides the TFTP functionality for bofied.
 - [studio-b12/gowebdav](https://github.com/studio-b12/gowebdav) provides the WebDAV client for the bofied frontend.
+- The [yaegi Go interpreter](https://github.com/traefik/yaegi) is used to securely evaluate the config script.
 - All the rest of the authors who worked on the dependencies used! Thanks a lot!
 
 ## Contributing
