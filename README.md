@@ -176,6 +176,22 @@ Finally, click on `Login`, and if everything worked out fine you should be prese
 
 🚀 **That's it**! We hope you enjoy using bofied.
 
+## Screenshots
+
+Click on a screenshot to see a larger version.
+
+[<img src="./assets/syntax-validation.png" width="33%" alt="Screenshot of syntax validation" title="Screenshot of syntax validation">](./assets/syntax-validation.png)
+
+[<img src="./assets/monitoring.png" width="33%" alt="Screenshot of monitoring" title="Screenshot of monitoring">](./assets/monitoring.png)
+
+[<img src="./assets/file-operations-2.png" width="33%" alt="Screenshot 2 of file operations" title="Screenshot 2 of file operations">](./assets/file-operations-2.png)
+
+[<img src="./assets/file-operations-3.png" width="33%" alt="Screenshot 3 of file operations" title="Screenshot 3 of file operations">](./assets/file-operations-3.png)
+
+[<img src="./assets/sharing.png" width="33%" alt="Screenshot of sharing" title="Screenshot of sharing">](./assets/sharing.png)
+
+[<img src="./assets/about-modal.png" width="33%" alt="Screenshot of about modal" title="Screenshot of about modal">](./assets/about-modal.png)
+
 ## Reference
 
 ### Command Line Arguments
