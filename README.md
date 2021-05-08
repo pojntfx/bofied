@@ -51,13 +51,13 @@ The frontend is also available on [GitHub releases](https://github.com/pojntfx/b
 
 ## Usage
 
-### Setting up Authentication
+### 1. Setting up Authentication
 
 bofied uses [OpenID Connect](https://en.wikipedia.org/wiki/OpenID_Connect) for authentication, which means you can use almost any authentication provider, both self-hosted and as a service, that you want to. We've created a short tutorial video which shows how to set up [Auth0](https://auth0.com/) for this purpose, but feel free to use something like [Ory](https://github.com/ory/hydra) if you prefer a self-hosted solution:
 
 [<img src="https://img.youtube.com/vi/N3cocCOsrGw/0.jpg" width="256" alt="Setting up OpenID Connect for Internal Apps YouTube Video" title="Setting up OpenID Connect for Internal Apps YouTube Video">](https://www.youtube.com/watch?v=N3cocCOsrGw)
 
-### Verifying Port Availability
+### 2. Verifying Port Availability
 
 First, verify that ports `67/udp`, `4011/udp`, `69/udp`, `15256/tcp` and `15257/tcp` aren't in use by another app:
 
@@ -68,7 +68,7 @@ $ ss -ulnp | grep -E -- ':(67|4011|69)'
 
 Neither of these two commands should return anything; if they do, kill the process that listens on the port.
 
-### Getting the Advertised IP
+### 3. Getting the Advertised IP
 
 bofied integrates a (proxy)DHCP server, which advertises the IP address of the integrated TFTP server. To do so, you'll have to find out the IP of the node which is running bofied; you can find it with `ip a`:
 
@@ -83,12 +83,14 @@ $ ip -4 a
 
 In the following, we'll assume that `192.168.178.147` is the IP address of this node.
 
-### Starting the Backend (Containerized)
+### 4 (Option 1): Starting the Backend (Containerized)
 
 Using Docker (or an alternative like Podman), you can now easily start & configure the backend; see the [Reference](#reference) for more configuration parameters:
 
 <details>
   <summary>Expand containerized installation instructions</summary>
+
+Run the following:
 
 ```shell
 $ docker run \
@@ -116,7 +118,7 @@ $ docker logs bofied-backend
 
 </details>
 
-### Starting the Backend (Natively)
+### 4 (Option 2): Starting the Backend (Natively)
 
 If you prefer a native setup, a non-containerized installation is also possible.
 
@@ -165,7 +167,7 @@ $ journalctl --user -u bofied-backend
 
   </details>
 
-### Setting up the Firewall
+### 5. Setting up the Firewall
 
 You might also have to open up the ports on your firewall:
 
@@ -173,7 +175,7 @@ You might also have to open up the ports on your firewall:
 $ for port in 67/udp 4011/udp 69/udp 15256/tcp 15257/tcp; do sudo firewall-cmd --permanent --add-port=${port}; done
 ```
 
-### Connecting the Frontend
+### 6. Connecting the Frontend
 
 Now that the backend is running, head over to [https://pojntfx.github.io/bofied/](https://pojntfx.github.io/bofied/):
 
