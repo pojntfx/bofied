@@ -181,27 +181,27 @@ Finally, click on `Login`, and if everything worked out fine you should be prese
 Click on an image to see a larger version.
 
 <a display="inline" href="./assets/syntax-validation.png">
-<img src="./assets/syntax-validation.png" width="33%" alt="Screenshot of syntax validation" title="Screenshot of syntax validation">
+<img src="./assets/syntax-validation.png" width="45%" alt="Screenshot of syntax validation" title="Screenshot of syntax validation">
 </a>
 
 <a display="inline" href="./assets/monitoring.png">
-<img src="./assets/monitoring.png" width="33%" alt="Screenshot of monitoring" title="Screenshot of monitoring">
+<img src="./assets/monitoring.png" width="45%" alt="Screenshot of monitoring" title="Screenshot of monitoring">
 </a>
 
 <a display="inline" href="./assets/file-operations-2.png">
-<img src="./assets/file-operations-2.png" width="33%" alt="Screenshot 2 of file operations" title="Screenshot 2 of file operations">
+<img src="./assets/file-operations-2.png" width="45%" alt="Screenshot 2 of file operations" title="Screenshot 2 of file operations">
 </a>
 
 <a display="inline" href="./assets/file-operations-3.png">
-<img src="./assets/file-operations-3.png" width="33%" alt="Screenshot 3 of file operations" title="Screenshot 3 of file operations">
+<img src="./assets/file-operations-3.png" width="45%" alt="Screenshot 3 of file operations" title="Screenshot 3 of file operations">
 </a>
 
 <a display="inline" href="./assets/sharing.png">
-<img src="./assets/sharing.png" width="33%" alt="Screenshot of sharing" title="Screenshot of sharing">
+<img src="./assets/sharing.png" width="45%" alt="Screenshot of sharing" title="Screenshot of sharing">
 </a>
 
 <a display="inline" href="./assets/about-modal.png">
-<img src="./assets/about-modal.png" width="33%" alt="Screenshot of about modal" title="Screenshot of about modal">
+<img src="./assets/about-modal.png" width="45%" alt="Screenshot of about modal" title="Screenshot of about modal">
 </a>
 
 ## Reference
