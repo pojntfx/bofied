@@ -1,5 +1,7 @@
 # bofied
 
+🚧 This project is a work-in-progress! The documentation is not complete yet. 🚧
+
 Network boot nodes in a network.
 
 [![hydrun CI](https://github.com/pojntfx/bofied/actions/workflows/hydrun.yaml/badge.svg)](https://github.com/pojntfx/bofied/actions/workflows/hydrun.yaml)
@@ -176,7 +178,85 @@ Finally, click on `Login`, and if everything worked out fine you should be prese
 
 ## Reference
 
-🚧 This section is a work-in-progress! It will be added soon. 🚧
+### Command Line Arguments
+
+```shell
+$ bofied-backend --help
+bofied is a network boot server. It provides everything you need to PXE boot a node, from a (proxy)DHCP server for PXE service to a TFTP and HTTP server to serve boot files.
+
+For more information, please visit https://github.com/pojntfx/bofied.
+
+Usage:
+  bofied-backend [flags]
+
+Flags:
+      --advertisedIP string                IP to advertise for DHCP clients (default "100.64.154.246")
+  -c, --configFile string                  Config file to use
+      --dhcpListenAddress string           Listen address for DHCP server (default ":67")
+      --extendedHTTPListenAddress string   Listen address for WebDAV, HTTP and gRPC-Web server (default ":15256")
+      --grpcListenAddress string           Listen address for gRPC server (default ":15257")
+  -h, --help                               help for bofied-backend
+      --netbootBIOSURL string              Download URL for the BIOS https://netboot.xyz/ build of iPXE (default "https://boot.netboot.xyz/ipxe/netboot.xyz.kpxe")
+      --netbootUEFIURL string              Download URL for the UEFI https://netboot.xyz/ build of iPXE (default "https://boot.netboot.xyz/ipxe/netboot.xyz.efi")
+  -t, --oidcClientID string                OIDC client ID (default "myoidcclientid")
+  -i, --oidcIssuer string                  OIDC issuer (default "https://pojntfx.eu.auth0.com/")
+      --proxyDHCPListenAddress string      Listen address for proxyDHCP server (default ":4011")
+  -p, --pureConfig Configuration           Prevent usage of stdlib in configuration file, even if enabled in Configuration function
+  -s, --skipNetbootDownload                Don't initialize by downloading https://netboot.xyz/ on the first run
+      --tftpListenAddress string           Listen address for TFTP server (default ":69")
+  -d, --workingDir string                  Working directory (default "/home/pojntfx/.local/share/bofied/var/lib/bofied")
+```
+
+### Environment Variables
+
+All command line arguments described above can also be set using environment variables; for example, to set `--advertisedIP` to `192.168.178.147` with an environment variable, use `BOFIED_BACKEND_ADVERTISEDIP=192.168.178.147`.
+
+### Configuration File
+
+Just like with the environment variables, bofied can also be configured using a configuration file; see [examples/bofied-backend-config.yaml](./examples/bofied-backend-config.yaml) for an example configuration file.
+
+### WebDAV
+
+In addition to using the frontend to manage boot files, you can also mount them using [WebDAV](https://en.wikipedia.org/wiki/WebDAV). You can the required credentials by using the `Mount directory` button in the frontend:
+
+![Mount directory modal](./assets/mount-directory.png)
+
+Using a file manager like [Files](https://en.wikipedia.org/wiki/GNOME_Files), you can now mount the folder:
+
+![GNOME Files WebDAV mounting](./assets/gnome-files-webdav-mounting.png)
+
+When transfering large files, using WebDAV directly is the recommended method.
+
+![GNOME Files WebDAV listing](./assets/gnome-files-webdav-listing.png)
+
+### gRPC API
+
+bofied exposes a streaming gRPC and gRPC-Web API for monitoring network boot, which is also in use internally in the frontend. You can find the relevant `.proto` files in [api/proto/v1](./api/proto/v1); send the OpenID Connect token with the `X-Bofied-Authorization` metadata key.
+
+## Acknowledgements
+
+- This project would not have been possible were it not for [@maxence-charriere](https://github.com/maxence-charriere)'s [go-app package](https://go-app.dev/); if you enjoy using bofied, please donate to him!
+- The open source [PatternFly design system](https://www.patternfly.org/v4/) provides a professional design and reduced the need for custom CSS to a minimium (less than 30 SLOC!).
+- [pin/tftp](https://github.com/pin/tftp) provides the TFTP functionality for bofied.
+- [studio-b12/gowebdav](https://github.com/studio-b12/gowebdav) provides the WebDAV client for the bofied frontend.
+- All the rest of the authors who worked on the dependencies used! Thanks a lot!
+
+## Contributing
+
+To contribute, please use the [GitHub flow](https://guides.github.com/introduction/flow/) and follow our [Code of Conduct](./CODE_OF_CONDUCT.md).
+
+To build and start a development version of bofied locally, run the following:
+
+```shell
+$ git clone https://github.com/pojntfx/bofied.git
+$ cd bofied
+$ make depend
+$ BOFIED_BACKEND_OIDCISSUER=https://pojntfx.eu.auth0.com/ BOFIED_BACKEND_OIDCCLIENTID=myoidcclientid BOFIED_BACKEND_ADVERTISEDIP=192.168.178.147 make dev
+```
+
+The backend should now be started and the frontend be available on [http://localhost:15225/](http://localhost:15225/). Whenever you change a source file, the back- and frontend will automatically be re-compiled.
+
+Have any questions or need help? Chat with us [on Matrix](https://matrix.to/#/#bofied:matrix.org?via=matrix.org)!
 
 ## License
 
