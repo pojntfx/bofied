@@ -331,6 +331,10 @@ The backend should now be started and the frontend be available on [http://local
 
 Have any questions or need help? Chat with us [on Matrix](https://matrix.to/#/#bofied:matrix.org?via=matrix.org)!
 
+## Related Projects
+
+If you want to have persistent inventory of services and nodes on your network or turn the nodes in it on remotely, check out [liwasc](https://github.com/pojntfx/liwasc)!
+
 ## License
 
 bofied (c) 2021 Felicitas Pojtinger and contributors
