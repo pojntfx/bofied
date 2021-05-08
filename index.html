@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta httpequiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="author" content="Felicitas Pojtinger">
-<meta name="description" content="Network boot nodes in a network.">
+<meta content="Network boot nodes in a network." name="description">
 <meta name="keywords" content="pxe-boot, ipxe, netboot, network-boot, http-server, dhcp-server, pxe, webdav-server, tftp-server, proxy-dhcp">
 <meta name="theme-color" content="#151515">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
-<meta content="http://127.0.0.1:41697/" property="og:url">
+<meta property="og:url" content="http://127.0.0.1:34393/">
 <meta property="og:title" content="bofied">
 <meta property="og:description" content="Network boot nodes in a network.">
 <meta property="og:type" content="website">
@@ -16,13 +16,13 @@
 <title>
 bofied
 </title>
-<link rel="icon" type="image/png" href="/bofied/web/icon.png">
-<link href="/bofied/web/icon.png" rel="apple-touch-icon">
+<link href="/bofied/web/icon.png" rel="icon" type="image/png">
+<link rel="apple-touch-icon" href="/bofied/web/icon.png">
 <link rel="manifest" href="/bofied/manifest.webmanifest">
 <link type="text/css" rel="stylesheet" href="/bofied/app.css">
-<script src="/bofied/wasm_exec.js" defer></script>
+<script defer src="/bofied/wasm_exec.js"></script>
 <script defer src="/bofied/app.js"></script>
-<link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly.css">
+<link href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly.css" type="text/css" rel="stylesheet">
 <link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly-addons.css">
 <link rel="stylesheet" href="/bofied/web/index.css" type="text/css">
 <meta property="og:url" content="https://pojntfx.github.io/bofied/">
@@ -96,7 +96,7 @@ Backend URL
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input type="url" required placeholder="ws://localhost:15124" class="pf-c-form-control" aria-invalid="false" name="backendURLName" id="backendURLName">
+<input aria-invalid="false" name="backendURLName" id="backendURLName" type="url" required placeholder="ws://localhost:15124" class="pf-c-form-control">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -121,12 +121,12 @@ OIDC Issuer
 OIDC Client ID
 </span>
 </label>
-<span class="pf-c-form__label-required" aria-hidden="true">
+<span aria-hidden="true" class="pf-c-form__label-required">
 *
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input name="oidcClientID" id="oidcClientID" type="text" required class="pf-c-form-control" aria-invalid="false">
+<input aria-invalid="false" name="oidcClientID" id="oidcClientID" type="text" required class="pf-c-form-control">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -193,8 +193,8 @@ Source Code
 </div>
 </div>
 <div id="app-wasm-loader" class="goapp-app-info">
-<img id="app-wasm-loader-icon" class="goapp-logo goapp-spin" src="/bofied/web/icon.png">
-<p id="app-wasm-loader-label" class="goapp-label">
+<img src="/bofied/web/icon.png" id="app-wasm-loader-icon" class="goapp-logo goapp-spin">
+<p class="goapp-label" id="app-wasm-loader-label">
 Network boot nodes in a network.
 </p>
 </div>
