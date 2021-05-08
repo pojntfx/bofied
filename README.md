@@ -11,8 +11,6 @@ Network boot nodes in a network.
 
 ## Overview
 
-🚧 This project is a work-in-progress! The documentation is not complete yet. 🚧
-
 bofied is a network boot server. It provides everything you need to PXE boot a node, from a (proxy)DHCP server for PXE service to a TFTP and HTTP server to serve boot files.
 
 It enables you to ...
@@ -166,7 +164,11 @@ $ for port in 67/udp 4011/udp 69/udp 15256/tcp 15257/tcp; do sudo firewall-cmd -
 
 ### Connecting the Frontend
 
-Now that the backend is running, head over to [https://pojntfx.github.io/bofied/](https://pojntfx.github.io/bofied/). Alternatively, as described in [About the Frontend](#about-the-frontend), you can also choose to self-host. Once you're on the page, you should be presented with the following setup page:
+Now that the backend is running, head over to [https://pojntfx.github.io/bofied/](https://pojntfx.github.io/bofied/):
+
+[<img src="https://github.com/alphahorizonio/webnetesctl/raw/main/img/launch.png" width="240">](https://pojntfx.github.io/bofied/)
+
+Alternatively, as described in [About the Frontend](#about-the-frontend), you can also choose to self-host. Once you're on the page, you should be presented with the following setup page:
 
 ![Setup page](./assets/setup.png)
 
