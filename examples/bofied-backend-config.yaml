@@ -1,9 +1,13 @@
-workingDir: /home/pojntfx/.local/share/bofied/var/lib/bofied
 advertisedIP: "100.64.154.246"
 dhcpListenAddress: ":67"
-proxyDHCPListenAddress: ":4011"
-tftpListenAddress: ":69"
 extendedHTTPListenAddress: ":15256"
 grpcListenAddress: ":15257"
+netbootBIOSURL: https://boot.netboot.xyz/ipxe/netboot.xyz.kpxe
+netbootUEFIURL: https://boot.netboot.xyz/ipxe/netboot.xyz.efi
 oidcClientID: myoidcclientid
 oidcIssuer: https://pojntfx.eu.auth0.com/
+proxyDHCPListenAddress: ":4011"
+pureConfig: false
+skipNetbootDownload: false
+tftpListenAddress: ":69"
+workingDir: /home/pojntfx/.local/share/bofied/var/lib/bofied
