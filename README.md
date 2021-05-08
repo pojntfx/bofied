@@ -2,7 +2,7 @@
 
 https://user-images.githubusercontent.com/28832235/117546130-42745500-b029-11eb-804d-134ff5049ccc.mp4
 
-Network boot nodes in a network.
+Modern network boot server.
 
 [![hydrun CI](https://github.com/pojntfx/bofied/actions/workflows/hydrun.yaml/badge.svg)](https://github.com/pojntfx/bofied/actions/workflows/hydrun.yaml)
 [![Docker CI](https://github.com/pojntfx/bofied/actions/workflows/docker.yaml/badge.svg)](https://github.com/pojntfx/bofied/actions/workflows/docker.yaml)
