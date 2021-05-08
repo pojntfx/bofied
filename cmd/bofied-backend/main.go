@@ -36,7 +36,7 @@ func main() {
 	// Create command
 	cmd := &cobra.Command{
 		Use:   "bofied-backend",
-		Short: "Network boot nodes in a network.",
+		Short: "Modern network boot server.",
 		Long: `bofied is a network boot server. It provides everything you need to PXE boot a node, from a (proxy)DHCP server for PXE service to a TFTP and HTTP server to serve boot files.
 
 For more information, please visit https://github.com/pojntfx/bofied.`,

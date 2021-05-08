@@ -35,7 +35,7 @@ func main() {
 		h := &app.Handler{
 			Author:          "Felicitas Pojtinger",
 			BackgroundColor: "#151515",
-			Description:     "Network boot nodes in a network.",
+			Description:     "Modern network boot server.",
 			Icon: app.Icon{
 				Default: "/web/icon.png",
 			},
@@ -51,12 +51,12 @@ func main() {
 				"tftp-server",
 				"proxy-dhcp",
 			},
-			LoadingLabel: "Network boot nodes in a network.",
+			LoadingLabel: "Modern network boot server.",
 			Name:         "bofied",
 			RawHeaders: []string{
 				`<meta property="og:url" content="https://pojntfx.github.io/bofied/">`,
 				`<meta property="og:title" content="bofied">`,
-				`<meta property="og:description" content="Network boot nodes in a network.">`,
+				`<meta property="og:description" content="Modern network boot server.">`,
 				`<meta property="og:image" content="https://pojntfx.github.io/bofied/web/icon.png">`,
 			},
 			Styles: []string{

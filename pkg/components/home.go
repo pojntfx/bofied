@@ -34,7 +34,7 @@ func (c *Home) Render() app.UI {
 									return &SetupShell{
 										LogoSrc:          "/web/logo.svg",
 										Title:            "Log in to bofied",
-										ShortDescription: "Network boot nodes in a network.",
+										ShortDescription: "Modern network boot server.",
 										LongDescription:  `bofied is a network boot server. It provides everything you need to PXE boot a node, from a (proxy)DHCP server for PXE service to a TFTP and HTTP server to serve boot files.`,
 										HelpLink:         "https://github.com/pojntfx/bofied#Usage",
 										Links: map[string]string{
@@ -139,7 +139,7 @@ func (c *Home) Render() app.UI {
 						&SetupShell{
 							LogoSrc:          "/web/logo.svg",
 							Title:            "Log in to bofied",
-							ShortDescription: "Network boot nodes in a network.",
+							ShortDescription: "Modern network boot server.",
 							LongDescription:  `bofied is a network boot server. It provides everything you need to PXE boot a node, from a (proxy)DHCP server for PXE service to a TFTP and HTTP server to serve boot files.`,
 							HelpLink:         "https://github.com/pojntfx/bofied#Usage",
 							Links: map[string]string{
