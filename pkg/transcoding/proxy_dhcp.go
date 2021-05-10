@@ -68,6 +68,10 @@ func EncodeProxyDHCPPacket(
 				layers.DHCPOptVendorOption,
 				serializedSubOptions,
 			),
+			layers.NewDHCPOption(
+				DHCPRootPath,
+				[]byte(advertisedIP.String()),
+			),
 		},
 	}
 
