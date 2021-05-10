@@ -16,6 +16,10 @@ RUN cp out/release/bofied-backend/bofied-backend.linux-$(uname -m) /out/bofied-b
 # Release container
 FROM debian
 
+# Add certificates
+RUN apt update
+RUN apt install -y ca-certificates
+
 # Add the release
 COPY --from=build /out/bofied-backend /usr/local/bin/bofied-backend
 
