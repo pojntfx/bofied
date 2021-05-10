@@ -12,6 +12,7 @@ const (
 	DHCPBaseClassID                 = "PXEClient"
 	DHCPEFIArch                     = 7  // X86-64_EFI
 	DHCPOptUUIDGUIDClientIdentifier = 97 // Option: (97) UUID/GUID-based Client Identifier
+	DHCPRootPath                    = 17 // Option: (17) Root Path
 )
 
 type DecodedDHCPPacket struct {
@@ -98,6 +99,10 @@ func EncodeDHCPPacket(
 			layers.NewDHCPOption(
 				layers.DHCPOptClassID,
 				[]byte(DHCPBaseClassID),
+			),
+			layers.NewDHCPOption(
+				DHCPRootPath,
+				[]byte(advertisedIP.String()),
 			),
 			clientIdentifierOpt,
 		},
