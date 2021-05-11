@@ -3,6 +3,7 @@ module github.com/pojntfx/bofied
 go 1.16
 
 require (
+	github.com/codeclysm/extract/v3 v3.0.2
 	github.com/coreos/go-oidc/v3 v3.0.0
 	github.com/fullstorydev/grpcurl v1.8.1 // indirect
 	github.com/golang/protobuf v1.5.2

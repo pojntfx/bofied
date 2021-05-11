@@ -1,13 +1,14 @@
 package config
 
 import (
+	"context"
 	"errors"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
 
+	"github.com/codeclysm/extract/v3"
 	"github.com/traefik/yaegi/interp"
 	"github.com/traefik/yaegi/stdlib"
 )
@@ -15,12 +16,11 @@ import (
 const (
 	FilenameFunctionIdentifier  = "config.Filename"
 	ConfigureFunctionIdentifier = "config.Configure"
-
-	PCBIOSiPXEFilename = "netboot.xyz.kpxe"
-	EFIiPXEFilename    = "netboot.xyz.efi"
 )
 
 const initialConfigFileContent = `package config
+
+import "log"
 
 func Filename(
 	ip string,
@@ -28,17 +28,14 @@ func Filename(
 	arch string,
 	archID int,
 ) string {
-	switch arch {
-	case "x86 BIOS":
-		return "` + PCBIOSiPXEFilename + `"
-	default:
-		return "` + EFIiPXEFilename + `"
-	}
+	log.Println("You did not set up boot files yet!")
+
+	return "changeme"
 }
 
 func Configure() map[string]string {
 	return map[string]string{
-		"useStdlib": "false",
+		"useStdlib": "true",
 	}
 }
 `
@@ -179,71 +176,50 @@ func GetFileName(
 	return rv, err
 }
 
-// CreateConfigIfNotExists creates the config file in the specified location if it doesn't already exist
-// It returns true in the first parameter if it has been created, but didn't exist before
-func CreateConfigIfNotExists(configFileLocation string) (bool, error) {
+func CreateConfigIfNotExists(configFileLocation string) error {
 	// If config file does not exist, create and write to it
 	if _, err := os.Stat(configFileLocation); os.IsNotExist(err) {
 		// Create leading directories
 		leadingDir, _ := filepath.Split(configFileLocation)
 		if err := os.MkdirAll(leadingDir, os.ModePerm); err != nil {
-			return false, err
+			return err
 		}
 
 		// Create file
 		out, err := os.Create(configFileLocation)
 		if err != nil {
-			return false, err
+			return err
 		}
 		defer out.Close()
 
 		// Write to file
 		if err := ioutil.WriteFile(configFileLocation, []byte(initialConfigFileContent), os.ModePerm); err != nil {
-			return false, err
+			return err
 		}
 
-		return true, nil
+		return nil
 	}
 
-	return false, nil
+	return nil
 }
 
-func GetNetbootXYZIfNotExists(pcBiosURL string, efiURL string, outDir string) error {
-	pcBIOSPath := filepath.Join(outDir, PCBIOSiPXEFilename)
-	efiPath := filepath.Join(outDir, EFIiPXEFilename)
-
-	for i, outPath := range []string{pcBIOSPath, efiPath} {
-		// If iPXE does not exist, download and write it
-		if _, err := os.Stat(outPath); os.IsNotExist(err) {
-			// Create leading directories
-			leadingDir, _ := filepath.Split(outPath)
-			if err := os.MkdirAll(leadingDir, os.ModePerm); err != nil {
-				return err
-			}
-
-			// Create file
-			out, err := os.Create(outPath)
-			if err != nil {
-				return err
-			}
-			defer out.Close()
-
-			// Download iPXE
-			u := pcBiosURL
-			if i > 0 {
-				u = efiURL
-			}
-			resp, err := http.Get(u)
-			if err != nil {
-				return err
-			}
-			defer resp.Body.Close()
-
-			// Write to file
-			if _, err := io.Copy(out, resp.Body); err != nil {
-				return err
-			}
+func GetStarterIfNotExists(configFileLocation string, starterURL string, outDir string) error {
+	// If config file does not exist, get and extract starter
+	if _, err := os.Stat(configFileLocation); os.IsNotExist(err) {
+		// Create directory to extract to
+		if err := os.MkdirAll(outDir, os.ModePerm); err != nil {
+			return err
 		}
+
+		// Download .tar.gz
+		resp, err := http.Get(starterURL)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+
+		// Extract .tar.gz
+		return extract.Gz(context.Background(), resp.Body, outDir, nil)
 	}
 
 	return nil
