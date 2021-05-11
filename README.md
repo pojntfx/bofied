@@ -241,13 +241,12 @@ Flags:
       --extendedHTTPListenAddress string   Listen address for WebDAV, HTTP and gRPC-Web server (default ":15256")
       --grpcListenAddress string           Listen address for gRPC server (default ":15257")
   -h, --help                               help for bofied-backend
-      --netbootBIOSURL string              Download URL for the BIOS https://netboot.xyz/ build of iPXE (default "https://boot.netboot.xyz/ipxe/netboot.xyz.kpxe")
-      --netbootUEFIURL string              Download URL for the UEFI https://netboot.xyz/ build of iPXE (default "https://boot.netboot.xyz/ipxe/netboot.xyz.efi")
   -t, --oidcClientID string                OIDC client ID (default "myoidcclientid")
   -i, --oidcIssuer string                  OIDC issuer (default "https://pojntfx.eu.auth0.com/")
       --proxyDHCPListenAddress string      Listen address for proxyDHCP server (default ":4011")
   -p, --pureConfig Configuration           Prevent usage of stdlib in configuration file, even if enabled in Configuration function
-  -s, --skipNetbootDownload                Don't initialize by downloading https://netboot.xyz/ on the first run
+  -s, --skipStarterDownload                Don't initialize by downloading the starter on the first run
+      --starterURL string                  Download URL to a starter .tar.gz archive; the default chainloads https://netboot.xyz/ (default "https://github.com/pojntfx/ipxe-binaries/releases/download/latest/ipxe.tar.gz")
       --tftpListenAddress string           Listen address for TFTP server (default ":69")
   -d, --workingDir string                  Working directory (default "/home/pojntfx/.local/share/bofied/var/lib/bofied")
 ```
@@ -262,7 +261,7 @@ Just like with the environment variables, bofied can also be configured using a 
 
 ### Config Script
 
-The config script is separate from the config file and is used to dynamically decide which file to send to which node based on it's IP address, MAC address and processor architecture. It can be set & validated using either the frontend or WebDAV. The default config script returns a PC x86 executable for x86 BIOS nodes and an EFI executable for all other nodes:
+The config script is separate from the config file and is used to dynamically decide which file to send to which node based on it's IP address, MAC address and processor architecture. It can be set & validated using either the frontend or WebDAV. The default config script, which is fetched from [pojntfx/ipxe-binaries](https://github.com/pojntfx/ipxe-binaries), returns a matching executable based on the architecture:
 
 ```go
 package config
@@ -275,9 +274,17 @@ func Filename(
 ) string {
 	switch arch {
 	case "x86 BIOS":
-		return "netboot.xyz.kpxe"
+		return "ipxe-i386.kpxe"
+	case "x86 UEFI":
+		return "ipxe-i386.efi"
+	case "x64 UEFI":
+		return "ipxe-x86_64.efi"
+	case "ARM 32-bit UEFI":
+		return "ipxe-arm32.efi"
+	case "ARM 64-bit UEFI":
+		return "ipxe-arm64.efi"
 	default:
-		return "netboot.xyz.efi"
+		return "ipxe-i386.kpxe"
 	}
 }
 
@@ -335,7 +342,7 @@ The script is just a small [Go](https://go.dev/) program which exports two funct
 
 </details>
 
-When bofied is first started, it automatically downloads [netboot.xyz](https://netboot.xyz/) to the boot file directory, so without configuring anything you can already network boot many Linux distros and other operating systems. This behavior can of course also be disabled; see [Reference](#reference).
+When bofied is first started, it automatically downloads [pojntfx/ipxe-binaries](https://github.com/pojntfx/ipxe-binaries) to the boot file directory, so without configuring anything you can already network boot many Linux distros and other operating systems thanks to [netboot.xyz](https://netboot.xyz/). This behavior can of course also be disabled, in which case only a minimal config file will be created; see [Reference](#reference).
 
 ### WebDAV
 
