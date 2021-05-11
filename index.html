@@ -2,13 +2,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta httpequiv="Content-Type" content="text/html; charset=utf-8">
+<meta content="text/html; charset=utf-8" httpequiv="Content-Type">
 <meta name="author" content="Felicitas Pojtinger">
 <meta name="description" content="Modern network boot server.">
 <meta name="keywords" content="pxe-boot, ipxe, netboot, network-boot, http-server, dhcp-server, pxe, webdav-server, tftp-server, proxy-dhcp">
 <meta name="theme-color" content="#151515">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
-<meta property="og:url" content="http://127.0.0.1:34473/">
+<meta property="og:url" content="http://127.0.0.1:39561/">
 <meta property="og:title" content="bofied">
 <meta property="og:description" content="Modern network boot server.">
 <meta property="og:type" content="website">
@@ -23,7 +23,7 @@ bofied
 <script defer src="/bofied/wasm_exec.js"></script>
 <script defer src="/bofied/app.js"></script>
 <link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly.css">
-<link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly-addons.css">
+<link rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly-addons.css" type="text/css">
 <link type="text/css" rel="stylesheet" href="/bofied/web/index.css">
 <meta property="og:url" content="https://pojntfx.github.io/bofied/">
 <meta property="og:title" content="bofied">
@@ -71,7 +71,7 @@ bofied
 <div class="pf-c-login">
 <div class="pf-c-login__container">
 <header class="pf-c-login__header">
-<img alt="Logo" class="pf-c-brand pf-x-c-brand--main" src="/bofied/web/logo.svg">
+<img class="pf-c-brand pf-x-c-brand--main" src="/bofied/web/logo.svg" alt="Logo">
 </header>
 <main class="pf-c-login__main">
 <header class="pf-c-login__main-header">
@@ -96,7 +96,7 @@ Backend URL
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input required placeholder="ws://localhost:15124" class="pf-c-form-control" aria-invalid="false" name="backendURLName" id="backendURLName" type="url">
+<input class="pf-c-form-control" aria-invalid="false" name="backendURLName" id="backendURLName" type="url" required placeholder="ws://localhost:15124">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -111,12 +111,12 @@ OIDC Issuer
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input class="pf-c-form-control" aria-invalid="false" name="oidcIssuer" id="oidcIssuer" type="url" required placeholder="https://pojntfx.eu.auth0.com/">
+<input placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false" name="oidcIssuer" id="oidcIssuer" type="url" required>
 </div>
 </div>
 <div class="pf-c-form__group">
 <div class="pf-c-form__group-label">
-<label class="pf-c-form__label" for="oidcClientID">
+<label for="oidcClientID" class="pf-c-form__label">
 <span class="pf-c-form__label-text">
 OIDC Client ID
 </span>
@@ -126,7 +126,7 @@ OIDC Client ID
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input id="oidcClientID" type="text" required class="pf-c-form-control" aria-invalid="false" name="oidcClientID">
+<input type="text" required class="pf-c-form-control" aria-invalid="false" name="oidcClientID" id="oidcClientID">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -136,12 +136,12 @@ OIDC Client ID
 OIDC Redirect URL
 </span>
 </label>
-<span class="pf-c-form__label-required" aria-hidden="true">
+<span aria-hidden="true" class="pf-c-form__label-required">
 *
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input class="pf-c-form-control" aria-invalid="false" name="oidcRedirectURL" id="oidcRedirectURL" type="url" required placeholder="http://localhost:15125/">
+<input placeholder="http://localhost:15125/" class="pf-c-form-control" aria-invalid="false" name="oidcRedirectURL" id="oidcRedirectURL" type="url" required>
 </div>
 </div>
 <div class="pf-c-form__group pf-m-action">
@@ -178,7 +178,7 @@ License
 </a>
 </li>
 <li>
-<a target="_blank" href="https://github.com/pojntfx/bofied">
+<a href="https://github.com/pojntfx/bofied" target="_blank">
 Source Code
 </a>
 </li>
@@ -193,7 +193,7 @@ Source Code
 </div>
 </div>
 <div id="app-wasm-loader" class="goapp-app-info">
-<img class="goapp-logo goapp-spin" src="/bofied/web/icon.png" id="app-wasm-loader-icon">
+<img id="app-wasm-loader-icon" class="goapp-logo goapp-spin" src="/bofied/web/icon.png">
 <p id="app-wasm-loader-label" class="goapp-label">
 Modern network boot server.
 </p>
