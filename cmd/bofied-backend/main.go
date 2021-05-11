@@ -27,9 +27,8 @@ const (
 	oidcClientIDKey               = "oidcClientID"
 	grpcListenAddressKey          = "grpcListenAddress"
 	pureConfigKey                 = "pureConfig"
-	netbootBIOSURLKey             = "netbootBIOSURL"
-	netbootUEFIURLKey             = "netbootUEFIURL"
-	skipNetbootDownloadKey        = "skipNetbootDownload"
+	starterURLKey                 = "starterURL"
+	skipStarterDownloadKey        = "skipStarterDownload"
 )
 
 func main() {
@@ -51,14 +50,15 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 			}
 
 			// Initialize the working directory
-			firstRun, err := config.CreateConfigIfNotExists(filepath.Join(viper.GetString(workingDirKey), constants.BootConfigFileName))
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			// On the first run, download https://netboot.xyz/ if it doesn't exist
-			if firstRun && !viper.GetBool(skipNetbootDownloadKey) {
-				if err := config.GetNetbootXYZIfNotExists(viper.GetString(netbootBIOSURLKey), viper.GetString(netbootUEFIURLKey), viper.GetString(workingDirKey)); err != nil {
+			configFilePath := filepath.Join(viper.GetString(workingDirKey), constants.BootConfigFileName)
+			if viper.GetBool(skipStarterDownloadKey) {
+				// Initialize with just a config file
+				if err := config.CreateConfigIfNotExists(configFilePath); err != nil {
+					log.Fatal(err)
+				}
+			} else {
+				// Initialize with a starter
+				if err := config.GetStarterIfNotExists(configFilePath, viper.GetString(starterURLKey), viper.GetString(workingDirKey)); err != nil {
 					log.Fatal(err)
 				}
 			}
@@ -155,9 +155,8 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 
 	cmd.PersistentFlags().BoolP(pureConfigKey, "p", false, "Prevent usage of stdlib in configuration file, even if enabled in `Configuration` function")
 
-	cmd.PersistentFlags().String(netbootBIOSURLKey, "https://boot.netboot.xyz/ipxe/netboot.xyz.kpxe", "Download URL for the BIOS https://netboot.xyz/ build of iPXE")
-	cmd.PersistentFlags().String(netbootUEFIURLKey, "https://boot.netboot.xyz/ipxe/netboot.xyz.efi", "Download URL for the UEFI https://netboot.xyz/ build of iPXE")
-	cmd.PersistentFlags().BoolP(skipNetbootDownloadKey, "s", false, "Don't initialize by downloading https://netboot.xyz/ on the first run")
+	cmd.PersistentFlags().String(starterURLKey, "https://github.com/pojntfx/ipxe-binaries/releases/download/latest/ipxe.tar.gz", "Download URL to a starter .tar.gz archive; the default chainloads https://netboot.xyz/")
+	cmd.PersistentFlags().BoolP(skipStarterDownloadKey, "s", false, "Don't initialize by downloading the starter on the first run")
 
 	// Bind env variables
 	if err := viper.BindPFlags(cmd.PersistentFlags()); err != nil {
