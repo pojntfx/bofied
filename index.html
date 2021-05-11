@@ -7,8 +7,8 @@
 <meta name="description" content="Modern network boot server.">
 <meta name="keywords" content="pxe-boot, ipxe, netboot, network-boot, http-server, dhcp-server, pxe, webdav-server, tftp-server, proxy-dhcp">
 <meta name="theme-color" content="#151515">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
-<meta property="og:url" content="http://127.0.0.1:39561/">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover" name="viewport">
+<meta property="og:url" content="http://127.0.0.1:34427/">
 <meta property="og:title" content="bofied">
 <meta property="og:description" content="Modern network boot server.">
 <meta property="og:type" content="website">
@@ -19,7 +19,7 @@ bofied
 <link rel="icon" type="image/png" href="/bofied/web/icon.png">
 <link rel="apple-touch-icon" href="/bofied/web/icon.png">
 <link rel="manifest" href="/bofied/manifest.webmanifest">
-<link type="text/css" rel="stylesheet" href="/bofied/app.css">
+<link href="/bofied/app.css" type="text/css" rel="stylesheet">
 <script defer src="/bofied/wasm_exec.js"></script>
 <script defer src="/bofied/app.js"></script>
 <link type="text/css" rel="stylesheet" href="https://unpkg.com/@patternfly/patternfly@4.102.2/patternfly.css">
@@ -91,12 +91,12 @@ Modern network boot server.
 Backend URL
 </span>
 </label>
-<span class="pf-c-form__label-required" aria-hidden="true">
+<span aria-hidden="true" class="pf-c-form__label-required">
 *
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input class="pf-c-form-control" aria-invalid="false" name="backendURLName" id="backendURLName" type="url" required placeholder="ws://localhost:15124">
+<input name="backendURLName" id="backendURLName" type="url" required placeholder="ws://localhost:15124" class="pf-c-form-control" aria-invalid="false">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -111,7 +111,7 @@ OIDC Issuer
 </span>
 </div>
 <div class="pf-c-form__group-control">
-<input placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false" name="oidcIssuer" id="oidcIssuer" type="url" required>
+<input required placeholder="https://pojntfx.eu.auth0.com/" class="pf-c-form-control" aria-invalid="false" name="oidcIssuer" id="oidcIssuer" type="url">
 </div>
 </div>
 <div class="pf-c-form__group">
@@ -136,7 +136,7 @@ OIDC Client ID
 OIDC Redirect URL
 </span>
 </label>
-<span aria-hidden="true" class="pf-c-form__label-required">
+<span class="pf-c-form__label-required" aria-hidden="true">
 *
 </span>
 </div>
@@ -145,7 +145,7 @@ OIDC Redirect URL
 </div>
 </div>
 <div class="pf-c-form__group pf-m-action">
-<button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+<button class="pf-c-button pf-m-primary pf-m-block" type="submit">
 Log in
 </button>
 </div>
@@ -178,7 +178,7 @@ License
 </a>
 </li>
 <li>
-<a href="https://github.com/pojntfx/bofied" target="_blank">
+<a target="_blank" href="https://github.com/pojntfx/bofied">
 Source Code
 </a>
 </li>
