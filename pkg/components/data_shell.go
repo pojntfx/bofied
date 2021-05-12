@@ -188,20 +188,25 @@ func (c *DataShell) Render() app.UI {
 																				app.Div().
 																					Class("pf-l-grid__item pf-m-12-col pf-m-12-col-on-md pf-m-5-col-on-xl").
 																					Body(
-																						&TextEditor{
-																							Content:    c.ConfigFile,
-																							SetContent: c.SetConfigFile,
+																						&TextEditorWrapper{
+																							Title: "Config",
 
-																							Format:  c.FormatConfigFile,
-																							Refresh: c.RefreshConfigFile,
-																							Save:    c.SaveConfigFile,
-
-																							Language: "Go",
 																							HelpLink: "https://github.com/pojntfx/bofied#config-script",
 
 																							Error:            c.ConfigFileError,
 																							ErrorDescription: "Syntax Error",
 																							Ignore:           c.IgnoreConfigFileError,
+
+																							Children: &TextEditor{
+																								Content:    c.ConfigFile,
+																								SetContent: c.SetConfigFile,
+
+																								Format:  c.FormatConfigFile,
+																								Refresh: c.RefreshConfigFile,
+																								Save:    c.SaveConfigFile,
+
+																								Language: "Go",
+																							},
 																						},
 																					),
 
