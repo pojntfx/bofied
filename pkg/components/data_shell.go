@@ -40,6 +40,9 @@ type DataShell struct {
 	MovePath   func(string, string)
 	CopyPath   func(string, string)
 
+	EditPathContents string
+	EditPath         func(string)
+
 	WebDAVAddress  url.URL
 	WebDAVUsername string
 	WebDAVPassword string
@@ -184,7 +187,7 @@ func (c *DataShell) Render() app.UI {
 																				app.Div().
 																					Class("pf-l-grid__item pf-m-12-col pf-m-12-col-on-md pf-m-5-col-on-xl").
 																					Body(
-																						&FileEditor{
+																						&TextEditor{
 																							Content:    c.ConfigFile,
 																							SetContent: c.SetConfigFile,
 
@@ -220,6 +223,9 @@ func (c *DataShell) Render() app.UI {
 																							DeletePath: c.DeletePath,
 																							MovePath:   c.MovePath,
 																							CopyPath:   c.CopyPath,
+
+																							EditPathContents: c.EditPathContents,
+																							EditPath:         c.EditPath,
 
 																							WebDAVAddress:  c.WebDAVAddress,
 																							WebDAVUsername: c.WebDAVUsername,

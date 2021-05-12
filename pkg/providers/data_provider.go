@@ -58,6 +58,9 @@ type DataProviderChildrenProps struct {
 	MovePath   func(string, string)
 	CopyPath   func(string, string)
 
+	EditPathContents string
+	EditPath         func(string)
+
 	WebDAVAddress  url.URL
 	WebDAVUsername string
 	WebDAVPassword string
@@ -94,6 +97,8 @@ type DataProvider struct {
 	BackendURL string
 	IDToken    string
 	Children   func(dpcp DataProviderChildrenProps) app.UI
+
+	editPathContents string
 
 	webDAVClient         *gowebdav.Client
 	authenticatedContext context.Context
@@ -178,6 +183,9 @@ func (c *DataProvider) Render() app.UI {
 		DeletePath: c.deletePath,
 		MovePath:   c.movePath,
 		CopyPath:   c.copyPath,
+
+		EditPathContents: c.editPathContents,
+		EditPath:         c.editPath,
 
 		WebDAVAddress: func() url.URL {
 			u := address
@@ -459,6 +467,17 @@ func (c *DataProvider) copyPath(src string, dst string) {
 	}
 
 	c.refreshIndex()
+}
+
+func (c *DataProvider) editPath(path string) {
+	content, err := c.webDAVClient.Read(path)
+	if err != nil {
+		c.panicFileExplorerError(err)
+
+		return
+	}
+
+	c.editPathContents = string(content)
 }
 
 func (c *DataProvider) getWebDAVCredentials() (address url.URL, username string, password string) {

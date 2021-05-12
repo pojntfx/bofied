@@ -4,7 +4,7 @@ import (
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
 )
 
-type FileEditor struct {
+type TextEditor struct {
 	app.Compo
 
 	Content    string
@@ -22,7 +22,7 @@ type FileEditor struct {
 	Ignore           func()
 }
 
-func (c *FileEditor) Render() app.UI {
+func (c *TextEditor) Render() app.UI {
 	return app.Div().
 		Class("pf-c-card pf-u-h-100").
 		Body(
@@ -54,7 +54,14 @@ func (c *FileEditor) Render() app.UI {
 				Class("pf-c-card__body").
 				Body(
 					app.Div().
-						Class("pf-c-code-editor pf-u-h-100 pf-u-display-flex pf-u-flex-direction-column").
+						Class(func() string {
+							classes := "pf-c-code-editor pf-u-h-100 pf-u-display-flex pf-u-flex-direction-column"
+							if c.SetContent == nil {
+								classes += " pf-m-read-only"
+							}
+
+							return classes
+						}()).
 						Body(
 							app.Div().
 								Class("pf-c-code-editor__header").
@@ -133,6 +140,7 @@ func (c *FileEditor) Render() app.UI {
 								Component: app.Textarea().
 									Class("pf-c-code-editor__main pf-u-w-100 pf-x-u-resize-none pf-u-p-sm pf-u-p-sm pf-u-flex-fill").
 									Rows(25).
+									ReadOnly(c.SetContent == nil).
 									OnInput(func(ctx app.Context, e app.Event) {
 										c.SetContent(ctx.JSSrc().Get("value").String())
 									}).
