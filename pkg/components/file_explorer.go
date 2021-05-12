@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
-	"github.com/studio-b12/gowebdav"
 )
 
 type FileExplorer struct {
@@ -52,6 +51,8 @@ type FileExplorer struct {
 	SetUseDavs  func(bool)
 
 	Nested bool
+
+	GetContentType func(os.FileInfo) string
 
 	selectedPath     string
 	newDirectoryName string
@@ -111,7 +112,7 @@ func (c *FileExplorer) Render() app.UI {
 	selectedPathContentType := ""
 	for _, candidate := range c.Index {
 		if !candidate.IsDir() && filepath.Join(c.CurrentPath, candidate.Name()) == c.selectedPath {
-			ctype := candidate.(gowebdav.File).ContentType()
+			ctype := c.GetContentType(candidate)
 
 			if ctype == "application/json" || strings.HasPrefix(ctype, "text/") {
 				selectedPathContentType = ctype
