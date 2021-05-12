@@ -1434,6 +1434,7 @@ func (c *FileExplorer) Render() app.UI {
 				Open: c.editModalOpen,
 				Close: func() {
 					c.editModalOpen = false
+					c.SetEditPathContents("")
 				},
 
 				ID:     "edit-modal-title",
@@ -1453,6 +1454,24 @@ func (c *FileExplorer) Render() app.UI {
 
 						Language: selectedPathContentType,
 					},
+				},
+				Footer: []app.UI{
+					app.Button().
+						Class("pf-c-button pf-m-primary").
+						OnClick(func(ctx app.Context, e app.Event) {
+							c.WriteToPath(c.selectedPath, []byte(c.EditPathContents))
+							c.editModalOpen = false
+							c.SetEditPathContents("")
+						}).
+						Text("Save"),
+					app.Button().
+						Class("pf-c-button pf-m-link").
+						Type("button").
+						OnClick(func(ctx app.Context, e app.Event) {
+							c.editModalOpen = false
+							c.SetEditPathContents("")
+						}).
+						Text("Cancel"),
 				},
 			},
 		)
