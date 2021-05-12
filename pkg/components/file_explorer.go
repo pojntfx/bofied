@@ -1,6 +1,7 @@
 package components
 
 import (
+	"log"
 	"net/url"
 	"os"
 	"path"
@@ -8,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/studio-b12/gowebdav"
 )
 
 type FileExplorer struct {
@@ -101,6 +103,22 @@ func (c *FileExplorer) Render() app.UI {
 	if c.WebDAVAddress.Scheme == "davs" {
 		useDavs = true
 	}
+
+	// Check if the current path can be edited as text
+	selectedPathContentType := ""
+	for _, candidate := range c.Index {
+		if !candidate.IsDir() && filepath.Join(c.CurrentPath, candidate.Name()) == c.selectedPath {
+			ctype := candidate.(gowebdav.File).ContentType()
+
+			if ctype == "application/json" || strings.HasPrefix(ctype, "text/") {
+				selectedPathContentType = ctype
+			}
+
+			break
+		}
+	}
+
+	log.Println(selectedPathContentType)
 
 	return app.Div().
 		Class("pf-u-h-100").
