@@ -184,18 +184,20 @@ func (c *DataShell) Render() app.UI {
 																				app.Div().
 																					Class("pf-l-grid__item pf-m-12-col pf-m-12-col-on-md pf-m-5-col-on-xl").
 																					Body(
-																						&ConfigFileEditor{
-																							ConfigFile:    c.ConfigFile,
-																							SetConfigFile: c.SetConfigFile,
+																						&FileEditor{
+																							Content:    c.ConfigFile,
+																							SetContent: c.SetConfigFile,
 
-																							FormatConfigFile:  c.FormatConfigFile,
-																							RefreshConfigFile: c.RefreshConfigFile,
-																							SaveConfigFile:    c.SaveConfigFile,
+																							Format:  c.FormatConfigFile,
+																							Refresh: c.RefreshConfigFile,
+																							Save:    c.SaveConfigFile,
 
+																							Language: "Go",
 																							HelpLink: "https://github.com/pojntfx/bofied#config-script",
 
-																							Error:  c.ConfigFileError,
-																							Ignore: c.IgnoreConfigFileError,
+																							Error:            c.ConfigFileError,
+																							ErrorDescription: "Syntax Error",
+																							Ignore:           c.IgnoreConfigFileError,
 																						},
 																					),
 
