@@ -7,6 +7,7 @@ import (
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
 	"github.com/pojntfx/bofied/pkg/providers"
+	"github.com/studio-b12/gowebdav"
 )
 
 type DataShell struct {
@@ -246,6 +247,10 @@ func (c *DataShell) Render() app.UI {
 																							SetUseDavs:  c.SetUseDavs,
 
 																							Nested: true,
+
+																							GetContentType: func(fi os.FileInfo) string {
+																								return fi.(gowebdav.File).ContentType()
+																							},
 																						},
 																					),
 																			),
