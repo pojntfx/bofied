@@ -1,7 +1,6 @@
 package components
 
 import (
-	"log"
 	"net/url"
 	"os"
 	"path"
@@ -30,6 +29,9 @@ type FileExplorer struct {
 	DeletePath func(string)
 	MovePath   func(string, string)
 	CopyPath   func(string, string)
+
+	EditPathContents string
+	EditPath         func(string)
 
 	WebDAVAddress  url.URL
 	WebDAVUsername string
@@ -65,6 +67,7 @@ type FileExplorer struct {
 	movePathModalOpen        bool
 	copyPathModalOpen        bool
 	uploadModalOpen          bool
+	editModalOpen            bool
 
 	operationSelectedPath string
 
@@ -117,8 +120,6 @@ func (c *FileExplorer) Render() app.UI {
 			break
 		}
 	}
-
-	log.Println(selectedPathContentType)
 
 	return app.Div().
 		Class("pf-u-h-100").
@@ -223,6 +224,19 @@ func (c *FileExplorer) Render() app.UI {
 																														Body(
 																															app.If(
 																																c.selectedPath != "",
+																																app.If(
+																																	selectedPathContentType != "",
+																																	app.Li().
+																																		Body(
+																																			app.Button().
+																																				Class("pf-c-button pf-c-dropdown__menu-item").
+																																				Type("button").
+																																				OnClick(func(ctx app.Context, e app.Event) {
+																																					c.editPath()
+																																				}).
+																																				Text("Edit file"),
+																																		),
+																																),
 																																app.Li().
 																																	Body(
 																																		app.Button().
@@ -339,6 +353,25 @@ func (c *FileExplorer) Render() app.UI {
 																								Body(
 																									app.If(
 																										c.selectedPath != "",
+																										app.If(
+																											selectedPathContentType != "",
+																											app.Div().Class("pf-c-overflow-menu__item").
+																												Body(
+																													app.Button().
+																														Type("button").
+																														Aria("label", "Edit file").
+																														Title("Edit file").
+																														Class("pf-c-button pf-m-plain").
+																														OnClick(func(ctx app.Context, e app.Event) {
+																															c.editPath()
+																														}).
+																														Body(
+																															app.I().
+																																Class("fas fa-edit").
+																																Aria("hidden", true),
+																														),
+																												),
+																										),
 																										app.Div().Class("pf-c-overflow-menu__item").
 																											Body(
 																												app.Button().
@@ -1394,6 +1427,30 @@ func (c *FileExplorer) Render() app.UI {
 						Text("Cancel"),
 				},
 			},
+
+			&Modal{
+				Open: c.editModalOpen,
+				Close: func() {
+					c.editModalOpen = false
+				},
+
+				ID:     "edit-modal-title",
+				Nested: c.Nested,
+				Large:  true,
+
+				Title: `Editing "` + path.Base(c.selectedPath) + `"`,
+				Body: []app.UI{
+					&TextEditor{
+						Content: c.EditPathContents,
+						// SetContent: c.SetEditPathContents,
+
+						Refresh: c.editPath,
+						// Save:    c.SaveEditPathContents,
+
+						Language: selectedPathContentType,
+					},
+				},
+			},
 		)
 }
 
@@ -1516,4 +1573,13 @@ func (c *FileExplorer) mountDirectory() {
 	c.overflowMenuOpen = false
 
 	c.mountFolderModalOpen = true
+}
+
+func (c *FileExplorer) editPath() {
+	// Close the overflow menus
+	c.mobileMenuExpanded = false
+	c.overflowMenuOpen = false
+
+	c.EditPath(c.selectedPath)
+	c.editModalOpen = true
 }
