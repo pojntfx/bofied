@@ -70,6 +70,10 @@ type FileExplorer struct {
 	copyPathModalOpen        bool
 	uploadModalOpen          bool
 	editModalOpen            bool
+	discardEditsModalOpen    bool
+
+	// So that the "dirty" state in the text editor can be tracked
+	cleanEditPathContents string
 
 	operationSelectedPath string
 
@@ -1433,8 +1437,11 @@ func (c *FileExplorer) Render() app.UI {
 			&Modal{
 				Open: c.editModalOpen,
 				Close: func() {
-					c.editModalOpen = false
-					c.SetEditPathContents("")
+					if c.isTextEditorDirty() {
+						c.discardEditsModalOpen = true
+					} else {
+						c.discardEdits()
+					}
 				},
 
 				ID:     "edit-modal-title",
@@ -1444,13 +1451,16 @@ func (c *FileExplorer) Render() app.UI {
 				Title: `Editing "` + path.Base(c.selectedPath) + `"`,
 				Body: []app.UI{
 					&TextEditor{
-						Content:    c.EditPathContents,
-						SetContent: c.SetEditPathContents,
+						Content: c.EditPathContents,
+						SetContent: func(s string) {
+							if c.cleanEditPathContents == "" {
+								c.cleanEditPathContents = c.EditPathContents
+							}
+
+							c.SetEditPathContents(s)
+						},
 
 						Refresh: c.editPath,
-						Save: func() {
-							c.WriteToPath(c.selectedPath, []byte(c.EditPathContents))
-						},
 
 						Language: selectedPathContentType,
 					},
@@ -1459,17 +1469,49 @@ func (c *FileExplorer) Render() app.UI {
 					app.Button().
 						Class("pf-c-button pf-m-primary").
 						OnClick(func(ctx app.Context, e app.Event) {
-							c.WriteToPath(c.selectedPath, []byte(c.EditPathContents))
-							c.editModalOpen = false
-							c.SetEditPathContents("")
+							c.saveEdits()
 						}).
 						Text("Save"),
 					app.Button().
 						Class("pf-c-button pf-m-link").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
-							c.editModalOpen = false
-							c.SetEditPathContents("")
+							if c.isTextEditorDirty() {
+								c.discardEditsModalOpen = true
+							} else {
+								c.discardEdits()
+							}
+						}).
+						Text("Cancel"),
+				},
+			},
+
+			&Modal{
+				Open: c.discardEditsModalOpen,
+				Close: func() {
+					c.discardEditsModalOpen = false
+				},
+
+				ID:     "discard-edits-modal-title",
+				Nested: c.Nested,
+
+				Title: `Discard changes in "` + path.Base(c.selectedPath) + `"?`,
+				Body: []app.UI{
+					app.P().Text(`If you discard the changes, they will be permanently lost.`),
+				},
+				Footer: []app.UI{
+					app.Button().
+						Class("pf-c-button pf-m-danger").
+						Type("button").
+						OnClick(func(ctx app.Context, e app.Event) {
+							c.discardEdits()
+						}).
+						Text("Discard"),
+					app.Button().
+						Class("pf-c-button pf-m-link").
+						Type("button").
+						OnClick(func(ctx app.Context, e app.Event) {
+							c.discardEditsModalOpen = false
 						}).
 						Text("Cancel"),
 				},
@@ -1477,10 +1519,13 @@ func (c *FileExplorer) Render() app.UI {
 		)
 }
 
-func (c *FileExplorer) sharePath() {
-	// Close the overflow menus
+func (c *FileExplorer) closeOverflowMenus() {
 	c.mobileMenuExpanded = false
 	c.overflowMenuOpen = false
+}
+
+func (c *FileExplorer) sharePath() {
+	c.closeOverflowMenus()
 
 	c.SharePath(c.selectedPath)
 
@@ -1488,17 +1533,13 @@ func (c *FileExplorer) sharePath() {
 }
 
 func (c *FileExplorer) deleteFile() {
-	// Close the overflow menus
-	c.mobileMenuExpanded = false
-	c.overflowMenuOpen = false
+	c.closeOverflowMenus()
 
 	c.deletionConfirmModalOpen = true
 }
 
 func (c *FileExplorer) moveTo() {
-	// Close the overflow menus
-	c.mobileMenuExpanded = false
-	c.overflowMenuOpen = false
+	c.closeOverflowMenus()
 
 	// Preseed the file picker and name input with the current path
 	c.OperationSetCurrentPath(path.Dir(c.selectedPath))
@@ -1526,9 +1567,7 @@ func (c *FileExplorer) moveTo() {
 }
 
 func (c *FileExplorer) copyTo() {
-	// Close the overflow menus
-	c.mobileMenuExpanded = false
-	c.overflowMenuOpen = false
+	c.closeOverflowMenus()
 
 	// Preseed the file picker and name input with the current path
 	c.OperationSetCurrentPath(path.Dir(c.selectedPath))
@@ -1556,9 +1595,7 @@ func (c *FileExplorer) copyTo() {
 }
 
 func (c *FileExplorer) rename() {
-	// Close the overflow menus
-	c.mobileMenuExpanded = false
-	c.overflowMenuOpen = false
+	c.closeOverflowMenus()
 
 	// Preseed the input with the current file name
 	c.newFileName = path.Base(c.selectedPath)
@@ -1567,42 +1604,55 @@ func (c *FileExplorer) rename() {
 }
 
 func (c *FileExplorer) createDirectory() {
-	// Close the overflow menus
-	c.mobileMenuExpanded = false
-	c.overflowMenuOpen = false
+	c.closeOverflowMenus()
 
 	c.createDirectoryModalOpen = true
 }
 
 func (c *FileExplorer) uploadFile() {
-	// Close the overflow menus
-	c.mobileMenuExpanded = false
-	c.overflowMenuOpen = false
+	c.closeOverflowMenus()
 
 	c.uploadModalOpen = true
 }
 
 func (c *FileExplorer) refresh() {
-	// Close the overflow menus
-	c.mobileMenuExpanded = false
-	c.overflowMenuOpen = false
+	c.closeOverflowMenus()
 
 	c.RefreshIndex()
 }
 
 func (c *FileExplorer) mountDirectory() {
-	// Close the overflow menus
-	c.mobileMenuExpanded = false
-	c.overflowMenuOpen = false
+	c.closeOverflowMenus()
 
 	c.mountFolderModalOpen = true
 }
 
 func (c *FileExplorer) editPath() {
-	// Close the overflow menus
-	c.mobileMenuExpanded = false
-	c.overflowMenuOpen = false
+	c.closeOverflowMenus()
 
+	// Fetch the contents of the path to be edited
 	c.EditPath(c.selectedPath)
+
+	// Track the contents so that the "dirty" state can be changed
+	c.cleanEditPathContents = c.EditPathContents
+
 	c.editModalOpen = true
+}
+
+func (c *FileExplorer) isTextEditorDirty() bool {
+	return c.cleanEditPathContents != "" && c.EditPathContents != c.cleanEditPathContents
+}
+
+func (c *FileExplorer) discardEdits() {
+	c.discardEditsModalOpen = false
+	c.editModalOpen = false
+	c.SetEditPathContents("")
+	c.cleanEditPathContents = ""
+}
+
+func (c *FileExplorer) saveEdits() {
+	c.WriteToPath(c.selectedPath, []byte(c.EditPathContents))
+	c.editModalOpen = false
+	c.SetEditPathContents("")
+	c.cleanEditPathContents = ""
 }
