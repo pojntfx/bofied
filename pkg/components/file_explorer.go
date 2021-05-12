@@ -29,8 +29,9 @@ type FileExplorer struct {
 	MovePath   func(string, string)
 	CopyPath   func(string, string)
 
-	EditPathContents string
-	EditPath         func(string)
+	EditPathContents    string
+	SetEditPathContents func(string)
+	EditPath            func(string)
 
 	WebDAVAddress  url.URL
 	WebDAVUsername string
@@ -1442,11 +1443,13 @@ func (c *FileExplorer) Render() app.UI {
 				Title: `Editing "` + path.Base(c.selectedPath) + `"`,
 				Body: []app.UI{
 					&TextEditor{
-						Content: c.EditPathContents,
-						// SetContent: c.SetEditPathContents,
+						Content:    c.EditPathContents,
+						SetContent: c.SetEditPathContents,
 
 						Refresh: c.editPath,
-						// Save:    c.SaveEditPathContents,
+						Save: func() {
+							c.WriteToPath(c.selectedPath, []byte(c.EditPathContents))
+						},
 
 						Language: selectedPathContentType,
 					},

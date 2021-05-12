@@ -98,8 +98,9 @@ func (c *Home) Render() app.UI {
 											MovePath:   dpcp.MovePath,
 											CopyPath:   dpcp.CopyPath,
 
-											EditPathContents: dpcp.EditPathContents,
-											EditPath:         dpcp.EditPath,
+											EditPathContents:    dpcp.EditPathContents,
+											SetEditPathContents: dpcp.SetEditPathContents,
+											EditPath:            dpcp.EditPath,
 
 											WebDAVAddress:  dpcp.WebDAVAddress,
 											WebDAVUsername: dpcp.WebDAVUsername,

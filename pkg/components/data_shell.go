@@ -41,8 +41,9 @@ type DataShell struct {
 	MovePath   func(string, string)
 	CopyPath   func(string, string)
 
-	EditPathContents string
-	EditPath         func(string)
+	EditPathContents    string
+	SetEditPathContents func(string)
+	EditPath            func(string)
 
 	WebDAVAddress  url.URL
 	WebDAVUsername string
@@ -230,8 +231,9 @@ func (c *DataShell) Render() app.UI {
 																							MovePath:   c.MovePath,
 																							CopyPath:   c.CopyPath,
 
-																							EditPathContents: c.EditPathContents,
-																							EditPath:         c.EditPath,
+																							EditPathContents:    c.EditPathContents,
+																							SetEditPathContents: c.SetEditPathContents,
+																							EditPath:            c.EditPath,
 
 																							WebDAVAddress:  c.WebDAVAddress,
 																							WebDAVUsername: c.WebDAVUsername,

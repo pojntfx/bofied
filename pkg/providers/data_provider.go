@@ -58,8 +58,9 @@ type DataProviderChildrenProps struct {
 	MovePath   func(string, string)
 	CopyPath   func(string, string)
 
-	EditPathContents string
-	EditPath         func(string)
+	EditPathContents    string
+	SetEditPathContents func(string)
+	EditPath            func(string)
 
 	WebDAVAddress  url.URL
 	WebDAVUsername string
@@ -184,8 +185,9 @@ func (c *DataProvider) Render() app.UI {
 		MovePath:   c.movePath,
 		CopyPath:   c.copyPath,
 
-		EditPathContents: c.editPathContents,
-		EditPath:         c.editPath,
+		EditPathContents:    c.editPathContents,
+		SetEditPathContents: c.setEditPathContents,
+		EditPath:            c.editPath,
 
 		WebDAVAddress: func() url.URL {
 			u := address
@@ -478,6 +480,10 @@ func (c *DataProvider) editPath(path string) {
 	}
 
 	c.editPathContents = string(content)
+}
+
+func (c *DataProvider) setEditPathContents(content string) {
+	c.editPathContents = content
 }
 
 func (c *DataProvider) getWebDAVCredentials() (address url.URL, username string, password string) {
