@@ -52,9 +52,15 @@ func (s *TFTPServer) ListenAndServe() error {
 
 			// Send the file to the client
 			n, err := rf.ReadFrom(file)
+			if err != nil {
+				s.EventHandler.Emit(`could not sent file "%v" to client "%v": %v`, fullFilename, raddr.String(), err)
+
+				return err
+			}
+
 			s.EventHandler.Emit(`sent file "%v" (%v bytes) to client "%v"`, fullFilename, n, raddr.String())
 
-			return err
+			return nil
 		},
 		nil,
 	)
