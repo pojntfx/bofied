@@ -1462,7 +1462,8 @@ func (c *FileExplorer) Render() app.UI {
 
 						Refresh: c.editPath,
 
-						Language: selectedPathContentType,
+						Language:       selectedPathContentType,
+						VariableHeight: true,
 					},
 				},
 				Footer: []app.UI{

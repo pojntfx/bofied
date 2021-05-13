@@ -1,6 +1,8 @@
 package components
 
 import (
+	"strings"
+
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
 )
 
@@ -14,7 +16,8 @@ type TextEditor struct {
 	Refresh func()
 	Save    func()
 
-	Language string
+	Language       string
+	VariableHeight bool
 }
 
 func (c *TextEditor) Render() app.UI {
@@ -103,8 +106,21 @@ func (c *TextEditor) Render() app.UI {
 				),
 			&Controlled{
 				Component: app.Textarea().
-					Class("pf-c-code-editor__main pf-u-w-100 pf-x-u-resize-none pf-u-p-sm pf-u-p-sm pf-u-flex-fill").
-					Rows(25).
+					Class(func() string {
+						classes := "pf-c-code-editor__main pf-u-w-100 pf-x-u-resize-none pf-u-p-sm pf-u-p-sm pf-u-flex-fill"
+						if c.VariableHeight {
+							classes += " pf-x-m-overflow-y-hidden"
+						}
+
+						return classes
+					}()).
+					Rows(func() int {
+						if c.VariableHeight {
+							return strings.Count(c.Content, "\n") + 1 // Trailing newline
+						}
+
+						return 25
+					}()).
 					ReadOnly(c.SetContent == nil).
 					OnInput(func(ctx app.Context, e app.Event) {
 						c.SetContent(ctx.JSSrc().Get("value").String())
