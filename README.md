@@ -97,12 +97,8 @@ $ docker run \
     --name bofied-backend \
     -d \
     --restart always \
+    --net host \
     --cap-add NET_BIND_SERVICE \
-    -p 67:67/udp \
-    -p 4011:4011/udp \
-    -p 69:69/udp \
-    -p 15256:15256/tcp \
-    -p 15257:15257/tcp \
     -v ${HOME}/.local/share/bofied:/root/.local/share/bofied:z \
     -e BOFIED_BACKEND_OIDCISSUER=https://pojntfx.eu.auth0.com/ \
     -e BOFIED_BACKEND_OIDCCLIENTID=myoidcclientid \
@@ -395,6 +391,10 @@ Have any questions or need help? Chat with us [on Matrix](https://matrix.to/#/#b
 ## Related Projects
 
 If you want to have persistent inventory of services and nodes on your network or turn the nodes in it on remotely, check out [liwasc](https://github.com/pojntfx/liwasc)!
+
+## Troubleshooting
+
+- If you run bofied over Wifi or advertise your Wifi adapter's IP, old PXE clients might hang at PXE errors such as `TFTP cannot read from connection` or `TFTP read timeout` due to very slow transfer speeds or other problems with complex network topologies. To fix this, disconnect other network adapters - i.e. if you're running bofied on a laptop with both a Wifi and an ethernet card and you advertise the Wifi card's IP, disconnect the ethernet cable. bofied's log and [Wireshark](https://www.wireshark.org/) might also give you more insights in such situations. For the best reliablity, run bofied on a wired connection.
 
 ## License
 
