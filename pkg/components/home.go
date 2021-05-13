@@ -93,10 +93,11 @@ func (c *Home) Render() app.UI {
 											TFTPShareLink: dpcp.TFTPShareLink,
 											SharePath:     dpcp.SharePath,
 
-											CreatePath: dpcp.CreatePath,
-											DeletePath: dpcp.DeletePath,
-											MovePath:   dpcp.MovePath,
-											CopyPath:   dpcp.CopyPath,
+											CreatePath:      dpcp.CreatePath,
+											CreateEmptyFile: dpcp.CreateEmptyFile,
+											DeletePath:      dpcp.DeletePath,
+											MovePath:        dpcp.MovePath,
+											CopyPath:        dpcp.CopyPath,
 
 											EditPathContents:    dpcp.EditPathContents,
 											SetEditPathContents: dpcp.SetEditPathContents,
