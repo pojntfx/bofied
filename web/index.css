@@ -29,3 +29,8 @@
 .pf-x-m-gap-md {
   gap: var(--pf-global--spacer--md);
 }
+
+/* Prevent unnecessary vertical scrolling in variable height text editors */
+.pf-x-m-overflow-y-hidden {
+  overflow-y: hidden;
+}
