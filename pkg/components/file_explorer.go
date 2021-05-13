@@ -84,6 +84,9 @@ type FileExplorer struct {
 	mountExpandableSectionOpen bool
 
 	mobileMenuExpanded bool
+
+	// True if accepting to discard edits leads to refresh the selected file
+	discardEditsModalTargetsRefresh bool
 }
 
 func (c *FileExplorer) Render() app.UI {
@@ -1540,7 +1543,7 @@ func (c *FileExplorer) Render() app.UI {
 			&Modal{
 				Open: c.editModalOpen,
 				Close: func() {
-					if c.isTextEditorDirty() {
+					if c.textEditorDirty() {
 						c.discardEditsModalOpen = true
 					} else {
 						c.discardEdits()
@@ -1563,7 +1566,16 @@ func (c *FileExplorer) Render() app.UI {
 							c.SetEditPathContents(s)
 						},
 
-						Refresh: c.editPath,
+						Refresh: func() {
+							if c.textEditorDirty() {
+								// When discarding edits, refresh
+								c.discardEditsModalTargetsRefresh = true
+
+								c.discardEditsModalOpen = true
+							} else {
+								c.editPath()
+							}
+						},
 						Save: func() {
 							c.WriteToPath(c.selectedPath, []byte(c.EditPathContents))
 						},
@@ -1583,7 +1595,7 @@ func (c *FileExplorer) Render() app.UI {
 						Class("pf-c-button pf-m-link").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
-							if c.isTextEditorDirty() {
+							if c.textEditorDirty() {
 								c.discardEditsModalOpen = true
 							} else {
 								c.discardEdits()
@@ -1611,9 +1623,20 @@ func (c *FileExplorer) Render() app.UI {
 						Class("pf-c-button pf-m-danger").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
-							c.discardEdits()
+							if c.discardEditsModalTargetsRefresh {
+								c.editPath()
+								c.discardEditsModalOpen = false
+							} else {
+								c.discardEdits()
+							}
 						}).
-						Text("Discard"),
+						Text(func() string {
+							if c.discardEditsModalTargetsRefresh {
+								return "Discard and refresh"
+							}
+
+							return "Discard"
+						}()),
 					app.Button().
 						Class("pf-c-button pf-m-link").
 						Type("button").
@@ -1747,12 +1770,12 @@ func (c *FileExplorer) editPath() {
 	c.EditPath(c.selectedPath)
 
 	// Track the contents so that the "dirty" state can be changed
-	c.cleanEditPathContents = c.EditPathContents
+	c.cleanEditPathContents = ""
 
 	c.editModalOpen = true
 }
 
-func (c *FileExplorer) isTextEditorDirty() bool {
+func (c *FileExplorer) textEditorDirty() bool {
 	return c.cleanEditPathContents != "" && c.EditPathContents != c.cleanEditPathContents
 }
 
@@ -1761,6 +1784,7 @@ func (c *FileExplorer) discardEdits() {
 	c.editModalOpen = false
 	c.SetEditPathContents("")
 	c.cleanEditPathContents = ""
+	c.discardEditsModalTargetsRefresh = false
 }
 
 func (c *FileExplorer) saveEdits() {
@@ -1768,4 +1792,5 @@ func (c *FileExplorer) saveEdits() {
 	c.editModalOpen = false
 	c.SetEditPathContents("")
 	c.cleanEditPathContents = ""
+	c.discardEditsModalTargetsRefresh = false
 }
