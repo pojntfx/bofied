@@ -217,6 +217,10 @@ Click on an image to see a larger version.
 <img src="./assets/sharing.png" width="45%" alt="Screenshot of sharing" title="Screenshot of sharing">
 </a>
 
+<a display="inline" href="./assets/text-editor.png?raw=true">
+<img src="./assets/text-editor.png" width="45%" alt="Screenshot of the text editor" title="Screenshot of the text editor">
+</a>
+
 <a display="inline" href="./assets/about-modal.png?raw=true">
 <img src="./assets/about-modal.png" width="45%" alt="Screenshot of about modal" title="Screenshot of about modal">
 </a>
