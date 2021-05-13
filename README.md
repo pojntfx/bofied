@@ -396,6 +396,10 @@ Have any questions or need help? Chat with us [on Matrix](https://matrix.to/#/#b
 
 If you want to have persistent inventory of services and nodes on your network or turn the nodes in it on remotely, check out [liwasc](https://github.com/pojntfx/liwasc)!
 
+## Troubleshooting
+
+- If you run bofied over Wifi or advertise your Wifi adapter's IP, old PXE clients might hang at PXE errors such as `TFTP cannot read from connection` or `TFTP read timeout` due to very slow transfer speeds or other problems with complex network topologies. To fix this, disconnect other network adapters - i.e. if you're running bofied on a laptop with both a Wifi and an ethernet card and you advertise the Wifi card's IP, disconnect the ethernet cable. bofied's log and [Wireshark](https://www.wireshark.org/) might also give you more insights in such situations. For the best reliablity, run bofied on a wired connection.
+
 ## License
 
 bofied (c) 2021 Felix Pojtinger and contributors
