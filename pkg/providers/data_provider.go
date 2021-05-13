@@ -53,10 +53,11 @@ type DataProviderChildrenProps struct {
 	TFTPShareLink url.URL
 	SharePath     func(string)
 
-	CreatePath func(string)
-	DeletePath func(string)
-	MovePath   func(string, string)
-	CopyPath   func(string, string)
+	CreatePath      func(string)
+	CreateEmptyFile func(string)
+	DeletePath      func(string)
+	MovePath        func(string, string)
+	CopyPath        func(string, string)
 
 	EditPathContents    string
 	SetEditPathContents func(string)
@@ -180,10 +181,11 @@ func (c *DataProvider) Render() app.UI {
 		}(),
 		SharePath: c.sharePath,
 
-		CreatePath: c.createPath,
-		DeletePath: c.deletePath,
-		MovePath:   c.movePath,
-		CopyPath:   c.copyPath,
+		CreatePath:      c.createPath,
+		CreateEmptyFile: c.createEmptyFile,
+		DeletePath:      c.deletePath,
+		MovePath:        c.movePath,
+		CopyPath:        c.copyPath,
 
 		EditPathContents:    c.editPathContents,
 		SetEditPathContents: c.setEditPathContents,
@@ -433,6 +435,20 @@ func (c *DataProvider) sharePath(path string) {
 
 func (c *DataProvider) createPath(path string) {
 	if err := c.webDAVClient.MkdirAll(path, os.ModePerm); err != nil {
+		c.panicFileExplorerError(err)
+
+		return
+	}
+
+	c.refreshIndex()
+}
+
+func (c *DataProvider) createEmptyFile(p string) {
+	if basePath := path.Dir(p); basePath != "/" {
+		c.createPath(basePath)
+	}
+
+	if err := c.webDAVClient.Write(p, []byte{}, os.ModePerm); err != nil {
 		c.panicFileExplorerError(err)
 
 		return

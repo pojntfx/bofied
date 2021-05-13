@@ -24,10 +24,11 @@ type FileExplorer struct {
 	TFTPShareLink url.URL
 	SharePath     func(string)
 
-	CreatePath func(string)
-	DeletePath func(string)
-	MovePath   func(string, string)
-	CopyPath   func(string, string)
+	CreatePath      func(string)
+	CreateEmptyFile func(string)
+	DeletePath      func(string)
+	MovePath        func(string, string)
+	CopyPath        func(string, string)
 
 	EditPathContents    string
 	SetEditPathContents func(string)
@@ -57,6 +58,7 @@ type FileExplorer struct {
 
 	selectedPath     string
 	newDirectoryName string
+	newEmptyFilename string
 	newFileName      string
 
 	overflowMenuOpen bool
@@ -64,6 +66,7 @@ type FileExplorer struct {
 	mountFolderModalOpen     bool
 	sharePathModalOpen       bool
 	createDirectoryModalOpen bool
+	createEmptyFileModalOpen bool
 	deletionConfirmModalOpen bool
 	renamePathModalOpen      bool
 	movePathModalOpen        bool
@@ -81,6 +84,9 @@ type FileExplorer struct {
 	mountExpandableSectionOpen bool
 
 	mobileMenuExpanded bool
+
+	// True if accepting to discard edits leads to refresh the selected file
+	discardEditsModalTargetsRefresh bool
 }
 
 func (c *FileExplorer) Render() app.UI {
@@ -319,6 +325,16 @@ func (c *FileExplorer) Render() app.UI {
 																																		Class("pf-c-button pf-c-dropdown__menu-item").
 																																		Type("button").
 																																		OnClick(func(ctx app.Context, e app.Event) {
+																																			c.createEmptyFile()
+																																		}).
+																																		Text("Create empty file"),
+																																),
+																															app.Li().
+																																Body(
+																																	app.Button().
+																																		Class("pf-c-button pf-c-dropdown__menu-item").
+																																		Type("button").
+																																		OnClick(func(ctx app.Context, e app.Event) {
 																																			c.uploadFile()
 																																		}).
 																																		Text("Upload file"),
@@ -373,7 +389,7 @@ func (c *FileExplorer) Render() app.UI {
 																														}).
 																														Body(
 																															app.I().
-																																Class("fas fa-edit").
+																																Class("fas fa-pen").
 																																Aria("hidden", true),
 																														),
 																												),
@@ -497,6 +513,23 @@ func (c *FileExplorer) Render() app.UI {
 																												Body(
 																													app.I().
 																														Class("fas fa-folder-plus").
+																														Aria("hidden", true),
+																												),
+																										),
+																									app.Div().
+																										Class("pf-c-overflow-menu__item").
+																										Body(
+																											app.Button().
+																												Type("button").
+																												Aria("label", "Create empty file").
+																												Title("Create empty file").
+																												Class("pf-c-button pf-m-plain").
+																												OnClick(func(ctx app.Context, e app.Event) {
+																													c.createEmptyFile()
+																												}).
+																												Body(
+																													app.I().
+																														Class("fas fa-pen-square").
 																														Aria("hidden", true),
 																												),
 																										),
@@ -1065,6 +1098,79 @@ func (c *FileExplorer) Render() app.UI {
 			},
 
 			&Modal{
+				Open: c.createEmptyFileModalOpen,
+				Close: func() {
+					c.createEmptyFileModalOpen = false
+					c.newEmptyFilename = ""
+				},
+
+				ID:     "create-empty-file-modal-title",
+				Nested: true,
+
+				Title: "Create Empty File",
+				Body: []app.UI{
+					app.Form().
+						Class("pf-c-form").
+						ID("create-empty-file").
+						OnSubmit(func(ctx app.Context, e app.Event) {
+							e.PreventDefault()
+
+							emptyFilePath := filepath.Join(c.CurrentPath, c.newEmptyFilename)
+							c.CreateEmptyFile(emptyFilePath)
+
+							c.newEmptyFilename = ""
+							c.selectedPath = emptyFilePath
+							c.createEmptyFileModalOpen = false
+						}).
+						Body(
+							&FormGroup{
+								Label: app.Label().
+									For("new-filename-input").
+									Class("pf-c-form__label").
+									Body(
+										app.
+											Span().
+											Class("pf-c-form__label-text").
+											Text("Filename"),
+									),
+								Input: &Controlled{
+									Component: &Autofocused{
+										Component: app.Input().
+											Name("new-filename-input").
+											ID("new-filename-input").
+											Type("text").
+											Required(true).
+											Class("pf-c-form-control").
+											OnInput(func(ctx app.Context, e app.Event) {
+												c.newEmptyFilename = ctx.JSSrc().Get("value").String()
+											}),
+									},
+									Properties: map[string]interface{}{
+										"value": c.newEmptyFilename,
+									},
+								},
+								Required: true,
+							},
+						),
+				},
+				Footer: []app.UI{
+					app.Button().
+						Class("pf-c-button pf-m-primary").
+						Type("submit").
+						Form("create-empty-file").
+						Text("Create"),
+					app.Button().
+						Class("pf-c-button pf-m-link").
+						Type("button").
+						OnClick(func(ctx app.Context, e app.Event) {
+							c.newEmptyFilename = ""
+							c.createEmptyFileModalOpen = false
+						}).
+						Text("Cancel"),
+				},
+			},
+
+			&Modal{
 				Open: c.deletionConfirmModalOpen,
 				Close: func() {
 					c.deletionConfirmModalOpen = false
@@ -1437,7 +1543,7 @@ func (c *FileExplorer) Render() app.UI {
 			&Modal{
 				Open: c.editModalOpen,
 				Close: func() {
-					if c.isTextEditorDirty() {
+					if c.textEditorDirty() {
 						c.discardEditsModalOpen = true
 					} else {
 						c.discardEdits()
@@ -1460,7 +1566,19 @@ func (c *FileExplorer) Render() app.UI {
 							c.SetEditPathContents(s)
 						},
 
-						Refresh: c.editPath,
+						Refresh: func() {
+							if c.textEditorDirty() {
+								// When discarding edits, refresh
+								c.discardEditsModalTargetsRefresh = true
+
+								c.discardEditsModalOpen = true
+							} else {
+								c.editPath()
+							}
+						},
+						Save: func() {
+							c.WriteToPath(c.selectedPath, []byte(c.EditPathContents))
+						},
 
 						Language:       selectedPathContentType,
 						VariableHeight: true,
@@ -1472,12 +1590,12 @@ func (c *FileExplorer) Render() app.UI {
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.saveEdits()
 						}).
-						Text("Save"),
+						Text("Save and close"),
 					app.Button().
 						Class("pf-c-button pf-m-link").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
-							if c.isTextEditorDirty() {
+							if c.textEditorDirty() {
 								c.discardEditsModalOpen = true
 							} else {
 								c.discardEdits()
@@ -1505,9 +1623,20 @@ func (c *FileExplorer) Render() app.UI {
 						Class("pf-c-button pf-m-danger").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
-							c.discardEdits()
+							if c.discardEditsModalTargetsRefresh {
+								c.editPath()
+								c.discardEditsModalOpen = false
+							} else {
+								c.discardEdits()
+							}
 						}).
-						Text("Discard"),
+						Text(func() string {
+							if c.discardEditsModalTargetsRefresh {
+								return "Discard and refresh"
+							}
+
+							return "Discard"
+						}()),
 					app.Button().
 						Class("pf-c-button pf-m-link").
 						Type("button").
@@ -1610,6 +1739,12 @@ func (c *FileExplorer) createDirectory() {
 	c.createDirectoryModalOpen = true
 }
 
+func (c *FileExplorer) createEmptyFile() {
+	c.closeOverflowMenus()
+
+	c.createEmptyFileModalOpen = true
+}
+
 func (c *FileExplorer) uploadFile() {
 	c.closeOverflowMenus()
 
@@ -1635,12 +1770,12 @@ func (c *FileExplorer) editPath() {
 	c.EditPath(c.selectedPath)
 
 	// Track the contents so that the "dirty" state can be changed
-	c.cleanEditPathContents = c.EditPathContents
+	c.cleanEditPathContents = ""
 
 	c.editModalOpen = true
 }
 
-func (c *FileExplorer) isTextEditorDirty() bool {
+func (c *FileExplorer) textEditorDirty() bool {
 	return c.cleanEditPathContents != "" && c.EditPathContents != c.cleanEditPathContents
 }
 
@@ -1649,6 +1784,7 @@ func (c *FileExplorer) discardEdits() {
 	c.editModalOpen = false
 	c.SetEditPathContents("")
 	c.cleanEditPathContents = ""
+	c.discardEditsModalTargetsRefresh = false
 }
 
 func (c *FileExplorer) saveEdits() {
@@ -1656,4 +1792,5 @@ func (c *FileExplorer) saveEdits() {
 	c.editModalOpen = false
 	c.SetEditPathContents("")
 	c.cleanEditPathContents = ""
+	c.discardEditsModalTargetsRefresh = false
 }

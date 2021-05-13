@@ -36,10 +36,11 @@ type DataShell struct {
 	TFTPShareLink url.URL
 	SharePath     func(string)
 
-	CreatePath func(string)
-	DeletePath func(string)
-	MovePath   func(string, string)
-	CopyPath   func(string, string)
+	CreatePath      func(string)
+	CreateEmptyFile func(string)
+	DeletePath      func(string)
+	MovePath        func(string, string)
+	CopyPath        func(string, string)
 
 	EditPathContents    string
 	SetEditPathContents func(string)
@@ -226,10 +227,11 @@ func (c *DataShell) Render() app.UI {
 																							TFTPShareLink: c.TFTPShareLink,
 																							SharePath:     c.SharePath,
 
-																							CreatePath: c.CreatePath,
-																							DeletePath: c.DeletePath,
-																							MovePath:   c.MovePath,
-																							CopyPath:   c.CopyPath,
+																							CreatePath:      c.CreatePath,
+																							CreateEmptyFile: c.CreateEmptyFile,
+																							DeletePath:      c.DeletePath,
+																							MovePath:        c.MovePath,
+																							CopyPath:        c.CopyPath,
 
 																							EditPathContents:    c.EditPathContents,
 																							SetEditPathContents: c.SetEditPathContents,
