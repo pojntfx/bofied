@@ -7,6 +7,7 @@ import (
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
 	"github.com/pojntfx/bofied/pkg/providers"
+	"github.com/studio-b12/gowebdav"
 )
 
 type DataShell struct {
@@ -39,6 +40,10 @@ type DataShell struct {
 	DeletePath func(string)
 	MovePath   func(string, string)
 	CopyPath   func(string, string)
+
+	EditPathContents    string
+	SetEditPathContents func(string)
+	EditPath            func(string)
 
 	WebDAVAddress  url.URL
 	WebDAVUsername string
@@ -184,18 +189,25 @@ func (c *DataShell) Render() app.UI {
 																				app.Div().
 																					Class("pf-l-grid__item pf-m-12-col pf-m-12-col-on-md pf-m-5-col-on-xl").
 																					Body(
-																						&ConfigFileEditor{
-																							ConfigFile:    c.ConfigFile,
-																							SetConfigFile: c.SetConfigFile,
-
-																							FormatConfigFile:  c.FormatConfigFile,
-																							RefreshConfigFile: c.RefreshConfigFile,
-																							SaveConfigFile:    c.SaveConfigFile,
+																						&TextEditorWrapper{
+																							Title: "Config",
 
 																							HelpLink: "https://github.com/pojntfx/bofied#config-script",
 
-																							Error:  c.ConfigFileError,
-																							Ignore: c.IgnoreConfigFileError,
+																							Error:            c.ConfigFileError,
+																							ErrorDescription: "Syntax Error",
+																							Ignore:           c.IgnoreConfigFileError,
+
+																							Children: &TextEditor{
+																								Content:    c.ConfigFile,
+																								SetContent: c.SetConfigFile,
+
+																								Format:  c.FormatConfigFile,
+																								Refresh: c.RefreshConfigFile,
+																								Save:    c.SaveConfigFile,
+
+																								Language: "Go",
+																							},
 																						},
 																					),
 
@@ -219,6 +231,10 @@ func (c *DataShell) Render() app.UI {
 																							MovePath:   c.MovePath,
 																							CopyPath:   c.CopyPath,
 
+																							EditPathContents:    c.EditPathContents,
+																							SetEditPathContents: c.SetEditPathContents,
+																							EditPath:            c.EditPath,
+
 																							WebDAVAddress:  c.WebDAVAddress,
 																							WebDAVUsername: c.WebDAVUsername,
 																							WebDAVPassword: c.WebDAVPassword,
@@ -238,6 +254,10 @@ func (c *DataShell) Render() app.UI {
 																							SetUseDavs:  c.SetUseDavs,
 
 																							Nested: true,
+
+																							GetContentType: func(fi os.FileInfo) string {
+																								return fi.(gowebdav.File).ContentType()
+																							},
 																						},
 																					),
 																			),
