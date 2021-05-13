@@ -97,12 +97,8 @@ $ docker run \
     --name bofied-backend \
     -d \
     --restart always \
+    --net host \
     --cap-add NET_BIND_SERVICE \
-    -p 67:67/udp \
-    -p 4011:4011/udp \
-    -p 69:69/udp \
-    -p 15256:15256/tcp \
-    -p 15257:15257/tcp \
     -v ${HOME}/.local/share/bofied:/root/.local/share/bofied:z \
     -e BOFIED_BACKEND_OIDCISSUER=https://pojntfx.eu.auth0.com/ \
     -e BOFIED_BACKEND_OIDCCLIENTID=myoidcclientid \
