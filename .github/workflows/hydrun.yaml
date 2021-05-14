@@ -20,7 +20,7 @@ jobs:
           curl -L -o /tmp/hydrun https://github.com/pojntfx/hydrun/releases/download/latest/hydrun.linux-$(uname -m)
           sudo install /tmp/hydrun /usr/local/bin
       - name: Build backend with hydrun
-        run: hydrun -a amd64,arm64 ./Hydrunfile
+        run: hydrun -a amd64,arm64,arm/v7 ./Hydrunfile
       - name: Build frontend with hydrun
         run: hydrun "./Hydrunfile frontend"
       - name: Publish to GitHub releases
