@@ -40,7 +40,7 @@ If you prefer a native installation, static binaries are also available on [GitH
 You can install them like so:
 
 ```shell
-$ curl -L -o /tmp/bofied-backend https://github.com/pojntfx/bofied/releases/download/latest/bofied-backend.linux-$(uname -m)
+$ curl -L -o /tmp/bofied-backend https://github.com/pojntfx/bofied/releases/latest/download/bofied-backend.linux-$(uname -m)
 $ sudo install /tmp/bofied-backend /usr/local/bin
 $ sudo setcap cap_net_bind_service+ep /usr/local/bin/bofied-backend # This allows rootless execution
 ```
