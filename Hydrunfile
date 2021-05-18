@@ -2,7 +2,7 @@
 
 # Install native dependencies
 apt update
-apt install -y curl make sudo build-essential
+apt install -y curl make sudo build-essential protobuf-compiler
 
 # Fix certificate authorities on armv7
 export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
