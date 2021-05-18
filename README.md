@@ -8,6 +8,8 @@ Modern network boot server.
 [![Docker CI](https://github.com/pojntfx/bofied/actions/workflows/docker.yaml/badge.svg)](https://github.com/pojntfx/bofied/actions/workflows/docker.yaml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/pojntfx/bofied.svg)](https://pkg.go.dev/github.com/pojntfx/bofied)
 [![Matrix](https://img.shields.io/matrix/bofied:matrix.org)](https://matrix.to/#/#bofied:matrix.org?via=matrix.org)
+[![Docker Pulls](https://img.shields.io/docker/pulls/pojntfx/bofied-backend?label=docker%20pulls)](https://hub.docker.com/r/pojntfx/bofied-backend)
+[![Binary Downloads](https://img.shields.io/github/downloads/pojntfx/bofied/total?label=binary%20downloads)](https://github.com/pojntfx/bofied/releases)
 
 ## Overview
 
