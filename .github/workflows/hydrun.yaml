@@ -23,18 +23,27 @@ jobs:
         run: hydrun -a amd64,arm64,arm/v7 ./Hydrunfile
       - name: Build frontend with hydrun
         run: hydrun "./Hydrunfile frontend"
-      - name: Publish to GitHub releases
+      - name: Publish pre-release to GitHub releases
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
+          automatic_release_tag: unstable
+          prerelease: true
+          files: |
+            out/release/bofied-backend/*
+            out/release/bofied-frontend/*
+      - name: Publish release to GitHub releases
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
             out/release/bofied-backend/*
             out/release/bofied-frontend/*
-      - name: Publish to GitHub pages
-        if: ${{ github.ref == 'refs/heads/main' }}
+      - name: Publish release to GitHub pages
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: JamesIves/github-pages-deploy-action@4.1.0
         with:
           branch: gh-pages
