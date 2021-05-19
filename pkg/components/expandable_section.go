@@ -53,9 +53,14 @@ func (c *ExpandableSection) Render() app.UI {
 						Class("pf-c-expandable-section__toggle-text").
 						Text(c.Title),
 				),
-			app.Div().
-				Class("pf-c-expandable-section__content").
-				Hidden(!c.Open).
-				Body(c.Body...),
+			&Controlled{
+				Component: app.Div().
+					Class("pf-c-expandable-section__content").
+					Hidden(!c.Open).
+					Body(c.Body...),
+				Properties: map[string]interface{}{
+					"hidden": !c.Open,
+				},
+			},
 		)
 }
