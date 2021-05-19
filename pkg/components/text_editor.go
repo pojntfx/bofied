@@ -127,7 +127,8 @@ func (c *TextEditor) Render() app.UI {
 					}).
 					Text(c.Content),
 				Properties: map[string]interface{}{
-					"value": c.Content,
+					"value":    c.Content,
+					"readOnly": c.SetContent == nil,
 				},
 			},
 		)
