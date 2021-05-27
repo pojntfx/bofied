@@ -112,58 +112,53 @@ func (c *Navbar) Render() app.UI {
 														).OnClick(func(ctx app.Context, e app.Event) {
 														c.ToggleOverflowMenuExpanded()
 													}),
-													&Controlled{
-														Component: app.Ul().
-															Class("pf-c-dropdown__menu pf-m-align-right").
-															Aria("aria-labelledby", "page-default-nav-example-dropdown-kebab-1-button").
-															Hidden(!c.OverflowMenuExpanded).
-															Body(
-																app.Li().
-																	Body(
-																		app.A().
-																			Class("pf-c-dropdown__menu-item").
-																			Href("https://github.com/pojntfx/bofied#Usage").
-																			Text("Documentation").
-																			Target("_blank"),
-																	),
-																app.Li().
-																	Body(
-																		app.Button().
-																			Class("pf-c-button pf-c-dropdown__menu-item").
-																			Type("button").
-																			OnClick(func(ctx app.Context, e app.Event) {
-																				c.ToggleAbout()
-																			}).
-																			Text("About"),
-																	),
-																app.Li().
-																	Class("pf-c-divider pf-u-display-none-on-md").
-																	Aria("role", "separator"),
-																app.Li().
-																	Class("pf-u-display-none-on-md").
-																	Body(
-																		app.Button().
-																			Class("pf-c-button pf-c-dropdown__menu-item").
-																			Type("button").
-																			Body(
-																				app.Span().
-																					Class("pf-c-button__icon pf-m-start").
-																					Body(
-																						app.I().
-																							Class("fas fa-sign-out-alt").
-																							Aria("hidden", true),
-																					),
-																				app.Text("Logout"),
-																			).
-																			OnClick(func(ctx app.Context, e app.Event) {
-																				c.Logout(ctx)
-																			}),
-																	),
-															),
-														Properties: map[string]interface{}{
-															"hidden": !c.OverflowMenuExpanded,
-														},
-													},
+													app.Ul().
+														Class("pf-c-dropdown__menu pf-m-align-right").
+														Aria("aria-labelledby", "page-default-nav-example-dropdown-kebab-1-button").
+														Hidden(!c.OverflowMenuExpanded).
+														Body(
+															app.Li().
+																Body(
+																	app.A().
+																		Class("pf-c-dropdown__menu-item").
+																		Href("https://github.com/pojntfx/bofied#Usage").
+																		Text("Documentation").
+																		Target("_blank"),
+																),
+															app.Li().
+																Body(
+																	app.Button().
+																		Class("pf-c-button pf-c-dropdown__menu-item").
+																		Type("button").
+																		OnClick(func(ctx app.Context, e app.Event) {
+																			c.ToggleAbout()
+																		}).
+																		Text("About"),
+																),
+															app.Li().
+																Class("pf-c-divider pf-u-display-none-on-md").
+																Aria("role", "separator"),
+															app.Li().
+																Class("pf-u-display-none-on-md").
+																Body(
+																	app.Button().
+																		Class("pf-c-button pf-c-dropdown__menu-item").
+																		Type("button").
+																		Body(
+																			app.Span().
+																				Class("pf-c-button__icon pf-m-start").
+																				Body(
+																					app.I().
+																						Class("fas fa-sign-out-alt").
+																						Aria("hidden", true),
+																				),
+																			app.Text("Logout"),
+																		).
+																		OnClick(func(ctx app.Context, e app.Event) {
+																			c.Logout(ctx)
+																		}),
+																),
+														),
 												),
 										),
 									app.Div().
@@ -200,35 +195,30 @@ func (c *Navbar) Render() app.UI {
 														).OnClick(func(ctx app.Context, e app.Event) {
 														c.ToggleUserMenuExpanded()
 													}),
-													&Controlled{
-														Component: app.Ul().
-															Class("pf-c-dropdown__menu").
-															Aria("labelledby", "page-layout-horizontal-nav-dropdown-kebab-2-button").
-															Hidden(!c.UserMenuExpanded).
-															Body(
-																app.Li().Body(
-																	app.Button().
-																		Class("pf-c-button pf-c-dropdown__menu-item").
-																		Type("button").
-																		Body(
-																			app.Span().
-																				Class("pf-c-button__icon pf-m-start").
-																				Body(
-																					app.I().
-																						Class("fas fa-sign-out-alt").
-																						Aria("hidden", true),
-																				),
-																			app.Text("Logout"),
-																		).
-																		OnClick(func(ctx app.Context, e app.Event) {
-																			c.Logout(ctx)
-																		}),
-																),
+													app.Ul().
+														Class("pf-c-dropdown__menu").
+														Aria("labelledby", "page-layout-horizontal-nav-dropdown-kebab-2-button").
+														Hidden(!c.UserMenuExpanded).
+														Body(
+															app.Li().Body(
+																app.Button().
+																	Class("pf-c-button pf-c-dropdown__menu-item").
+																	Type("button").
+																	Body(
+																		app.Span().
+																			Class("pf-c-button__icon pf-m-start").
+																			Body(
+																				app.I().
+																					Class("fas fa-sign-out-alt").
+																					Aria("hidden", true),
+																			),
+																		app.Text("Logout"),
+																	).
+																	OnClick(func(ctx app.Context, e app.Event) {
+																		c.Logout(ctx)
+																	}),
 															),
-														Properties: map[string]interface{}{
-															"hidden": !c.UserMenuExpanded,
-														},
-													},
+														),
 												),
 										),
 								),

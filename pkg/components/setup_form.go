@@ -67,23 +67,19 @@ func (c *SetupForm) Render() app.UI {
 							Class("pf-c-form__label-text").
 							Text("Backend URL"),
 					),
-				Input: &Controlled{
-					Component: app.
-						Input().
-						Name(backendURLName).
-						ID(backendURLName).
-						Type("url").
-						Required(true).
-						Placeholder(backendURLPlaceholder).
-						Class("pf-c-form-control").
-						Aria("invalid", c.Error != nil).
-						OnInput(func(ctx app.Context, e app.Event) {
-							c.SetBackendURL(ctx.JSSrc().Get("value").String(), ctx)
-						}),
-					Properties: map[string]interface{}{
-						"value": c.BackendURL,
-					},
-				},
+				Input: app.
+					Input().
+					Name(backendURLName).
+					ID(backendURLName).
+					Type("url").
+					Required(true).
+					Placeholder(backendURLPlaceholder).
+					Class("pf-c-form-control").
+					Aria("invalid", c.Error != nil).
+					Value(c.BackendURL).
+					OnInput(func(ctx app.Context, e app.Event) {
+						c.SetBackendURL(ctx.JSSrc().Get("value").String(), ctx)
+					}),
 				Required: true,
 			},
 			// OIDC Issuer Input
@@ -98,23 +94,19 @@ func (c *SetupForm) Render() app.UI {
 							Class("pf-c-form__label-text").
 							Text("OIDC Issuer"),
 					),
-				Input: &Controlled{
-					Component: app.
-						Input().
-						Name(oidcIssuerName).
-						ID(oidcIssuerName).
-						Type("url").
-						Required(true).
-						Placeholder(oidcIssuerPlaceholder).
-						Class("pf-c-form-control").
-						Aria("invalid", c.Error != nil).
-						OnInput(func(ctx app.Context, e app.Event) {
-							c.SetOIDCIssuer(ctx.JSSrc().Get("value").String(), ctx)
-						}),
-					Properties: map[string]interface{}{
-						"value": c.OIDCIssuer,
-					},
-				},
+				Input: app.
+					Input().
+					Name(oidcIssuerName).
+					ID(oidcIssuerName).
+					Type("url").
+					Required(true).
+					Placeholder(oidcIssuerPlaceholder).
+					Class("pf-c-form-control").
+					Aria("invalid", c.Error != nil).
+					Value(c.OIDCIssuer).
+					OnInput(func(ctx app.Context, e app.Event) {
+						c.SetOIDCIssuer(ctx.JSSrc().Get("value").String(), ctx)
+					}),
 				Required: true,
 			},
 			// OIDC Client ID
@@ -129,22 +121,18 @@ func (c *SetupForm) Render() app.UI {
 							Class("pf-c-form__label-text").
 							Text("OIDC Client ID"),
 					),
-				Input: &Controlled{
-					Component: app.
-						Input().
-						Name(oidcClientIDName).
-						ID(oidcClientIDName).
-						Type("text").
-						Required(true).
-						Class("pf-c-form-control").
-						Aria("invalid", c.Error != nil).
-						OnInput(func(ctx app.Context, e app.Event) {
-							c.SetOIDCClientID(ctx.JSSrc().Get("value").String(), ctx)
-						}),
-					Properties: map[string]interface{}{
-						"value": c.OIDCClientID,
-					},
-				},
+				Input: app.
+					Input().
+					Name(oidcClientIDName).
+					ID(oidcClientIDName).
+					Type("text").
+					Required(true).
+					Class("pf-c-form-control").
+					Aria("invalid", c.Error != nil).
+					Value(c.OIDCClientID).
+					OnInput(func(ctx app.Context, e app.Event) {
+						c.SetOIDCClientID(ctx.JSSrc().Get("value").String(), ctx)
+					}),
 				Required: true,
 			},
 			// OIDC Redirect URL
@@ -159,23 +147,19 @@ func (c *SetupForm) Render() app.UI {
 							Class("pf-c-form__label-text").
 							Text("OIDC Redirect URL"),
 					),
-				Input: &Controlled{
-					Component: app.
-						Input().
-						Name(oidcRedirectURLName).
-						ID(oidcRedirectURLName).
-						Type("url").
-						Required(true).
-						Placeholder(oidcRedirectURLPlaceholder).
-						Class("pf-c-form-control").
-						Aria("invalid", c.Error != nil).
-						OnInput(func(ctx app.Context, e app.Event) {
-							c.SetOIDCRedirectURL(ctx.JSSrc().Get("value").String(), ctx)
-						}),
-					Properties: map[string]interface{}{
-						"value": c.OIDCRedirectURL,
-					},
-				},
+				Input: app.
+					Input().
+					Name(oidcRedirectURLName).
+					ID(oidcRedirectURLName).
+					Type("url").
+					Required(true).
+					Placeholder(oidcRedirectURLPlaceholder).
+					Class("pf-c-form-control").
+					Aria("invalid", c.Error != nil).
+					Value(c.OIDCRedirectURL).
+					OnInput(func(ctx app.Context, e app.Event) {
+						c.SetOIDCRedirectURL(ctx.JSSrc().Get("value").String(), ctx)
+					}),
 				Required: true,
 			},
 			// Configuration Apply Trigger
