@@ -21,21 +21,16 @@ func (c *Switch) Render() app.UI {
 		Class("pf-c-switch").
 		For(c.ID).
 		Body(
-			&Controlled{
-				Component: app.Input().
-					Class("pf-c-switch__input").
-					Type("checkbox").
-					ID(c.ID).
-					Aria("labelledby", c.ID+"-on").
-					Name(c.ID).
-					Checked(c.Open).
-					OnInput(func(ctx app.Context, e app.Event) {
-						c.ToggleOpen()
-					}),
-				Properties: map[string]interface{}{
-					"checked": c.Open,
-				},
-			},
+			app.Input().
+				Class("pf-c-switch__input").
+				Type("checkbox").
+				ID(c.ID).
+				Aria("labelledby", c.ID+"-on").
+				Name(c.ID).
+				Checked(c.Open).
+				OnInput(func(ctx app.Context, e app.Event) {
+					c.ToggleOpen()
+				}),
 			app.Span().
 				Class("pf-c-switch__toggle"),
 			app.If(

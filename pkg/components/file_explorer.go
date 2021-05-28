@@ -685,19 +685,14 @@ func (c *FileExplorer) Render() app.UI {
 												Class("pf-c-form__group-control").
 												Body(
 													&CopyableInput{
-														Component: &Controlled{
-															Component: app.Input().
-																Class("pf-c-form-control").
-																ReadOnly(true).
-																Type("text").
-																Value(c.WebDAVAddress.String()).
-																Aria("label", "WebDAV server address").
-																Name("webdav-address").
-																ID("webdav-address"),
-															Properties: map[string]interface{}{
-																"value": c.WebDAVAddress.String(),
-															},
-														},
+														Component: app.Input().
+															Class("pf-c-form-control").
+															ReadOnly(true).
+															Type("text").
+															Value(c.WebDAVAddress.String()).
+															Aria("label", "WebDAV server address").
+															Name("webdav-address").
+															ID("webdav-address"),
 														ID: "webdav-address",
 													},
 												),
@@ -721,19 +716,14 @@ func (c *FileExplorer) Render() app.UI {
 												Class("pf-c-form__group-control").
 												Body(
 													&CopyableInput{
-														Component: &Controlled{
-															Component: app.Input().
-																Class("pf-c-form-control").
-																ReadOnly(true).
-																Type("text").
-																Value(c.WebDAVUsername).
-																Aria("label", "WebDAV username").
-																Name("webdav-username").
-																ID("webdav-username"),
-															Properties: map[string]interface{}{
-																"value": c.WebDAVUsername,
-															},
-														},
+														Component: app.Input().
+															Class("pf-c-form-control").
+															ReadOnly(true).
+															Type("text").
+															Value(c.WebDAVUsername).
+															Aria("label", "WebDAV username").
+															Name("webdav-username").
+															ID("webdav-username"),
 														ID: "webdav-username",
 													},
 												),
@@ -757,19 +747,14 @@ func (c *FileExplorer) Render() app.UI {
 												Class("pf-c-form__group-control").
 												Body(
 													&CopyableInput{
-														Component: &Controlled{
-															Component: app.Input().
-																Class("pf-c-form-control").
-																ReadOnly(true).
-																Type("text").
-																Value(c.WebDAVPassword).
-																Aria("label", "WebDAV password").
-																Name("webdav-password").
-																ID("webdav-password"),
-															Properties: map[string]interface{}{
-																"value": c.WebDAVPassword,
-															},
-														},
+														Component: app.Input().
+															Class("pf-c-form-control").
+															ReadOnly(true).
+															Type("text").
+															Value(c.WebDAVPassword).
+															Aria("label", "WebDAV password").
+															Name("webdav-password").
+															ID("webdav-password"),
 														ID: "webdav-password",
 													},
 												),
@@ -891,19 +876,14 @@ func (c *FileExplorer) Render() app.UI {
 												Class("pf-c-form__group-control").
 												Body(
 													&CopyableInput{
-														Component: &Controlled{
-															Component: app.Input().
-																Class("pf-c-form-control").
-																ReadOnly(true).
-																Type("text").
-																Value(c.HTTPShareLink.String()).
-																Aria("label", "HTTP address").
-																Name("http-address").
-																ID("http-address"),
-															Properties: map[string]interface{}{
-																"value": c.HTTPShareLink.String(),
-															},
-														},
+														Component: app.Input().
+															Class("pf-c-form-control").
+															ReadOnly(true).
+															Type("text").
+															Value(c.HTTPShareLink.String()).
+															Aria("label", "HTTP address").
+															Name("http-address").
+															ID("http-address"),
 														ID: "http-address",
 													},
 												),
@@ -927,19 +907,14 @@ func (c *FileExplorer) Render() app.UI {
 												Class("pf-c-form__group-control").
 												Body(
 													&CopyableInput{
-														Component: &Controlled{
-															Component: app.Input().
-																Class("pf-c-form-control").
-																ReadOnly(true).
-																Type("text").
-																Value(c.TFTPShareLink.String()).
-																Aria("label", "TFTP address").
-																Name("tftp-address").
-																ID("tftp-address"),
-															Properties: map[string]interface{}{
-																"value": c.TFTPShareLink.String(),
-															},
-														},
+														Component: app.Input().
+															Class("pf-c-form-control").
+															ReadOnly(true).
+															Type("text").
+															Value(c.TFTPShareLink.String()).
+															Aria("label", "TFTP address").
+															Name("tftp-address").
+															ID("tftp-address"),
 														ID: "tftp-address",
 													},
 												),
@@ -1060,21 +1035,17 @@ func (c *FileExplorer) Render() app.UI {
 											Class("pf-c-form__label-text").
 											Text("Directory name"),
 									),
-								Input: &Controlled{
-									Component: &Autofocused{
-										Component: app.Input().
-											Name("directory-name-input").
-											ID("directory-name-input").
-											Type("text").
-											Required(true).
-											Class("pf-c-form-control").
-											OnInput(func(ctx app.Context, e app.Event) {
-												c.newDirectoryName = ctx.JSSrc().Get("value").String()
-											}),
-									},
-									Properties: map[string]interface{}{
-										"value": c.newDirectoryName,
-									},
+								Input: &Autofocused{
+									Component: app.Input().
+										Name("directory-name-input").
+										ID("directory-name-input").
+										Type("text").
+										Required(true).
+										Class("pf-c-form-control").
+										Value(c.newDirectoryName).
+										OnInput(func(ctx app.Context, e app.Event) {
+											c.newDirectoryName = ctx.JSSrc().Get("value").String()
+										}),
 								},
 								Required: true,
 							},
@@ -1133,21 +1104,17 @@ func (c *FileExplorer) Render() app.UI {
 											Class("pf-c-form__label-text").
 											Text("Filename"),
 									),
-								Input: &Controlled{
-									Component: &Autofocused{
-										Component: app.Input().
-											Name("new-filename-input").
-											ID("new-filename-input").
-											Type("text").
-											Required(true).
-											Class("pf-c-form-control").
-											OnInput(func(ctx app.Context, e app.Event) {
-												c.newEmptyFilename = ctx.JSSrc().Get("value").String()
-											}),
-									},
-									Properties: map[string]interface{}{
-										"value": c.newEmptyFilename,
-									},
+								Input: &Autofocused{
+									Component: app.Input().
+										Name("new-filename-input").
+										ID("new-filename-input").
+										Type("text").
+										Required(true).
+										Class("pf-c-form-control").
+										Value(c.newEmptyFilename).
+										OnInput(func(ctx app.Context, e app.Event) {
+											c.newEmptyFilename = ctx.JSSrc().Get("value").String()
+										}),
 								},
 								Required: true,
 							},
@@ -1237,21 +1204,17 @@ func (c *FileExplorer) Render() app.UI {
 											Class("pf-c-form__label-text").
 											Text("New name"),
 									),
-								Input: &Controlled{
-									Component: &Autofocused{
-										Component: app.Input().
-											Name("path-rename-input").
-											ID("path-rename-input").
-											Type("text").
-											Required(true).
-											Class("pf-c-form-control").
-											OnInput(func(ctx app.Context, e app.Event) {
-												c.newFileName = ctx.JSSrc().Get("value").String()
-											}),
-									},
-									Properties: map[string]interface{}{
-										"value": c.newFileName,
-									},
+								Input: &Autofocused{
+									Component: app.Input().
+										Name("path-rename-input").
+										ID("path-rename-input").
+										Type("text").
+										Required(true).
+										Class("pf-c-form-control").
+										Value(c.newFileName).
+										OnInput(func(ctx app.Context, e app.Event) {
+											c.newFileName = ctx.JSSrc().Get("value").String()
+										}),
 								},
 								Required: true,
 							},

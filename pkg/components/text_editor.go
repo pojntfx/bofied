@@ -104,31 +104,26 @@ func (c *TextEditor) Render() app.UI {
 							),
 					),
 				),
-			&Controlled{
-				Component: app.Textarea().
-					Class(func() string {
-						classes := "pf-c-code-editor__main pf-u-w-100 pf-x-u-resize-none pf-u-p-sm pf-u-p-sm pf-u-flex-fill"
-						if c.VariableHeight {
-							classes += " pf-x-m-overflow-y-hidden"
-						}
+			app.Textarea().
+				Class(func() string {
+					classes := "pf-c-code-editor__main pf-u-w-100 pf-x-u-resize-none pf-u-p-sm pf-u-p-sm pf-u-flex-fill"
+					if c.VariableHeight {
+						classes += " pf-x-m-overflow-y-hidden"
+					}
 
-						return classes
-					}()).
-					Rows(func() int {
-						if c.VariableHeight {
-							return strings.Count(c.Content, "\n") + 1 // Trailing newline
-						}
+					return classes
+				}()).
+				Rows(func() int {
+					if c.VariableHeight {
+						return strings.Count(c.Content, "\n") + 1 // Trailing newline
+					}
 
-						return 25
-					}()).
-					ReadOnly(c.SetContent == nil).
-					OnInput(func(ctx app.Context, e app.Event) {
-						c.SetContent(ctx.JSSrc().Get("value").String())
-					}).
-					Text(c.Content),
-				Properties: map[string]interface{}{
-					"value": c.Content,
-				},
-			},
+					return 25
+				}()).
+				ReadOnly(c.SetContent == nil).
+				OnInput(func(ctx app.Context, e app.Event) {
+					c.SetContent(ctx.JSSrc().Get("value").String())
+				}).
+				Text(c.Content),
 		)
 }
