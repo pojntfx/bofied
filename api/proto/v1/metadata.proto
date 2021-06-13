@@ -10,4 +10,8 @@ service MetadataService {
   rpc GetMetadata(google.protobuf.Empty) returns (MetadataMessage);
 }
 
-message MetadataMessage { string AdvertisedIP = 1; }
+message MetadataMessage {
+  string AdvertisedIP = 1;
+  int32 TFTPPort = 2;
+  int32 HTTPPort = 3;
+}

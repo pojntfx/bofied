@@ -16,13 +16,22 @@ type MetadataService struct {
 	api.UnimplementedMetadataServiceServer
 
 	advertisedIP string
+	tftpPort     int32
+	httpPort     int32
 
 	contextValidator *validators.ContextValidator
 }
 
-func NewMetadataService(advertisedIP string, contextValidator *validators.ContextValidator) *MetadataService {
+func NewMetadataService(
+	advertisedIP string,
+	tftpPort int32,
+	httpPort int32,
+	contextValidator *validators.ContextValidator,
+) *MetadataService {
 	return &MetadataService{
 		advertisedIP: advertisedIP,
+		tftpPort:     tftpPort,
+		httpPort:     httpPort,
 
 		contextValidator: contextValidator,
 	}
@@ -38,5 +47,7 @@ func (s *MetadataService) GetMetadata(ctx context.Context, _ *empty.Empty) (*api
 	// Return the constructed message
 	return &api.MetadataMessage{
 		AdvertisedIP: s.advertisedIP,
+		TFTPPort:     s.tftpPort,
+		HTTPPort:     s.httpPort,
 	}, nil
 }
