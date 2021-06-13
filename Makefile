@@ -14,7 +14,7 @@ frontend:
 build: backend frontend
 
 release-backend:
-	CGO_ENABLED=1 go build -ldflags="-extldflags=-static" -tags netgo -o out/release/bofied-backend/bofied-backend.linux-$$(uname -m) cmd/bofied-backend/main.go
+	CGO_ENABLED=0 go build -ldflags="-extldflags=-static" -tags netgo -o out/release/bofied-backend/bofied-backend.linux-$$(uname -m) cmd/bofied-backend/main.go
 
 release-frontend: frontend
 	rm -rf out/release/bofied-frontend
