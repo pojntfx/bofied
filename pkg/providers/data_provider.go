@@ -7,6 +7,8 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
@@ -123,6 +125,8 @@ type DataProvider struct {
 	eventsErr error
 
 	advertisedIP string
+	tftpPort     int32
+	httpPort     int32
 
 	useAdvertisedIP          bool
 	useAdvertisedIPForWebDAV bool
@@ -159,7 +163,7 @@ func (c *DataProvider) Render() app.UI {
 			u := c.httpShareLink
 
 			if c.useAdvertisedIP {
-				u.Host = net.JoinHostPort(c.advertisedIP, u.Port())
+				u.Host = net.JoinHostPort(c.advertisedIP, strconv.Itoa(int(c.httpPort)))
 			}
 
 			if c.useHTTPS {
@@ -195,7 +199,7 @@ func (c *DataProvider) Render() app.UI {
 			u := address
 
 			if c.useAdvertisedIPForWebDAV {
-				u.Host = net.JoinHostPort(c.advertisedIP, u.Port())
+				u.Host = net.JoinHostPort(c.advertisedIP, strconv.Itoa(int(c.httpPort)))
 			}
 
 			if c.useDavs {
@@ -426,8 +430,10 @@ func (c *DataProvider) sharePath(path string) {
 	// Set HTTP share link
 	c.httpShareLink = *u
 
+	// Transform to TFTP URL
 	u.Scheme = "tftp"
-	u.Host = u.Hostname() + ":" + constants.TFTPPort
+	u.Host = net.JoinHostPort(u.Hostname(), strconv.Itoa(int(c.tftpPort)))
+	u.Path = strings.TrimPrefix(u.Path, servers.HTTPPrefix)
 
 	// Set TFTP share link
 	c.tftpShareLink = *u
@@ -624,6 +630,8 @@ func (c *DataProvider) getMetadata(ctx app.Context) {
 	// We have to use `Context.Emit` here as this runs from a separate Goroutine
 	ctx.Emit(func() {
 		c.advertisedIP = metadata.GetAdvertisedIP()
+		c.tftpPort = metadata.GetTFTPPort()
+		c.httpPort = metadata.GetHTTPPort()
 	})
 }
 

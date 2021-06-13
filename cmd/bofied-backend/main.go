@@ -2,8 +2,10 @@ package main
 
 import (
 	"log"
+	"net"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/pojntfx/bofied/pkg/config"
 	"github.com/pojntfx/bofied/pkg/constants"
@@ -63,6 +65,27 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 				}
 			}
 
+			// Parse flags
+			_, tftpPortRaw, err := net.SplitHostPort(viper.GetString(tftpListenAddressKey))
+			if err != nil {
+				return err
+			}
+
+			tftpPort, err := strconv.Atoi(tftpPortRaw)
+			if err != nil {
+				return err
+			}
+
+			_, httpPortRaw, err := net.SplitHostPort(viper.GetString(webDAVAndHTTPListenAddressKey))
+			if err != nil {
+				return err
+			}
+
+			httpPort, err := strconv.Atoi(httpPortRaw)
+			if err != nil {
+				return err
+			}
+
 			// Create eventing utilities
 			eventsHandler := eventing.NewEventHandler()
 
@@ -75,7 +98,12 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 
 			// Create services
 			eventsService := services.NewEventsService(eventsHandler, contextValidator)
-			metadataService := services.NewMetadataService(viper.GetString(advertisedIPKey), contextValidator)
+			metadataService := services.NewMetadataService(
+				viper.GetString(advertisedIPKey),
+				int32(tftpPort),
+				int32(httpPort),
+				contextValidator,
+			)
 
 			// Create servers
 			dhcpServer := servers.NewDHCPServer(
@@ -146,7 +174,7 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 
 	cmd.PersistentFlags().String(dhcpListenAddressKey, ":67", "Listen address for DHCP server")
 	cmd.PersistentFlags().String(proxyDHCPListenAddressKey, ":4011", "Listen address for proxyDHCP server")
-	cmd.PersistentFlags().String(tftpListenAddressKey, ":"+constants.TFTPPort, "Listen address for TFTP server")
+	cmd.PersistentFlags().String(tftpListenAddressKey, ":69", "Listen address for TFTP server")
 	cmd.PersistentFlags().String(webDAVAndHTTPListenAddressKey, ":15256", "Listen address for WebDAV, HTTP and gRPC-Web server")
 	cmd.PersistentFlags().String(grpcListenAddressKey, ":15257", "Listen address for gRPC server")
 
