@@ -16,6 +16,7 @@ func NewProxyDHCPServer(listenAddress string, advertisedIP string, configFileLoc
 	return &ProxyDHCPServer{
 		UDPServer: UDPServer{
 			listenAddress: listenAddress,
+			advertisedIP:  advertisedIP,
 			handlePacket: func(conn *net.UDPConn, raddr *net.UDPAddr, braddr *net.UDPAddr, rawIncomingUDPPacket []byte) (int, error) {
 				return handleProxyDHCPPacket(conn, raddr, braddr, rawIncomingUDPPacket, net.ParseIP(advertisedIP).To4(), configFileLocation, eventHandler.Emit, pureConfig)
 			},
