@@ -96,7 +96,7 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 				eventsHandler,
 			)
 			grpcServer, grpcServerHandler := servers.NewGRPCServer(viper.GetString(grpcListenAddressKey), eventsService, metadataService)
-			extendedHTTPServer := servers.NewExtendedHTTPServer(viper.GetString(workingDirKey), viper.GetString(webDAVAndHTTPListenAddressKey), oidcValidator, grpcServerHandler)
+			extendedHTTPServer := servers.NewExtendedHTTPServer(viper.GetString(workingDirKey), viper.GetString(webDAVAndHTTPListenAddressKey), oidcValidator, grpcServerHandler, eventsHandler)
 
 			// Start servers
 			log.Printf(

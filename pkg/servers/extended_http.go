@@ -5,6 +5,7 @@ import (
 
 	"github.com/pojntfx/bofied/pkg/authorization"
 	"github.com/pojntfx/bofied/pkg/constants"
+	"github.com/pojntfx/bofied/pkg/eventing"
 	"github.com/pojntfx/liwasc/pkg/validators"
 	"github.com/rs/cors"
 	"golang.org/x/net/webdav"
@@ -21,11 +22,18 @@ type ExtendedHTTPServer struct {
 	FileServer
 
 	eventsServerHandler http.Handler
+	eventHandler        *eventing.EventHandler
 
 	oidcValidator *validators.OIDCValidator
 }
 
-func NewExtendedHTTPServer(workingDir string, listenAddress string, oidcValidator *validators.OIDCValidator, eventsServerHandler http.Handler) *ExtendedHTTPServer {
+func NewExtendedHTTPServer(
+	workingDir string,
+	listenAddress string,
+	oidcValidator *validators.OIDCValidator,
+	eventsServerHandler http.Handler,
+	eventHandler *eventing.EventHandler,
+) *ExtendedHTTPServer {
 	return &ExtendedHTTPServer{
 		FileServer: FileServer{
 			workingDir:    workingDir,
@@ -33,6 +41,7 @@ func NewExtendedHTTPServer(workingDir string, listenAddress string, oidcValidato
 		},
 
 		eventsServerHandler: eventsServerHandler,
+		eventHandler:        eventHandler,
 
 		oidcValidator: oidcValidator,
 	}
@@ -47,8 +56,11 @@ func (s *ExtendedHTTPServer) GetWebDAVHandler(prefix string) webdav.Handler {
 }
 
 func (s *ExtendedHTTPServer) GetHTTPHandler() http.Handler {
-	return http.FileServer(
-		http.Dir(s.workingDir),
+	return eventing.LogRequestHandler(
+		http.FileServer(
+			http.Dir(s.workingDir),
+		),
+		s.eventHandler,
 	)
 }
 
