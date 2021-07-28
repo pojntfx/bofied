@@ -17,7 +17,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
       - name: Set up hydrun
         run: |
-          curl -L -o /tmp/hydrun https://github.com/pojntfx/hydrun/releases/download/latest/hydrun.linux-$(uname -m)
+          curl -L -o /tmp/hydrun "https://github.com/pojntfx/hydrun/releases/latest/download/hydrun.linux-$(uname -m)"
           sudo install /tmp/hydrun /usr/local/bin
       - name: Build backend with hydrun
         run: hydrun -a amd64,arm64,arm/v7 ./Hydrunfile
