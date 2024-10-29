@@ -1,7 +1,7 @@
 package components
 
 import (
-	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/maxence-charriere/go-app/v10/pkg/app"
 )
 
 type Modal struct {
@@ -97,9 +97,11 @@ func (c *Modal) Render() app.UI {
 								Body(c.Body...),
 							app.If(
 								c.Footer != nil,
-								app.Footer().
-									Class("pf-c-modal-box__footer").
-									Body(c.Footer...),
+								func() app.UI {
+									return app.Footer().
+										Class("pf-c-modal-box__footer").
+										Body(c.Footer...)
+								},
 							),
 						),
 				),
@@ -107,9 +109,9 @@ func (c *Modal) Render() app.UI {
 }
 
 func (c *Modal) OnMount(ctx app.Context) {
-	app.Window().AddEventListener("keyup", func(ctx app.Context, e app.Event) {
-		if e.Get("key").String() == "Escape" {
-			c.Close()
-		}
-	})
+	// app.Window().AddEventListener("keyup", func(ctx app.Context, e app.Event) {
+	// 	if e.Get("key").String() == "Escape" {
+	// 		c.Close()
+	// 	}
+	// })
 }

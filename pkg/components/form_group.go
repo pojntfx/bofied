@@ -1,6 +1,6 @@
 package components
 
-import "github.com/maxence-charriere/go-app/v9/pkg/app"
+import "github.com/maxence-charriere/go-app/v10/pkg/app"
 
 type FormGroup struct {
 	app.Compo
@@ -27,10 +27,12 @@ func (c *FormGroup) Render() app.UI {
 				Body(
 					c.Label,
 					app.If(c.Required,
-						app.Span().
-							Class("pf-c-form__label-required").
-							Aria("hidden", true).
-							Text("*"),
+						func() app.UI {
+							return app.Span().
+								Class("pf-c-form__label-required").
+								Aria("hidden", true).
+								Text("*")
+						},
 					),
 				),
 			app.Div().

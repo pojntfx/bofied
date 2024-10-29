@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/maxence-charriere/go-app/v10/pkg/app"
 )
 
 type FileExplorer struct {
@@ -236,132 +236,191 @@ func (c *FileExplorer) Render() app.UI {
 																														Body(
 																															app.If(
 																																c.selectedPath != "",
-																																app.If(
-																																	selectedPathContentType != "",
-																																	app.Li().
+																																func() app.UI {
+																																	return app.If(
+																																		selectedPathContentType != "",
+																																		func() app.UI {
+																																			return app.Li().
+																																				Body(
+																																					app.Button().
+																																						Class("pf-c-button pf-c-dropdown__menu-item").
+																																						Type("button").
+																																						OnClick(func(ctx app.Context, e app.Event) {
+																																							c.editPath()
+																																						}).
+																																						Text("Edit file"),
+																																				)
+																																		},
+																																	)
+																																},
+																															),
+																															app.If(
+																																c.selectedPath != "",
+																																func() app.UI {
+																																	return app.Li().
 																																		Body(
 																																			app.Button().
 																																				Class("pf-c-button pf-c-dropdown__menu-item").
 																																				Type("button").
 																																				OnClick(func(ctx app.Context, e app.Event) {
-																																					c.editPath()
+																																					c.sharePath()
 																																				}).
-																																				Text("Edit file"),
-																																		),
-																																),
-																																app.Li().
-																																	Body(
-																																		app.Button().
-																																			Class("pf-c-button pf-c-dropdown__menu-item").
-																																			Type("button").
-																																			OnClick(func(ctx app.Context, e app.Event) {
-																																				c.sharePath()
-																																			}).
-																																			Text("Share file"),
-																																	),
-																																app.Li().
-																																	Body(
-																																		app.Button().
-																																			Class("pf-c-button pf-c-dropdown__menu-item").
-																																			Type("button").
-																																			OnClick(func(ctx app.Context, e app.Event) {
-																																				c.deleteFile()
-																																			}).
-																																			Text("Delete file"),
-																																	),
-																																app.Li().
-																																	Class("pf-c-divider").
-																																	Aria("role", "separator"),
-																																app.Li().
-																																	Body(
-																																		app.Button().
-																																			Class("pf-c-dropdown__menu-item").
-																																			Type("button").
-																																			OnClick(func(ctx app.Context, e app.Event) {
-																																				c.moveTo()
-																																			}).
-																																			Text("Move to ..."),
-																																	),
-																																app.Li().
-																																	Body(
-																																		app.Button().
-																																			Class("pf-c-dropdown__menu-item").
-																																			Type("button").
-																																			OnClick(func(ctx app.Context, e app.Event) {
-																																				c.copyTo()
-																																			}).
-																																			Text("Copy to ..."),
-																																	),
-																																app.Li().
-																																	Class("pf-c-divider").
-																																	Aria("role", "separator"),
-																																app.Li().
-																																	Body(
-																																		app.Button().
-																																			Class("pf-c-dropdown__menu-item").
-																																			Type("button").
-																																			OnClick(func(ctx app.Context, e app.Event) {
-																																				c.rename()
-																																			}).
-																																			Text("Rename"),
-																																	),
-																																app.Li().
-																																	Class("pf-c-divider").
-																																	Aria("role", "separator"),
+																																				Text("Share file"),
+																																		)
+																																},
 																															),
-																															app.Li().
-																																Body(
-																																	app.Button().
-																																		Class("pf-c-button pf-c-dropdown__menu-item").
-																																		Type("button").
-																																		OnClick(func(ctx app.Context, e app.Event) {
-																																			c.createDirectory()
-																																		}).
-																																		Text("Create directory"),
-																																),
-																															app.Li().
-																																Body(
-																																	app.Button().
-																																		Class("pf-c-button pf-c-dropdown__menu-item").
-																																		Type("button").
-																																		OnClick(func(ctx app.Context, e app.Event) {
-																																			c.createEmptyFile()
-																																		}).
-																																		Text("Create empty file"),
-																																),
-																															app.Li().
-																																Body(
-																																	app.Button().
-																																		Class("pf-c-button pf-c-dropdown__menu-item").
-																																		Type("button").
-																																		OnClick(func(ctx app.Context, e app.Event) {
-																																			c.uploadFile()
-																																		}).
-																																		Text("Upload file"),
-																																),
-																															app.Li().
-																																Class("pf-c-divider").
-																																Aria("role", "separator"),
-																															app.Li().
-																																Body(
-																																	app.Button().
-																																		Class("pf-c-button pf-c-dropdown__menu-item").
-																																		Type("button").
-																																		OnClick(func(ctx app.Context, e app.Event) {
-																																			c.refresh()
-																																		}).
-																																		Text("Refresh"),
-																																),
-																															app.Li().
-																																Body(
-																																	app.Button().
-																																		Class("pf-c-button pf-c-dropdown__menu-item").
-																																		Type("button").
-																																		OnClick(func(ctx app.Context, e app.Event) {
-																																			c.mountDirectory()
-																																		}).
-																																		Text("Mount directory"),
-																																),
+																															app.If(
+																																c.selectedPath != "",
+																																func() app.UI {
+																																	return app.Li().
+																																		Body(
+																																			app.Button().
+																																				Class("pf-c-button pf-c-dropdown__menu-item").
+																																				Type("button").
+																																				OnClick(func(ctx app.Context, e app.Event) {
+																																					c.sharePath()
+																																				}).
+																																				Text("Share file"),
+																																		)
+																																},
+																															),
+																															app.If(
+																																c.selectedPath != "",
+																																func() app.UI {
+																																	return app.Li().
+																																		Body(
+																																			app.Button().
+																																				Class("pf-c-button pf-c-dropdown__menu-item").
+																																				Type("button").
+																																				OnClick(func(ctx app.Context, e app.Event) {
+																																					c.deleteFile()
+																																				}).
+																																				Text("Delete file"),
+																																		)
+																																},
+																															),
+																															app.If(
+																																c.selectedPath != "",
+																																func() app.UI {
+																																	return app.Li().
+																																		Class("pf-c-divider").
+																																		Aria("role", "separator")
+																																},
+																															),
+																															app.If(
+																																c.selectedPath != "",
+																																func() app.UI {
+																																	return app.Li().
+																																		Body(
+																																			app.Button().
+																																				Class("pf-c-dropdown__menu-item").
+																																				Type("button").
+																																				OnClick(func(ctx app.Context, e app.Event) {
+																																					c.moveTo()
+																																				}).
+																																				Text("Move to ..."),
+																																		)
+																																},
+																															),
+																															app.If(
+																																c.selectedPath != "",
+																																func() app.UI {
+																																	return app.Li().
+																																		Body(
+																																			app.Button().
+																																				Class("pf-c-dropdown__menu-item").
+																																				Type("button").
+																																				OnClick(func(ctx app.Context, e app.Event) {
+																																					c.copyTo()
+																																				}).
+																																				Text("Copy to ..."),
+																																		)
+																																},
+																															),
+																															app.If(
+																																c.selectedPath != "",
+																																func() app.UI {
+																																	return app.Li().
+																																		Class("pf-c-divider").
+																																		Aria("role", "separator")
+																																},
+																															),
+																															app.If(
+																																c.selectedPath != "",
+																																func() app.UI {
+																																	return app.Li().
+																																		Body(
+																																			app.Button().
+																																				Class("pf-c-dropdown__menu-item").
+																																				Type("button").
+																																				OnClick(func(ctx app.Context, e app.Event) {
+																																					c.rename()
+																																				}).
+																																				Text("Rename"),
+																																		)
+																																},
+																															),
+																															app.If(
+																																c.selectedPath != "",
+																																func() app.UI {
+																																	return app.Li().
+																																		Class("pf-c-divider").
+																																		Aria("role", "separator")
+																																},
+																															),
+																														),
+																													app.Li().
+																														Body(
+																															app.Button().
+																																Class("pf-c-button pf-c-dropdown__menu-item").
+																																Type("button").
+																																OnClick(func(ctx app.Context, e app.Event) {
+																																	c.createDirectory()
+																																}).
+																																Text("Create directory"),
+																														),
+																													app.Li().
+																														Body(
+																															app.Button().
+																																Class("pf-c-button pf-c-dropdown__menu-item").
+																																Type("button").
+																																OnClick(func(ctx app.Context, e app.Event) {
+																																	c.createEmptyFile()
+																																}).
+																																Text("Create empty file"),
+																														),
+																													app.Li().
+																														Body(
+																															app.Button().
+																																Class("pf-c-button pf-c-dropdown__menu-item").
+																																Type("button").
+																																OnClick(func(ctx app.Context, e app.Event) {
+																																	c.uploadFile()
+																																}).
+																																Text("Upload file"),
+																														),
+																													app.Li().
+																														Class("pf-c-divider").
+																														Aria("role", "separator"),
+																													app.Li().
+																														Body(
+																															app.Button().
+																																Class("pf-c-button pf-c-dropdown__menu-item").
+																																Type("button").
+																																OnClick(func(ctx app.Context, e app.Event) {
+																																	c.refresh()
+																																}).
+																																Text("Refresh"),
+																														),
+																													app.Li().
+																														Body(
+																															app.Button().
+																																Class("pf-c-button pf-c-dropdown__menu-item").
+																																Type("button").
+																																OnClick(func(ctx app.Context, e app.Event) {
+																																	c.mountDirectory()
+																																}).
+																																Text("Mount directory"),
 																														),
 																												),
 																										),
@@ -375,130 +434,149 @@ func (c *FileExplorer) Render() app.UI {
 																								Body(
 																									app.If(
 																										c.selectedPath != "",
-																										app.If(
-																											selectedPathContentType != "",
-																											app.Div().Class("pf-c-overflow-menu__item").
+																										func() app.UI {
+																											return app.If(
+																												selectedPathContentType != "",
+																												func() app.UI {
+																													return app.Div().Class("pf-c-overflow-menu__item").
+																														Body(
+																															app.Button().
+																																Type("button").
+																																Aria("label", "Edit file").
+																																Title("Edit file").
+																																Class("pf-c-button pf-m-plain").
+																																OnClick(func(ctx app.Context, e app.Event) {
+																																	c.editPath()
+																																}).
+																																Body(
+																																	app.I().
+																																		Class("fas fa-pen").
+																																		Aria("hidden", true),
+																																),
+																														)
+																												},
+																											)
+																										},
+																									),
+																									app.If(
+																										c.selectedPath != "",
+																										func() app.UI {
+																											return app.Div().Class("pf-c-overflow-menu__item").
 																												Body(
 																													app.Button().
 																														Type("button").
-																														Aria("label", "Edit file").
-																														Title("Edit file").
+																														Aria("label", "Share file").
+																														Title("Share file").
 																														Class("pf-c-button pf-m-plain").
 																														OnClick(func(ctx app.Context, e app.Event) {
-																															c.editPath()
+																															c.sharePath()
 																														}).
 																														Body(
 																															app.I().
-																																Class("fas fa-pen").
+																																Class("fas fa-share-alt").
 																																Aria("hidden", true),
 																														),
-																												),
-																										),
-																										app.Div().Class("pf-c-overflow-menu__item").
-																											Body(
-																												app.Button().
-																													Type("button").
-																													Aria("label", "Share file").
-																													Title("Share file").
-																													Class("pf-c-button pf-m-plain").
-																													OnClick(func(ctx app.Context, e app.Event) {
-																														c.sharePath()
-																													}).
-																													Body(
-																														app.I().
-																															Class("fas fa-share-alt").
-																															Aria("hidden", true),
-																													),
-																											),
-																										app.Div().
-																											Class("pf-c-overflow-menu__item").
-																											Body(
-																												app.Button().
-																													Type("button").
-																													Aria("label", "Delete file").
-																													Title("Delete file").
-																													Class("pf-c-button pf-m-plain").
-																													OnClick(func(ctx app.Context, e app.Event) {
-																														c.deleteFile()
-																													}).
-																													Body(
-																														app.I().
-																															Class("fas fa-trash").
-																															Aria("hidden", true),
-																													),
-																											),
-																										app.Div().
-																											Class("pf-c-overflow-menu__control").
-																											Body(
-																												app.Div().
-																													Class(func() string {
-																														classes := "pf-c-dropdown"
-																														if c.overflowMenuOpen {
-																															classes += " pf-m-expanded"
-																														}
-
-																														return classes
-																													}()).
-																													Body(
-																														app.Button().
-																															Class("pf-c-dropdown__toggle pf-m-plain").
-																															ID("toolbar-overflow-menu-button").
-																															Aria("expanded", c.overflowMenuOpen).
-																															Type("button").
-																															Aria("label", "Toggle overflow menu").
-																															OnClick(func(ctx app.Context, e app.Event) {
-																																c.overflowMenuOpen = !c.overflowMenuOpen
-																															}).
-																															Body(
-																																app.I().
-																																	Class("fas fa-ellipsis-v").
-																																	Aria("hidden", true),
-																															),
-																														app.Ul().
-																															Class("pf-c-dropdown__menu").
-																															Aria("labelledby", "toolbar-overflow-menu-button").
-																															Hidden(!c.overflowMenuOpen).
-																															Body(
-																																app.Li().
-																																	Body(
-																																		app.Button().
-																																			Class("pf-c-dropdown__menu-item").
-																																			Type("button").
-																																			OnClick(func(ctx app.Context, e app.Event) {
-																																				c.moveTo()
-																																			}).
-																																			Text("Move to ..."),
-																																	),
-																																app.Li().
-																																	Body(
-																																		app.Button().
-																																			Class("pf-c-dropdown__menu-item").
-																																			Type("button").
-																																			OnClick(func(ctx app.Context, e app.Event) {
-																																				c.copyTo()
-																																			}).
-																																			Text("Copy to ..."),
-																																	),
-																																app.Li().
-																																	Class("pf-c-divider").
-																																	Aria("role", "separator"),
-																																app.Li().
-																																	Body(
-																																		app.Button().
-																																			Class("pf-c-dropdown__menu-item").
-																																			Type("button").
-																																			OnClick(func(ctx app.Context, e app.Event) {
-																																				c.rename()
-																																			}).
-																																			Text("Rename"),
-																																	),
-																															),
-																													),
-																											),
-																										app.Div().
-																											Class("pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-sm").
-																											Aria("role", "separator"),
+																												)
+																										},
 																									),
+																									app.If(
+																										c.selectedPath != "",
+																										func() app.UI {
+																											return app.Div().
+																												Class("pf-c-overflow-menu__item").
+																												Body(
+																													app.Button().
+																														Type("button").
+																														Aria("label", "Delete file").
+																														Title("Delete file").
+																														Class("pf-c-button pf-m-plain").
+																														OnClick(func(ctx app.Context, e app.Event) {
+																															c.deleteFile()
+																														}).
+																														Body(
+																															app.I().
+																																Class("fas fa-trash").
+																																Aria("hidden", true),
+																														),
+																												)
+																										},
+																									),
+																									app.If(
+																										c.selectedPath != "",
+																										func() app.UI {
+																											return app.Div().
+																												Class("pf-c-overflow-menu__control").
+																												Body(
+																													app.Div().
+																														Class(func() string {
+																															classes := "pf-c-dropdown"
+																															if c.overflowMenuOpen {
+																																classes += " pf-m-expanded"
+																															}
+
+																															return classes
+																														}()).
+																														Body(
+																															app.Button().
+																																Class("pf-c-dropdown__toggle pf-m-plain").
+																																ID("toolbar-overflow-menu-button").
+																																Aria("expanded", c.overflowMenuOpen).
+																																Type("button").
+																																Aria("label", "Toggle overflow menu").
+																																OnClick(func(ctx app.Context, e app.Event) {
+																																	c.overflowMenuOpen = !c.overflowMenuOpen
+																																}).
+																																Body(
+																																	app.I().
+																																		Class("fas fa-ellipsis-v").
+																																		Aria("hidden", true),
+																																),
+																															app.Ul().
+																																Class("pf-c-dropdown__menu").
+																																Aria("labelledby", "toolbar-overflow-menu-button").
+																																Hidden(!c.overflowMenuOpen).
+																																Body(
+																																	app.Li().
+																																		Body(
+																																			app.Button().
+																																				Class("pf-c-dropdown__menu-item").
+																																				Type("button").
+																																				OnClick(func(ctx app.Context, e app.Event) {
+																																					c.moveTo()
+																																				}).
+																																				Text("Move to ..."),
+																																		),
+																																	app.Li().
+																																		Body(
+																																			app.Button().
+																																				Class("pf-c-dropdown__menu-item").
+																																				Type("button").
+																																				OnClick(func(ctx app.Context, e app.Event) {
+																																					c.copyTo()
+																																				}).
+																																				Text("Copy to ..."),
+																																		),
+																																	app.Li().
+																																		Class("pf-c-divider").
+																																		Aria("role", "separator"),
+																																	app.Li().
+																																		Body(
+																																			app.Button().
+																																				Class("pf-c-dropdown__menu-item").
+																																				Type("button").
+																																				OnClick(func(ctx app.Context, e app.Event) {
+																																					c.rename()
+																																				}).
+																																				Text("Rename"),
+																																		),
+																																),
+																														),
+																												)
+																										},
+																									),
+																									app.Div().
+																										Class("pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-sm").
+																										Aria("role", "separator"),
 																									app.Div().
 																										Class("pf-c-overflow-menu__item").
 																										Body(
@@ -609,35 +687,39 @@ func (c *FileExplorer) Render() app.UI {
 						Body(
 							app.If(
 								len(c.Index) > 0,
-								&FileGrid{
-									Index: c.Index,
+								func() app.UI {
+									return &FileGrid{
+										Index: c.Index,
 
-									SelectedPath: c.selectedPath,
-									SetSelectedPath: func(s string) {
-										c.selectedPath = s
-									},
+										SelectedPath: c.selectedPath,
+										SetSelectedPath: func(s string) {
+											c.selectedPath = s
+										},
 
-									CurrentPath:    c.CurrentPath,
-									SetCurrentPath: c.SetCurrentPath,
+										CurrentPath:    c.CurrentPath,
+										SetCurrentPath: c.SetCurrentPath,
+									}
 								},
 							).Else(
-								&EmptyState{
-									Action: app.Button().
-										Class("pf-c-button pf-m-primary").
-										Type("button").
-										OnClick(func(ctx app.Context, e app.Event) {
-											c.uploadModalOpen = true
-										}).
-										Body(
-											app.Span().
-												Class("pf-c-button__icon pf-m-start").
-												Body(
-													app.I().
-														Class("fas fa-cloud-upload-alt").
-														Aria("hidden", true),
-												),
-											app.Text("Upload File"),
-										),
+								func() app.UI {
+									return &EmptyState{
+										Action: app.Button().
+											Class("pf-c-button pf-m-primary").
+											Type("button").
+											OnClick(func(ctx app.Context, e app.Event) {
+												c.uploadModalOpen = true
+											}).
+											Body(
+												app.Span().
+													Class("pf-c-button__icon pf-m-start").
+													Body(
+														app.I().
+															Class("fas fa-cloud-upload-alt").
+															Aria("hidden", true),
+													),
+												app.Text("Upload File"),
+											),
+									}
 								},
 							),
 						),
@@ -1270,21 +1352,25 @@ func (c *FileExplorer) Render() app.UI {
 					},
 					app.If(
 						len(c.OperationIndex) > 0,
-						&FileGrid{
-							Index: c.OperationIndex,
+						func() app.UI {
+							return &FileGrid{
+								Index: c.OperationIndex,
 
-							SelectedPath: c.operationSelectedPath,
-							SetSelectedPath: func(s string) {
-								c.operationSelectedPath = s
-							},
+								SelectedPath: c.operationSelectedPath,
+								SetSelectedPath: func(s string) {
+									c.operationSelectedPath = s
+								},
 
-							CurrentPath:    c.OperationCurrentPath,
-							SetCurrentPath: c.OperationSetCurrentPath,
+								CurrentPath:    c.OperationCurrentPath,
+								SetCurrentPath: c.OperationSetCurrentPath,
 
-							Standalone: true,
+								Standalone: true,
+							}
 						},
 					).Else(
-						&EmptyState{},
+						func() app.UI {
+							return &EmptyState{}
+						},
 					),
 				},
 				Footer: []app.UI{
@@ -1360,21 +1446,25 @@ func (c *FileExplorer) Render() app.UI {
 					},
 					app.If(
 						len(c.OperationIndex) > 0,
-						&FileGrid{
-							Index: c.OperationIndex,
+						func() app.UI {
+							return &FileGrid{
+								Index: c.OperationIndex,
 
-							SelectedPath: c.operationSelectedPath,
-							SetSelectedPath: func(s string) {
-								c.operationSelectedPath = s
-							},
+								SelectedPath: c.operationSelectedPath,
+								SetSelectedPath: func(s string) {
+									c.operationSelectedPath = s
+								},
 
-							CurrentPath:    c.OperationCurrentPath,
-							SetCurrentPath: c.OperationSetCurrentPath,
+								CurrentPath:    c.OperationCurrentPath,
+								SetCurrentPath: c.OperationSetCurrentPath,
 
-							Standalone: true,
+								Standalone: true,
+							}
 						},
 					).Else(
-						&EmptyState{},
+						func() app.UI {
+							return &EmptyState{}
+						},
 					),
 				},
 				Footer: []app.UI{
@@ -1449,7 +1539,7 @@ func (c *FileExplorer) Render() app.UI {
 									c.WriteToPath(filepath.Join(c.CurrentPath, fileName), fileContent)
 
 									// Manually refresh, as `c.WriteToPath` runs in a seperate goroutine
-									ctx.Emit(func() {
+									ctx.Async(func() {
 										c.RefreshIndex()
 									})
 								}()

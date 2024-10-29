@@ -11,17 +11,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/maxence-charriere/go-app/v10/pkg/app"
 	api "github.com/pojntfx/bofied/pkg/api/proto/v1"
 	"github.com/pojntfx/bofied/pkg/authorization"
 	"github.com/pojntfx/bofied/pkg/constants"
 	"github.com/pojntfx/bofied/pkg/servers"
 	"github.com/pojntfx/bofied/pkg/services"
 	"github.com/pojntfx/bofied/pkg/validators"
-	"github.com/pojntfx/go-app-grpc-chat-frontend-web/pkg/websocketproxy"
+	"github.com/pojntfx/bofied/pkg/websocketproxy"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
-	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/studio-b12/gowebdav"
 )
@@ -553,10 +552,10 @@ func (c *DataProvider) panicFileExplorerError(err error) {
 
 func (c *DataProvider) subscribeToEvents(ctx app.Context) {
 	// Get stream from service
-	events, err := c.eventsService.SubscribeToEvents(c.authenticatedContext, &emptypb.Empty{})
+	events, err := c.eventsService.SubscribeToEvents(c.authenticatedContext, &api.Empty{})
 	if err != nil {
-		// We have to use `Context.Emit` here as this runs from a separate Goroutine
-		ctx.Emit(func() {
+		// We have to use `Context.Async` here as this runs from a separate Goroutine
+		ctx.Async(func() {
 			c.panicEventsError(err)
 		})
 
@@ -568,8 +567,8 @@ func (c *DataProvider) subscribeToEvents(ctx app.Context) {
 		// Receive event from stream
 		event, err := events.Recv()
 		if err != nil {
-			// We have to use `Context.Emit` here as this runs from a separate Goroutine
-			ctx.Emit(func() {
+			// We have to use `Context.Async` here as this runs from a separate Goroutine
+			ctx.Async(func() {
 				c.panicEventsError(err)
 			})
 
@@ -579,16 +578,16 @@ func (c *DataProvider) subscribeToEvents(ctx app.Context) {
 		// Parse the event's date
 		eventCreatedAt, err := time.Parse(time.RFC3339, event.GetCreatedAt())
 		if err != nil {
-			// We have to use `Context.Emit` here as this runs from a separate Goroutine
-			ctx.Emit(func() {
+			// We have to use `Context.Async` here as this runs from a separate Goroutine
+			ctx.Async(func() {
 				c.panicEventsError(err)
 			})
 
 			return
 		}
 
-		// Add the event (we have to use `Context.Emit` here as this runs from a separate Goroutine)
-		ctx.Emit(func() {
+		// Add the event (we have to use `Context.Async` here as this runs from a separate Goroutine)
+		ctx.Async(func() {
 			c.events = append(c.events, Event{
 				CreatedAt: eventCreatedAt,
 				Message:   event.GetMessage(),
@@ -617,18 +616,18 @@ func (c *DataProvider) panicEventsError(err error) {
 
 // Metadata
 func (c *DataProvider) getMetadata(ctx app.Context) {
-	metadata, err := c.metadataService.GetMetadata(c.authenticatedContext, &emptypb.Empty{})
+	metadata, err := c.metadataService.GetMetadata(c.authenticatedContext, &api.Empty{})
 	if err != nil {
-		// We have to use `Context.Emit` here as this runs from a separate Goroutine
-		ctx.Emit(func() {
+		// We have to use `Context.Async` here as this runs from a separate Goroutine
+		ctx.Async(func() {
 			c.panicEventsError(err)
 		})
 
 		return
 	}
 
-	// We have to use `Context.Emit` here as this runs from a separate Goroutine
-	ctx.Emit(func() {
+	// We have to use `Context.Async` here as this runs from a separate Goroutine
+	ctx.Async(func() {
 		c.advertisedIP = metadata.GetAdvertisedIP()
 		c.tftpPort = metadata.GetTFTPPort()
 		c.httpPort = metadata.GetHTTPPort()

@@ -3,7 +3,7 @@ package components
 import (
 	"path"
 
-	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/maxence-charriere/go-app/v10/pkg/app"
 )
 
 type Breadcrumbs struct {
@@ -69,19 +69,23 @@ func (c *Breadcrumbs) Render() app.UI {
 								app.If(
 									// The last path part shouldn't be an action
 									i == len(c.PathComponents)-1,
-									app.A().
-										Class(classes).
-										Text(c.PathComponents[i]),
+									func() app.UI {
+										return app.A().
+											Class(classes).
+											Text(c.PathComponents[i])
+									},
 								).Else(
-									app.Button().
-										Type("button").
-										Class(classes).
-										OnClick(func(ctx app.Context, e app.Event) {
-											c.SetCurrentPath(link)
+									func() app.UI {
+										return app.Button().
+											Type("button").
+											Class(classes).
+											OnClick(func(ctx app.Context, e app.Event) {
+												c.SetCurrentPath(link)
 
-											c.SetSelectedPath("")
-										}).
-										Text(c.PathComponents[i]),
+												c.SetSelectedPath("")
+											}).
+											Text(c.PathComponents[i])
+									},
 								),
 							)
 					}),

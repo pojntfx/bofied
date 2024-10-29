@@ -1,6 +1,6 @@
 package components
 
-import "github.com/maxence-charriere/go-app/v9/pkg/app"
+import "github.com/maxence-charriere/go-app/v10/pkg/app"
 
 type Notification struct {
 	Message   string
@@ -28,19 +28,23 @@ func (c *NotificationDrawer) Render() app.UI {
 			app.Div().Class("pf-c-notification-drawer__body").Body(
 				app.If(
 					len(c.Notifications) > 0,
-					app.Ul().Class("pf-c-notification-drawer__list").Body(
-						app.Range(c.Notifications).Slice(func(i int) app.UI {
-							return app.Li().Class("pf-c-notification-drawer__list-item pf-m-read pf-m-info").Body(
-								app.Div().Class("pf-c-notification-drawer__list-item-description").Text(
-									c.Notifications[len(c.Notifications)-1-i].Message,
-								),
-								app.Div().Class("pf-c-notification-drawer__list-item-timestamp").Text(
-									c.Notifications[len(c.Notifications)-1-i].CreatedAt,
-								),
-							)
-						}),
-					),
-				).Else(c.EmptyState),
+					func() app.UI {
+						return app.Ul().Class("pf-c-notification-drawer__list").Body(
+							app.Range(c.Notifications).Slice(func(i int) app.UI {
+								return app.Li().Class("pf-c-notification-drawer__list-item pf-m-read pf-m-info").Body(
+									app.Div().Class("pf-c-notification-drawer__list-item-description").Text(
+										c.Notifications[len(c.Notifications)-1-i].Message,
+									),
+									app.Div().Class("pf-c-notification-drawer__list-item-timestamp").Text(
+										c.Notifications[len(c.Notifications)-1-i].CreatedAt,
+									),
+								)
+							}),
+						)
+					},
+				).Else(func() app.UI {
+					return c.EmptyState
+				}),
 			),
 		)
 }

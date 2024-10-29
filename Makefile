@@ -51,8 +51,7 @@ clean:
 
 depend:
 	# Setup CLIs
-	GO111MODULE=on go get github.com/golang/protobuf/protoc-gen-go@latest
-	GO111MODULE=on go get github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
-	GO111MODULE=on go get github.com/golang/protobuf/protoc-gen-go@latest
+	GO111MODULE=on go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+	GO111MODULE=on go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
 	# Generate bindings
 	go generate ./...

@@ -6,7 +6,7 @@ import (
 	"github.com/pojntfx/bofied/pkg/authorization"
 	"github.com/pojntfx/bofied/pkg/constants"
 	"github.com/pojntfx/bofied/pkg/eventing"
-	"github.com/pojntfx/liwasc/pkg/validators"
+	"github.com/pojntfx/bofied/pkg/validators"
 	"github.com/rs/cors"
 	"golang.org/x/net/webdav"
 )

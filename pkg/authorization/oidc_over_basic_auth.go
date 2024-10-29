@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/pojntfx/liwasc/pkg/validators"
+	"github.com/pojntfx/bofied/pkg/validators"
 )
 
 func OIDCOverBasicAuth(next http.Handler, username string, oidcValidator *validators.OIDCValidator, description string) http.Handler {

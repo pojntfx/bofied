@@ -1,6 +1,6 @@
 package components
 
-import "github.com/maxence-charriere/go-app/v9/pkg/app"
+import "github.com/maxence-charriere/go-app/v10/pkg/app"
 
 type EmptyState struct {
 	app.Compo
@@ -26,7 +26,9 @@ func (c *EmptyState) Render() app.UI {
 						Text("You can add a file or directory to make it available for nodes."),
 					app.If(
 						c.Action != nil,
-						c.Action,
+						func() app.UI {
+							return c.Action
+						},
 					),
 				),
 		)

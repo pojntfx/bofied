@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/kataras/compress"
-	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/maxence-charriere/go-app/v10/pkg/app"
 	"github.com/pojntfx/bofied/pkg/components"
 )
 
@@ -14,7 +14,9 @@ func main() {
 	// Client-side code
 	{
 		// Define the routes
-		app.Route("/", &components.Home{})
+		app.Route("/", func() app.Composer {
+			return &components.Home{}
+		})
 
 		// Start the app
 		app.RunWhenOnBrowser()

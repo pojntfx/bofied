@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/maxence-charriere/go-app/v10/pkg/app"
 	"github.com/pojntfx/bofied/pkg/providers"
 	"github.com/studio-b12/gowebdav"
 )
@@ -310,17 +310,19 @@ func (c *DataShell) Render() app.UI {
 							},
 							app.If(
 								globalError != nil,
-								app.Li().
-									Class("pf-c-alert-group__item").
-									Body(
-										&Status{
-											Error:       globalError,
-											ErrorText:   "Fatal Error",
-											Recover:     recoverGlobalError,
-											RecoverText: "Reconnect",
-											Ignore:      ignoreGlobalError,
-										},
-									),
+								func() app.UI {
+									return app.Li().
+										Class("pf-c-alert-group__item").
+										Body(
+											&Status{
+												Error:       globalError,
+												ErrorText:   "Fatal Error",
+												Recover:     recoverGlobalError,
+												RecoverText: "Reconnect",
+												Ignore:      ignoreGlobalError,
+											},
+										)
+								},
 							),
 						),
 

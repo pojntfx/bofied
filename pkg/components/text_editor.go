@@ -3,7 +3,7 @@ package components
 import (
 	"strings"
 
-	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/maxence-charriere/go-app/v10/pkg/app"
 )
 
 type TextEditor struct {
@@ -39,69 +39,77 @@ func (c *TextEditor) Render() app.UI {
 						Body(
 							app.If(
 								c.Format != nil,
-								app.Button().
-									Class("pf-c-button pf-m-control").
-									Type("button").
-									Aria("label", "Format").
-									Title("Format").
-									OnClick(func(ctx app.Context, e app.Event) {
-										c.Format()
-									}).
-									Body(
-										app.I().
-											Class("fas fa-align-left").
-											Aria("hidden", true),
-									),
+								func() app.UI {
+									return app.Button().
+										Class("pf-c-button pf-m-control").
+										Type("button").
+										Aria("label", "Format").
+										Title("Format").
+										OnClick(func(ctx app.Context, e app.Event) {
+											c.Format()
+										}).
+										Body(
+											app.I().
+												Class("fas fa-align-left").
+												Aria("hidden", true),
+										)
+								},
 							),
 							app.If(
 								c.Refresh != nil,
-								app.Button().
-									Class("pf-c-button pf-m-control").
-									Type("button").
-									Aria("label", "Refresh").
-									Title("Refresh").
-									OnClick(func(ctx app.Context, e app.Event) {
-										c.Refresh()
-									}).
-									Body(
-										app.I().
-											Class("fas fas fa-sync").
-											Aria("hidden", true),
-									),
+								func() app.UI {
+									return app.Button().
+										Class("pf-c-button pf-m-control").
+										Type("button").
+										Aria("label", "Refresh").
+										Title("Refresh").
+										OnClick(func(ctx app.Context, e app.Event) {
+											c.Refresh()
+										}).
+										Body(
+											app.I().
+												Class("fas fas fa-sync").
+												Aria("hidden", true),
+										)
+								},
 							),
 							app.If(
 								c.Save != nil,
-								app.Button().
-									Class("pf-c-button pf-m-control").
-									Type("button").
-									Aria("label", "Save").
-									Title("Save").
-									OnClick(func(ctx app.Context, e app.Event) {
-										c.Save()
-									}).
-									Body(
-										app.I().
-											Class("fas fas fa-save").
-											Aria("hidden", true),
-									),
+								func() app.UI {
+									return app.Button().
+										Class("pf-c-button pf-m-control").
+										Type("button").
+										Aria("label", "Save").
+										Title("Save").
+										OnClick(func(ctx app.Context, e app.Event) {
+											c.Save()
+										}).
+										Body(
+											app.I().
+												Class("fas fas fa-save").
+												Aria("hidden", true),
+										)
+								},
 							),
 						),
 					app.If(
 						c.Language != "",
-						app.Div().
-							Class("pf-c-code-editor__tab").
-							Body(
-								app.Span().
-									Class("pf-c-code-editor__tab-icon").
-									Body(
-										app.I().
-											Class("fas fa-code").
-											Aria("hidden", true),
-									),
-								app.Span().
-									Class("pf-c-code-editor__tab-text").
-									Text(c.Language),
-							),
+						func() app.UI {
+							return app.Div().
+								Class("pf-c-code-editor__tab").
+								Body(
+									app.Span().
+										Class("pf-c-code-editor__tab-icon").
+										Body(
+											app.I().
+												Class("fas fa-code").
+												Aria("hidden", true),
+										),
+									app.Span().
+										Class("pf-c-code-editor__tab-text").
+										Text(c.Language),
+								)
+						},
 					),
 				),
 			app.Textarea().

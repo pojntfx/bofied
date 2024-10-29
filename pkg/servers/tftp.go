@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/pin/tftp"
+	tftp "github.com/pin/tftp/v3"
 	"github.com/pojntfx/bofied/pkg/eventing"
 )
 

@@ -1,16 +1,15 @@
 package services
 
-//go:generate sh -c "mkdir -p ../api/proto/v1 && protoc --go_out=paths=source_relative,plugins=grpc:../api/proto/v1 -I=../../api/proto/v1 ../../api/proto/v1/*.proto"
+//go:generate sh -c "mkdir -p ../api/proto/v1 && protoc --go_out=paths=source_relative:../api/proto/v1 --go-grpc_out=paths=source_relative:../api/proto/v1 -I=../../api/proto/v1 ../../api/proto/v1/*.proto"
 
 import (
 	"fmt"
 	"log"
 	"time"
 
-	"github.com/golang/protobuf/ptypes/empty"
 	api "github.com/pojntfx/bofied/pkg/api/proto/v1"
 	"github.com/pojntfx/bofied/pkg/eventing"
-	"github.com/pojntfx/liwasc/pkg/validators"
+	"github.com/pojntfx/bofied/pkg/validators"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -35,7 +34,7 @@ func NewEventsService(eventsHandler *eventing.EventHandler, contextValidator *va
 	}
 }
 
-func (s *EventsService) SubscribeToEvents(_ *empty.Empty, stream api.EventsService_SubscribeToEventsServer) error {
+func (s *EventsService) SubscribeToEvents(_ *api.Empty, stream api.EventsService_SubscribeToEventsServer) error {
 	// Authorize
 	valid, err := s.contextValidator.Validate(stream.Context())
 	if err != nil || !valid {

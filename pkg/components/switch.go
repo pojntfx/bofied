@@ -1,7 +1,7 @@
 package components
 
 import (
-	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/maxence-charriere/go-app/v10/pkg/app"
 )
 
 type Switch struct {
@@ -35,19 +35,23 @@ func (c *Switch) Render() app.UI {
 				Class("pf-c-switch__toggle"),
 			app.If(
 				c.OnMessage != "",
-				app.Span().
-					Class("pf-c-switch__label pf-m-on").
-					ID(c.ID+"-on").
-					Aria("hidden", true).
-					Text(c.OnMessage),
+				func() app.UI {
+					return app.Span().
+						Class("pf-c-switch__label pf-m-on").
+						ID(c.ID+"-on").
+						Aria("hidden", true).
+						Text(c.OnMessage)
+				},
 			),
 			app.If(
 				c.OffMessage != "",
-				app.Span().
-					Class("pf-c-switch__label pf-m-off").
-					ID(c.ID+"-off").
-					Aria("hidden", true).
-					Text(c.OffMessage),
+				func() app.UI {
+					return app.Span().
+						Class("pf-c-switch__label pf-m-off").
+						ID(c.ID+"-off").
+						Aria("hidden", true).
+						Text(c.OffMessage)
+				},
 			),
 		)
 }

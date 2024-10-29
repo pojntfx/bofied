@@ -1,6 +1,6 @@
 package components
 
-import "github.com/maxence-charriere/go-app/v9/pkg/app"
+import "github.com/maxence-charriere/go-app/v10/pkg/app"
 
 type AboutModal struct {
 	app.Compo
@@ -92,9 +92,9 @@ func (c *AboutModal) Render() app.UI {
 }
 
 func (c *AboutModal) OnMount(ctx app.Context) {
-	app.Window().AddEventListener("keyup", func(ctx app.Context, e app.Event) {
-		if e.Get("key").String() == "Escape" {
-			c.Close()
-		}
-	})
+	// app.Window().AddEventListener("keyup", func(ctx app.Context, e app.Event) {
+	// 	if e.Get("key").String() == "Escape" {
+	// 		c.Close()
+	// 	}
+	// })
 }

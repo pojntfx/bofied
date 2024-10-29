@@ -12,7 +12,7 @@ import (
 	"github.com/pojntfx/bofied/pkg/eventing"
 	"github.com/pojntfx/bofied/pkg/servers"
 	"github.com/pojntfx/bofied/pkg/services"
-	"github.com/pojntfx/liwasc/pkg/validators"
+	"github.com/pojntfx/bofied/pkg/validators"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

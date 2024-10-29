@@ -1,6 +1,6 @@
 package components
 
-import "github.com/maxence-charriere/go-app/v9/pkg/app"
+import "github.com/maxence-charriere/go-app/v10/pkg/app"
 
 type SetupForm struct {
 	app.Compo
@@ -31,9 +31,9 @@ const (
 	oidcRedirectURLName = "oidcRedirectURL"
 
 	// Placeholders
-	backendURLPlaceholder      = "ws://localhost:15124"
+	backendURLPlaceholder      = "http://localhost:15256"
 	oidcIssuerPlaceholder      = "https://pojntfx.eu.auth0.com/"
-	oidcRedirectURLPlaceholder = "http://localhost:15125/"
+	oidcRedirectURLPlaceholder = "http://localhost:15255/"
 )
 
 func (c *SetupForm) Render() app.UI {
@@ -41,19 +41,21 @@ func (c *SetupForm) Render() app.UI {
 		Class("pf-c-form").
 		Body(
 			// Error display
-			app.If(c.Error != nil, app.P().
-				Class("pf-c-form__helper-text pf-m-error").
-				Aria("live", "polite").
-				Body(
-					app.Span().
-						Class("pf-c-form__helper-text-icon").
-						Body(
-							app.I().
-								Class("fas fa-exclamation-circle").
-								Aria("hidden", true),
-						),
-					app.Text(c.ErrorMessage),
-				),
+			app.If(c.Error != nil, func() app.UI {
+				return app.P().
+					Class("pf-c-form__helper-text pf-m-error").
+					Aria("live", "polite").
+					Body(
+						app.Span().
+							Class("pf-c-form__helper-text-icon").
+							Body(
+								app.I().
+									Class("fas fa-exclamation-circle").
+									Aria("hidden", true),
+							),
+						app.Text(c.ErrorMessage),
+					)
+			},
 			),
 			// Backend URL Input
 			&FormGroup{

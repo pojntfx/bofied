@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package com.pojtinger.felicitas.bofied;
 
-import "google/protobuf/empty.proto";
-
 option go_package = "github.com/pojntfx/bofied/pkg/api/proto/v1";
 
+import "metadata.proto";
+
 service EventsService {
-  rpc SubscribeToEvents(google.protobuf.Empty) returns (stream EventMessage);
+  rpc SubscribeToEvents(Empty) returns (stream EventMessage);
 }
 
 message EventMessage {

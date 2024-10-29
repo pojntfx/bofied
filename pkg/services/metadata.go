@@ -1,13 +1,12 @@
 package services
 
-//go:generate sh -c "mkdir -p ../api/proto/v1 && protoc --go_out=paths=source_relative,plugins=grpc:../api/proto/v1 -I=../../api/proto/v1 ../../api/proto/v1/*.proto"
+//go:generate sh -c "mkdir -p ../api/proto/v1 && protoc --go_out=paths=source_relative:../api/proto/v1 --go-grpc_out=paths=source_relative:../api/proto/v1 -I=../../api/proto/v1 ../../api/proto/v1/*.proto"
 
 import (
 	"context"
 
-	"github.com/golang/protobuf/ptypes/empty"
 	api "github.com/pojntfx/bofied/pkg/api/proto/v1"
-	"github.com/pojntfx/liwasc/pkg/validators"
+	"github.com/pojntfx/bofied/pkg/validators"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -37,7 +36,7 @@ func NewMetadataService(
 	}
 }
 
-func (s *MetadataService) GetMetadata(ctx context.Context, _ *empty.Empty) (*api.MetadataMessage, error) {
+func (s *MetadataService) GetMetadata(ctx context.Context, _ *api.Empty) (*api.MetadataMessage, error) {
 	// Authorize
 	valid, err := s.contextValidator.Validate(ctx)
 	if err != nil || !valid {

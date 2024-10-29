@@ -9,6 +9,19 @@ import (
 	"nhooyr.io/websocket"
 )
 
+type WebSocketProxyServerAddr struct {
+	network string
+	address string
+}
+
+func (a *WebSocketProxyServerAddr) Network() string {
+	return a.network
+}
+
+func (a *WebSocketProxyServerAddr) String() string {
+	return a.address
+}
+
 type WebSocketProxyServer struct {
 	stopChan       chan struct{}
 	errorChan      chan error
@@ -79,5 +92,5 @@ func (p *WebSocketProxyServer) Close() error {
 }
 
 func (p *WebSocketProxyServer) Addr() net.Addr {
-	return net.Addr(nil)
+	return &WebSocketProxyServerAddr{}
 }
