@@ -27,33 +27,33 @@ type Modal struct {
 func (c *Modal) Render() app.UI {
 	return app.Div().
 		Class(func() string {
-			classes := "pf-c-backdrop"
+			classes := "pf-v6-c-backdrop"
 
 			if c.Classes != "" {
 				classes += " " + c.Classes
 			}
 
 			if !c.Open {
-				classes += " pf-u-display-none"
+				classes += " pf-v6-u-display-none"
 			}
 
 			if c.Overlay {
-				classes += " pf-x-m-modal-overlay"
+				classes += " pf-v6-x-m-modal-overlay"
 			}
 
 			if c.Nested {
-				classes += " pf-x-c-backdrop--nested"
+				classes += " pf-v6-x-c-backdrop--nested"
 			}
 
 			return classes
 		}()).
 		Body(
 			app.Div().
-				Class("pf-l-bullseye").
+				Class("pf-v6-l-bullseye").
 				Body(
 					app.Div().
 						Class(func() string {
-							classes := "pf-c-modal-box"
+							classes := "pf-v6-c-modal-box"
 							if c.Large {
 								classes += " pf-m-lg"
 							} else {
@@ -65,31 +65,35 @@ func (c *Modal) Render() app.UI {
 						Aria("modal", true).
 						Aria("labelledby", c.ID).
 						Body(
-							app.Button().
-								Class("pf-c-button pf-m-plain").
-								Type("button").
-								Aria("label", "Close dialog").
-								OnClick(func(ctx app.Context, e app.Event) {
-									c.Close()
-								}).
+							app.Div().
+								Class("pf-v6-c-modal-box__close").
 								Body(
-									app.I().
-										Class("fas fa-times").
-										Aria("hidden", true),
+									app.Button().
+										Class("pf-v6-c-button pf-m-plain").
+										Type("button").
+										Aria("label", "Close dialog").
+										OnClick(func(ctx app.Context, e app.Event) {
+											c.Close()
+										}).
+										Body(
+											app.I().
+												Class("fas fa-times").
+												Aria("hidden", true),
+										),
 								),
 							app.Header().
-								Class("pf-c-modal-box__header").
+								Class("pf-v6-c-modal-box__header").
 								Body(
 									app.H1().
-										Class("pf-c-modal-box__title").
+										Class("pf-v6-c-modal-box__title").
 										ID(c.ID).
 										Text(c.Title),
 								),
 							app.Div().
 								Class(func() string {
-									classes := "pf-c-modal-box__body"
+									classes := "pf-v6-c-modal-box__body"
 									if c.PaddedBottom {
-										classes += " pf-u-pb-md"
+										classes += " pf-v6-u-pb-md"
 									}
 
 									return classes
@@ -99,7 +103,7 @@ func (c *Modal) Render() app.UI {
 								c.Footer != nil,
 								func() app.UI {
 									return app.Footer().
-										Class("pf-c-modal-box__footer").
+										Class("pf-v6-c-modal-box__footer").
 										Body(c.Footer...)
 								},
 							),

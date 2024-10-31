@@ -13,11 +13,11 @@ type FormGroup struct {
 
 func (c *FormGroup) Render() app.UI {
 	return app.Div().
-		Class("pf-c-form__group").
+		Class("pf-v6-c-form__group").
 		Body(
 			app.Div().
 				Class(func() string {
-					classes := "pf-c-form__group-label"
+					classes := "pf-v6-c-form__group-label"
 					if c.NoTopPadding {
 						classes += " pf-m-no-padding-top"
 					}
@@ -29,14 +29,21 @@ func (c *FormGroup) Render() app.UI {
 					app.If(c.Required,
 						func() app.UI {
 							return app.Span().
-								Class("pf-c-form__label-required").
+								Class("pf-v6-c-form__label-required").
 								Aria("hidden", true).
 								Text("*")
 						},
 					),
 				),
 			app.Div().
-				Class("pf-c-form__group-control").
-				Body(c.Input),
+				Class("pf-v6-c-form__group-control").
+				Body(
+					app.
+						Span().
+						Class("pf-v6-c-form-control").
+						Body(
+							c.Input,
+						),
+				),
 		)
 }

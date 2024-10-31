@@ -18,11 +18,11 @@ type Switch struct {
 
 func (c *Switch) Render() app.UI {
 	return app.Label().
-		Class("pf-c-switch").
+		Class("pf-v6-c-switch").
 		For(c.ID).
 		Body(
 			app.Input().
-				Class("pf-c-switch__input").
+				Class("pf-v6-c-switch__input").
 				Type("checkbox").
 				ID(c.ID).
 				Aria("labelledby", c.ID+"-on").
@@ -32,12 +32,12 @@ func (c *Switch) Render() app.UI {
 					c.ToggleOpen()
 				}),
 			app.Span().
-				Class("pf-c-switch__toggle"),
+				Class("pf-v6-c-switch__toggle"),
 			app.If(
 				c.OnMessage != "",
 				func() app.UI {
 					return app.Span().
-						Class("pf-c-switch__label pf-m-on").
+						Class("pf-v6-c-switch__label pf-m-on").
 						ID(c.ID+"-on").
 						Aria("hidden", true).
 						Text(c.OnMessage)
@@ -47,7 +47,7 @@ func (c *Switch) Render() app.UI {
 				c.OffMessage != "",
 				func() app.UI {
 					return app.Span().
-						Class("pf-c-switch__label pf-m-off").
+						Class("pf-v6-c-switch__label pf-m-off").
 						ID(c.ID+"-off").
 						Aria("hidden", true).
 						Text(c.OffMessage)

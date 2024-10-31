@@ -20,21 +20,21 @@ func (c *UpdateNotification) Render() app.UI {
 		c.updateAvailable && !c.updateIgnored,
 		func() app.UI {
 			return app.Li().
-				Class("pf-c-alert-group__item").
+				Class("pf-v6-c-alert-group__item").
 				Body(
 					app.Div().
-						Class("pf-c-alert pf-m-info").
+						Class("pf-v6-c-alert pf-m-info").
 						Aria("label", c.UpdateTitle).
 						Body(
 							app.Div().
-								Class("pf-c-alert__icon").
+								Class("pf-v6-c-alert__icon").
 								Body(
 									app.I().
 										Class("fas fa-fw fa-bell").
 										Aria("hidden", true),
 								),
 							app.P().
-								Class("pf-c-alert__title").
+								Class("pf-v6-c-alert__title").
 								Body(
 									app.Strong().Body(
 										app.Span().
@@ -44,10 +44,10 @@ func (c *UpdateNotification) Render() app.UI {
 									app.Text(c.UpdateTitle),
 								),
 							app.Div().
-								Class("pf-c-alert__action").
+								Class("pf-v6-c-alert__action").
 								Body(
 									app.Button().
-										Class("pf-c-button pf-m-plain").
+										Class("pf-v6-c-button pf-m-plain").
 										Aria("label", c.IgnoreUpdateText).
 										OnClick(func(ctx app.Context, e app.Event) {
 											c.updateIgnored = true
@@ -62,35 +62,35 @@ func (c *UpdateNotification) Render() app.UI {
 								c.UpdateDescription != "",
 								func() app.UI {
 									return app.Div().
-										Class("pf-c-alert__description").
+										Class("pf-v6-c-alert__description").
 										Body(
 											app.P().Text(c.UpdateDescription),
 										)
 								},
 							),
 							app.Div().
-								Class("pf-c-alert__action-group").
+								Class("pf-v6-c-alert__action-group").
 								Body(
 									app.Button().
-										Class("pf-c-button pf-m-link pf-m-inline").
+										Class("pf-v6-c-button pf-m-link pf-m-inline").
 										Type("button").
 										OnClick(func(ctx app.Context, e app.Event) {
 											ctx.Reload()
 										}).
 										Body(
-											app.Span().Class("pf-c-button__icon pf-m-start").Body(
+											app.Span().Class("pf-v6-c-button__icon pf-m-start").Body(
 												app.I().Class("fas fas fa-arrow-up").Aria("hidden", true),
 											),
 											app.Text(c.StartUpdateText),
 										),
 									app.Button().
-										Class("pf-c-button pf-m-link pf-m-inline").
+										Class("pf-v6-c-button pf-m-link pf-m-inline").
 										Type("button").
 										OnClick(func(ctx app.Context, e app.Event) {
 											c.updateIgnored = true
 										}).
 										Body(
-											app.Span().Class("pf-c-button__icon pf-m-start").Body(
+											app.Span().Class("pf-v6-c-button__icon pf-m-start").Body(
 												app.I().Class("fas fa-ban").Aria("hidden", true),
 											),
 											app.Text(c.IgnoreUpdateText),

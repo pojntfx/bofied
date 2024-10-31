@@ -36,14 +36,14 @@ func (c *SetupShell) Render() app.UI {
 	}
 
 	return app.Div().
-		Class("pf-u-h-100").
+		Class("pf-v6-u-h-100").
 		Body(
 			app.Div().
-				Class("pf-c-background-image").
+				Class("pf-v6-c-background-image").
 				Body(
 					app.Raw(`<svg
   xmlns="http://www.w3.org/2000/svg"
-  class="pf-c-background-image__filter"
+  class="pf-v6-c-background-image__filter"
   width="0"
   height="0"
 >
@@ -74,38 +74,38 @@ func (c *SetupShell) Render() app.UI {
 </svg>`),
 				),
 			app.Div().
-				Class("pf-c-login").
+				Class("pf-v6-c-login").
 				Body(
 					app.Div().
-						Class("pf-c-login__container").
+						Class("pf-v6-c-login__container").
 						Body(
 							app.Header().
-								Class("pf-c-login__header").
+								Class("pf-v6-c-login__header").
 								Body(
 									app.Img().
-										Class("pf-c-brand pf-x-c-brand--main").
+										Class("pf-v6-c-brand pf-v6-x-c-brand--main").
 										Src(c.LogoSrc).
 										Alt("Logo"),
 								),
 							app.Main().
-								Class("pf-c-login__main").
+								Class("pf-v6-c-login__main").
 								Body(
 									app.Header().
-										Class("pf-c-login__main-header").
+										Class("pf-v6-c-login__main-header").
 										Body(
 											app.H1().
-												Class("pf-c-title pf-m-3xl").
+												Class("pf-v6-c-title pf-m-3xl").
 												Text(
 													c.Title,
 												),
 											app.P().
-												Class("pf-c-login__main-header-desc").
+												Class("pf-v6-c-login__main-header-desc").
 												Text(
 													c.ShortDescription,
 												),
 										),
 									app.Div().
-										Class("pf-c-login__main-body").
+										Class("pf-v6-c-login__main-body").
 										Body(
 											&SetupForm{
 												Error:        c.Error,
@@ -127,13 +127,13 @@ func (c *SetupShell) Render() app.UI {
 											},
 										),
 									app.Footer().
-										Class("pf-c-login__main-footer").
+										Class("pf-v6-c-login__main-footer").
 										Body(
 											app.Div().
-												Class("pf-c-login__main-footer-band").
+												Class("pf-v6-c-login__main-footer-band").
 												Body(
 													app.P().
-														Class("pf-c-login__main-footer-band-item").
+														Class("pf-v6-c-login__main-footer-band-item").
 														Body(
 															app.Text("Not sure what to do? "),
 															app.A().
@@ -145,12 +145,12 @@ func (c *SetupShell) Render() app.UI {
 										),
 								),
 							app.Footer().
-								Class("pf-c-login__footer").
+								Class("pf-v6-c-login__footer").
 								Body(
 									app.P().
 										Text(c.LongDescription),
 									app.Ul().
-										Class("pf-c-list pf-m-inline").
+										Class("pf-v6-c-list pf-m-inline").
 										Body(
 											app.Range(c.Links).Map(func(s string) app.UI {
 												return app.Li().Body(
@@ -165,7 +165,7 @@ func (c *SetupShell) Render() app.UI {
 						),
 				),
 			app.Ul().
-				Class("pf-c-alert-group pf-m-toast").
+				Class("pf-v6-c-alert-group pf-m-toast").
 				Body(
 					&UpdateNotification{
 						UpdateTitle: "An update for bofied is available",

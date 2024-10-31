@@ -11,14 +11,14 @@ type CopyableInput struct {
 
 func (c *CopyableInput) Render() app.UI {
 	return app.Div().
-		Class("pf-c-clipboard-copy").
+		Class("pf-v6-c-clipboard-copy").
 		Body(
 			app.Div().
-				Class("pf-c-clipboard-copy__group").
+				Class("pf-v6-c-clipboard-copy__group").
 				Body(
 					c.Component,
 					app.Button().
-						Class("pf-c-button pf-m-control").
+						Class("pf-v6-c-button pf-m-control").
 						Type("button").
 						Aria("label", "Copy to clipboard").
 						Aria("labelledby", c.ID).

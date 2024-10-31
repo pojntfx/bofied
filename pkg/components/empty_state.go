@@ -10,19 +10,19 @@ type EmptyState struct {
 
 func (c *EmptyState) Render() app.UI {
 	return app.Div().
-		Class("pf-c-empty-state").
+		Class("pf-v6-c-empty-state").
 		Body(
 			app.Div().
-				Class("pf-c-empty-state__content").
+				Class("pf-v6-c-empty-state__content").
 				Body(
 					app.I().
-						Class("fas fa-folder-open pf-c-empty-state__icon").
+						Class("fas fa-folder-open pf-v6-c-empty-state__icon").
 						Aria("hidden", true),
 					app.H1().
-						Class("pf-c-title pf-m-lg").
+						Class("pf-v6-c-title pf-m-lg").
 						Text("No files or directories here yet"),
 					app.Div().
-						Class("pf-c-empty-state__body").
+						Class("pf-v6-c-empty-state__body").
 						Text("You can add a file or directory to make it available for nodes."),
 					app.If(
 						c.Action != nil,

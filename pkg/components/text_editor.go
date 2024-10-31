@@ -23,7 +23,7 @@ type TextEditor struct {
 func (c *TextEditor) Render() app.UI {
 	return app.Div().
 		Class(func() string {
-			classes := "pf-c-code-editor pf-u-h-100 pf-u-display-flex pf-u-flex-direction-column"
+			classes := "pf-v6-c-code-editor pf-v6-u-h-100 pf-v6-u-display-flex pf-v6-u-flex-direction-column"
 			if c.SetContent == nil {
 				classes += " pf-m-read-only"
 			}
@@ -32,16 +32,16 @@ func (c *TextEditor) Render() app.UI {
 		}()).
 		Body(
 			app.Div().
-				Class("pf-c-code-editor__header").
+				Class("pf-v6-c-code-editor__header").
 				Body(
 					app.Div().
-						Class("pf-c-code-editor__controls").
+						Class("pf-v6-c-code-editor__controls").
 						Body(
 							app.If(
 								c.Format != nil,
 								func() app.UI {
 									return app.Button().
-										Class("pf-c-button pf-m-control").
+										Class("pf-v6-c-button pf-m-control").
 										Type("button").
 										Aria("label", "Format").
 										Title("Format").
@@ -59,7 +59,7 @@ func (c *TextEditor) Render() app.UI {
 								c.Refresh != nil,
 								func() app.UI {
 									return app.Button().
-										Class("pf-c-button pf-m-control").
+										Class("pf-v6-c-button pf-m-control").
 										Type("button").
 										Aria("label", "Refresh").
 										Title("Refresh").
@@ -77,7 +77,7 @@ func (c *TextEditor) Render() app.UI {
 								c.Save != nil,
 								func() app.UI {
 									return app.Button().
-										Class("pf-c-button pf-m-control").
+										Class("pf-v6-c-button pf-m-control").
 										Type("button").
 										Aria("label", "Save").
 										Title("Save").
@@ -96,17 +96,17 @@ func (c *TextEditor) Render() app.UI {
 						c.Language != "",
 						func() app.UI {
 							return app.Div().
-								Class("pf-c-code-editor__tab").
+								Class("pf-v6-c-code-editor__tab").
 								Body(
 									app.Span().
-										Class("pf-c-code-editor__tab-icon").
+										Class("pf-v6-c-code-editor__tab-icon").
 										Body(
 											app.I().
 												Class("fas fa-code").
 												Aria("hidden", true),
 										),
 									app.Span().
-										Class("pf-c-code-editor__tab-text").
+										Class("pf-v6-c-code-editor__tab-text").
 										Text(c.Language),
 								)
 						},
@@ -114,9 +114,9 @@ func (c *TextEditor) Render() app.UI {
 				),
 			app.Textarea().
 				Class(func() string {
-					classes := "pf-c-code-editor__main pf-u-w-100 pf-x-u-resize-none pf-u-p-sm pf-u-p-sm pf-u-flex-fill"
+					classes := "pf-v6-c-code-editor__main pf-v6-u-w-100 pf-v6-x-u-resize-none pf-v6-u-p-sm pf-v6-u-p-sm pf-v6-u-flex-fill"
 					if c.VariableHeight {
-						classes += " pf-x-m-overflow-y-hidden"
+						classes += " pf-v6-x-m-overflow-y-hidden"
 					}
 
 					return classes

@@ -38,16 +38,16 @@ const (
 
 func (c *SetupForm) Render() app.UI {
 	return app.Form().
-		Class("pf-c-form").
+		Class("pf-v6-c-form").
 		Body(
 			// Error display
 			app.If(c.Error != nil, func() app.UI {
 				return app.P().
-					Class("pf-c-form__helper-text pf-m-error").
+					Class("pf-v6-c-form__helper-text pf-m-error").
 					Aria("live", "polite").
 					Body(
 						app.Span().
-							Class("pf-c-form__helper-text-icon").
+							Class("pf-v6-c-form__helper-text-icon").
 							Body(
 								app.I().
 									Class("fas fa-exclamation-circle").
@@ -62,11 +62,11 @@ func (c *SetupForm) Render() app.UI {
 				Label: app.
 					Label().
 					For(backendURLName).
-					Class("pf-c-form__label").
+					Class("pf-v6-c-form__label").
 					Body(
 						app.
 							Span().
-							Class("pf-c-form__label-text").
+							Class("pf-v6-c-form__label-text").
 							Text("Backend URL"),
 					),
 				Input: app.
@@ -76,7 +76,7 @@ func (c *SetupForm) Render() app.UI {
 					Type("url").
 					Required(true).
 					Placeholder(backendURLPlaceholder).
-					Class("pf-c-form-control").
+					Class("pf-v6-c-form-control").
 					Aria("invalid", c.Error != nil).
 					Value(c.BackendURL).
 					OnInput(func(ctx app.Context, e app.Event) {
@@ -89,11 +89,11 @@ func (c *SetupForm) Render() app.UI {
 				Label: app.
 					Label().
 					For(oidcIssuerName).
-					Class("pf-c-form__label").
+					Class("pf-v6-c-form__label").
 					Body(
 						app.
 							Span().
-							Class("pf-c-form__label-text").
+							Class("pf-v6-c-form__label-text").
 							Text("OIDC Issuer"),
 					),
 				Input: app.
@@ -103,7 +103,7 @@ func (c *SetupForm) Render() app.UI {
 					Type("url").
 					Required(true).
 					Placeholder(oidcIssuerPlaceholder).
-					Class("pf-c-form-control").
+					Class("pf-v6-c-form-control").
 					Aria("invalid", c.Error != nil).
 					Value(c.OIDCIssuer).
 					OnInput(func(ctx app.Context, e app.Event) {
@@ -116,11 +116,11 @@ func (c *SetupForm) Render() app.UI {
 				Label: app.
 					Label().
 					For(oidcClientIDName).
-					Class("pf-c-form__label").
+					Class("pf-v6-c-form__label").
 					Body(
 						app.
 							Span().
-							Class("pf-c-form__label-text").
+							Class("pf-v6-c-form__label-text").
 							Text("OIDC Client ID"),
 					),
 				Input: app.
@@ -129,7 +129,7 @@ func (c *SetupForm) Render() app.UI {
 					ID(oidcClientIDName).
 					Type("text").
 					Required(true).
-					Class("pf-c-form-control").
+					Class("pf-v6-c-form-control").
 					Aria("invalid", c.Error != nil).
 					Value(c.OIDCClientID).
 					OnInput(func(ctx app.Context, e app.Event) {
@@ -142,11 +142,11 @@ func (c *SetupForm) Render() app.UI {
 				Label: app.
 					Label().
 					For(oidcRedirectURLName).
-					Class("pf-c-form__label").
+					Class("pf-v6-c-form__label").
 					Body(
 						app.
 							Span().
-							Class("pf-c-form__label-text").
+							Class("pf-v6-c-form__label-text").
 							Text("OIDC Redirect URL"),
 					),
 				Input: app.
@@ -156,7 +156,7 @@ func (c *SetupForm) Render() app.UI {
 					Type("url").
 					Required(true).
 					Placeholder(oidcRedirectURLPlaceholder).
-					Class("pf-c-form-control").
+					Class("pf-v6-c-form-control").
 					Aria("invalid", c.Error != nil).
 					Value(c.OIDCRedirectURL).
 					OnInput(func(ctx app.Context, e app.Event) {
@@ -166,12 +166,12 @@ func (c *SetupForm) Render() app.UI {
 			},
 			// Configuration Apply Trigger
 			app.Div().
-				Class("pf-c-form__group pf-m-action").
+				Class("pf-v6-c-form__group pf-m-action").
 				Body(
 					app.
 						Button().
 						Type("submit").
-						Class("pf-c-button pf-m-primary pf-m-block").
+						Class("pf-v6-c-button pf-m-primary pf-m-block").
 						Text("Log in"),
 				),
 		).OnSubmit(func(ctx app.Context, e app.Event) {

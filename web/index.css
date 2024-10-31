@@ -1,36 +1,54 @@
-.pf-x-c-brand--main {
+.pf-v6-x-c-brand--main {
   max-width: 12.5rem;
 }
 
-.pf-x-c-brand--nav {
+.pf-v6-x-c-brand--nav {
   height: 50px;
 }
 
-.pf-x-ws-router {
+.pf-v6-x-ws-router {
   height: 100vh;
 }
 
-.pf-x-u-resize-none {
+.pf-v6-x-u-resize-none {
   resize: none;
 }
 
 /* A nested dialog */
-.pf-x-m-modal-overlay {
-  z-index: calc(var(--pf-global--ZIndex--lg) + 1);
+.pf-v6-x-m-modal-overlay {
+  z-index: calc(var(--pf-v6-global--ZIndex--lg) + 1);
 }
 
 /* Backdrop which doesn't overlap */
-.pf-x-c-backdrop--nested {
+.pf-v6-x-c-backdrop--nested {
   padding-top: var(
-    --pf-c-page__header--MinHeight
+    --pf-v6-c-page__header--MinHeight
   ); /* TODO: This does depend on the navbar being no higher than the min value; in the future, object queries might be used. */
 }
 
-.pf-x-m-gap-md {
-  gap: var(--pf-global--spacer--md);
+.pf-v6-x-m-gap-md {
+  gap: var(--pf-v6-global--spacer--md);
 }
 
 /* Prevent unnecessary vertical scrolling in variable height text editors */
-.pf-x-m-overflow-y-hidden {
+.pf-v6-x-m-overflow-y-hidden {
   overflow-y: hidden;
+}
+
+/* Re-add old selectable card state styling for plain cards */
+.pf-v6-c-card.pf-m-plain.pf-m-selectable {
+  cursor: pointer;
+  outline: var(--pf-v6-c-card--m-selectable--BorderWidth) solid
+    var(--pf-v6-c-card--BorderColor, transparent);
+}
+
+.pf-v6-c-card.pf-m-plain.pf-m-selectable:hover,
+.pf-v6-c-card.pf-m-plain.pf-m-selectable:focus {
+  --pf-v6-c-card--BorderColor: var(
+    --pf-v6-c-card--m-selectable--hover--BorderColor
+  );
+}
+
+.pf-v6-x-u-position-absolute {
+  position: absolute;
 }

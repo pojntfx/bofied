@@ -25,28 +25,28 @@ type PathPickerToolbar struct {
 
 func (c *PathPickerToolbar) Render() app.UI {
 	return app.Div().
-		Class("pf-c-toolbar pf-u-pt-0").
+		Class("pf-v6-c-toolbar pf-v6-u-pt-0").
 		Body(
 			app.Div().
-				Class("pf-c-toolbar__content pf-x-m-gap-md").
+				Class("pf-v6-c-toolbar__content pf-v6-x-m-gap-md").
 				Body(
 					app.Div().
-						Class("pf-c-toolbar__content-section").
+						Class("pf-v6-c-toolbar__content-section").
 						Body(
 							app.Div().
-								Class("pf-c-toolbar__item pf-m-overflow-menu").
+								Class("pf-v6-c-toolbar__item pf-m-overflow-menu").
 								Body(
 									app.Div().
-										Class("pf-c-overflow-menu").
+										Class("pf-v6-c-overflow-menu").
 										Body(
 											app.Div().
-												Class("pf-c-overflow-menu__content").
+												Class("pf-v6-c-overflow-menu__content").
 												Body(
 													app.Div().
-														Class("pf-c-overflow-menu__group pf-m-button-group").
+														Class("pf-v6-c-overflow-menu__group pf-m-button-group").
 														Body(
 															app.Div().
-																Class("pf-c-overflow-menu__item").
+																Class("pf-v6-c-overflow-menu__item").
 																Body(
 																	&Breadcrumbs{
 																		PathComponents: c.PathComponents,
@@ -65,31 +65,31 @@ func (c *PathPickerToolbar) Render() app.UI {
 										),
 								),
 							app.Div().
-								Class("pf-c-toolbar__item pf-m-pagination").
+								Class("pf-v6-c-toolbar__item pf-m-pagination").
 								Body(
 									app.Div().
-										Class("pf-c-pagination pf-m-compact").
+										Class("pf-v6-c-pagination pf-m-compact").
 										Body(
 											app.Div().
-												Class("pf-c-pagination pf-m-compact pf-m-compact").
+												Class("pf-v6-c-pagination pf-m-compact pf-m-compact").
 												Body(
 													app.Div().
-														Class("pf-c-overflow-menu").
+														Class("pf-v6-c-overflow-menu").
 														Body(
 															app.Div().
-																Class("pf-c-overflow-menu__content").
+																Class("pf-v6-c-overflow-menu__content").
 																Body(
 																	app.Div().
-																		Class("pf-c-overflow-menu__group pf-m-button-group").
+																		Class("pf-v6-c-overflow-menu__group pf-m-button-group").
 																		Body(
 																			app.Div().
-																				Class("pf-c-overflow-menu__item").
+																				Class("pf-v6-c-overflow-menu__item").
 																				Body(
 																					app.Button().
 																						Type("button").
 																						Aria("label", "Create directory").
 																						Title("Create directory").
-																						Class("pf-c-button pf-m-plain").
+																						Class("pf-v6-c-button pf-m-plain").
 																						OnClick(func(ctx app.Context, e app.Event) {
 																							c.OpenCreateDirectoryModal()
 																						}).
@@ -102,19 +102,19 @@ func (c *PathPickerToolbar) Render() app.UI {
 																		),
 																),
 															app.Div().
-																Class("pf-c-divider pf-m-vertical pf-m-inset-md").
+																Class("pf-v6-c-divider pf-m-vertical pf-m-inset-md").
 																Aria("role", "separator"),
 															app.Div().
-																Class("pf-c-overflow-menu__group pf-m-button-group").
+																Class("pf-v6-c-overflow-menu__group pf-m-button-group").
 																Body(
 																	app.Div().
-																		Class("pf-c-overflow-menu__item").
+																		Class("pf-v6-c-overflow-menu__item").
 																		Body(
 																			app.Button().
 																				Type("button").
 																				Aria("label", "Refresh").
 																				Title("Refresh").
-																				Class("pf-c-button pf-m-plain").
+																				Class("pf-v6-c-button pf-m-plain").
 																				OnClick(func(ctx app.Context, e app.Event) {
 																					c.RefreshIndex()
 																				}).

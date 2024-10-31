@@ -17,19 +17,19 @@ type TextEditorWrapper struct {
 
 func (c *TextEditorWrapper) Render() app.UI {
 	return app.Div().
-		Class("pf-c-card pf-u-h-100").
+		Class("pf-v6-c-card pf-m-plain pf-v6-u-h-100").
 		Body(
 			app.Div().
-				Class("pf-c-card__header pf-x-m-gap-md").
+				Class("pf-v6-c-card__header pf-v6-x-m-gap-md").
 				Body(
 					app.If(
 						c.HelpLink != "",
 						func() app.UI {
 							return app.Div().
-								Class("pf-c-card__actions").
+								Class("pf-v6-c-card__actions").
 								Body(
 									app.A().
-										Class("pf-c-button pf-m-plain").
+										Class("pf-v6-c-button pf-m-plain").
 										Aria("label", "Help").
 										Target("_blank").
 										Href(c.HelpLink).
@@ -42,31 +42,31 @@ func (c *TextEditorWrapper) Render() app.UI {
 						},
 					),
 					app.Div().
-						Class("pf-c-card__title").
+						Class("pf-v6-c-card__title").
 						Text(c.Title),
 				),
 			app.Div().
-				Class("pf-c-card__body").
+				Class("pf-v6-c-card__body").
 				Body(c.Children),
 			app.If(
 				c.Error != nil,
 				func() app.UI {
 					return app.Div().
-						Class("pf-c-card__footer").
+						Class("pf-v6-c-card__footer").
 						Body(
 							app.Div().
-								Class("pf-c-alert pf-m-danger pf-m-inline").
+								Class("pf-v6-c-alert pf-m-danger pf-m-inline").
 								Aria("label", "Error alert").
 								Body(
 									app.Div().
-										Class("pf-c-alert__icon").
+										Class("pf-v6-c-alert__icon").
 										Body(
 											app.I().
 												Class("fas fa-fw fa-exclamation-circle").
 												Aria("hidden", true),
 										),
 									app.P().
-										Class("pf-c-alert__title").
+										Class("pf-v6-c-alert__title").
 										Body(
 											app.
 												Strong().
@@ -78,10 +78,10 @@ func (c *TextEditorWrapper) Render() app.UI {
 												),
 										),
 									app.Div().
-										Class("pf-c-alert__action").
+										Class("pf-v6-c-alert__action").
 										Body(
 											app.Button().
-												Class("pf-c-button pf-m-plain").
+												Class("pf-v6-c-button pf-m-plain").
 												Type("button").
 												Aria("label", "Button to ignore the error").
 												OnClick(func(ctx app.Context, e app.Event) {
@@ -94,7 +94,7 @@ func (c *TextEditorWrapper) Render() app.UI {
 												),
 										),
 									app.Div().
-										Class("pf-c-alert__description").
+										Class("pf-v6-c-alert__description").
 										Body(
 											app.Code().Text(c.Error),
 										),

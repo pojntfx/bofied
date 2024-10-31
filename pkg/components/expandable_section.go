@@ -16,7 +16,7 @@ type ExpandableSection struct {
 func (c *ExpandableSection) Render() app.UI {
 	return app.Div().
 		Class(func() string {
-			classes := "pf-c-expandable-section"
+			classes := "pf-v6-c-expandable-section"
 
 			if c.Open {
 				classes += " pf-m-expanded"
@@ -27,7 +27,7 @@ func (c *ExpandableSection) Render() app.UI {
 		Body(
 			app.Button().
 				Type("button").
-				Class("pf-c-expandable-section__toggle").
+				Class("pf-v6-c-expandable-section__toggle").
 				Aria("label", func() string {
 					message := c.ClosedTitle
 
@@ -43,18 +43,18 @@ func (c *ExpandableSection) Render() app.UI {
 				}).
 				Body(
 					app.Span().
-						Class("pf-c-expandable-section__toggle-icon").
+						Class("pf-v6-c-expandable-section__toggle-icon").
 						Body(
 							app.I().
 								Class("fas fa-angle-right").
 								Aria("hidden", true),
 						),
 					app.Span().
-						Class("pf-c-expandable-section__toggle-text").
+						Class("pf-v6-c-expandable-section__toggle-text").
 						Text(c.Title),
 				),
 			app.Div().
-				Class("pf-c-expandable-section__content").
+				Class("pf-v6-c-expandable-section__content").
 				Hidden(!c.Open).
 				Body(c.Body...),
 		)

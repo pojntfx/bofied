@@ -113,15 +113,14 @@ func (c *DataShell) Render() app.UI {
 	}
 
 	return app.Div().
-		Class("pf-u-h-100").
+		Class("pf-v6-u-h-100").
 		Body(
 			app.Div().
-				Class("pf-c-page").
+				Class("pf-v6-c-page").
 				ID("page-layout-horizontal-nav").
-				Aria("hidden", c.aboutDialogOpen).
 				Body(
 					app.A().
-						Class("pf-c-skip-to-content pf-c-button pf-m-primary").
+						Class("pf-v6-c-skip-to-content pf-v6-c-button pf-m-primary").
 						Href("#main-content-page-layout-horizontal-nav").
 						Text(
 							"Skip to content",
@@ -156,11 +155,11 @@ func (c *DataShell) Render() app.UI {
 						},
 					},
 					app.Div().
-						Class("pf-c-page__drawer").
+						Class("pf-v6-c-page__drawer").
 						Body(
 							app.Div().
 								Class(func() string {
-									classes := "pf-c-drawer"
+									classes := "pf-v6-c-drawer"
 
 									if c.notificationsDrawerOpen {
 										classes += " pf-m-expanded"
@@ -170,125 +169,130 @@ func (c *DataShell) Render() app.UI {
 								}()).
 								Body(
 									app.Div().
-										Class("pf-c-drawer__main").
+										Class("pf-v6-c-drawer__main").
 										Body(
 											app.Div().
-												Class("pf-c-drawer__content").
+												Class("pf-v6-c-drawer__content").
 												Body(
-													app.Div().Class("pf-c-drawer__body").Body(
-														app.Main().
-															Class("pf-c-page__main pf-u-h-100").
-															ID("main-content-page-layout-horizontal-nav").
-															TabIndex(-1).
-															Body(
-																app.Section().
-																	Class("pf-c-page__main-section").
+													app.Div().
+														Class("pf-v6-c-page__main-container").
+														TabIndex(-1).
+														Body(
+															app.Div().Class("pf-v6-c-drawer__body").Body(
+																app.Main().
+																	Class("pf-v6-c-page__main pf-v6-u-h-100").
+																	ID("main-content-page-layout-horizontal-nav").
+																	TabIndex(-1).
 																	Body(
-																		app.Div().
-																			Class("pf-l-grid pf-m-gutter pf-u-h-100").
+																		app.Section().
+																			Class("pf-v6-c-page__main-section").
 																			Body(
 																				app.Div().
-																					Class("pf-l-grid__item pf-m-12-col pf-m-12-col-on-md pf-m-5-col-on-xl").
+																					Class("pf-v6-l-grid pf-m-gutter pf-v6-u-h-100").
 																					Body(
-																						&TextEditorWrapper{
-																							Title: "Config",
+																						app.Div().
+																							Class("pf-v6-l-grid__item pf-m-12-col pf-m-12-col-on-md pf-m-5-col-on-xl").
+																							Body(
+																								&TextEditorWrapper{
+																									Title: "Config",
 
-																							HelpLink: "https://github.com/pojntfx/bofied#config-script",
+																									HelpLink: "https://github.com/pojntfx/bofied#config-script",
 
-																							Error:            c.ConfigFileError,
-																							ErrorDescription: "Syntax Error",
-																							Ignore:           c.IgnoreConfigFileError,
+																									Error:            c.ConfigFileError,
+																									ErrorDescription: "Syntax Error",
+																									Ignore:           c.IgnoreConfigFileError,
 
-																							Children: &TextEditor{
-																								Content:    c.ConfigFile,
-																								SetContent: c.SetConfigFile,
+																									Children: &TextEditor{
+																										Content:    c.ConfigFile,
+																										SetContent: c.SetConfigFile,
 
-																								Format:  c.FormatConfigFile,
-																								Refresh: c.RefreshConfigFile,
-																								Save:    c.SaveConfigFile,
+																										Format:  c.FormatConfigFile,
+																										Refresh: c.RefreshConfigFile,
+																										Save:    c.SaveConfigFile,
 
-																								Language: "Go",
-																							},
-																						},
-																					),
+																										Language: "Go",
+																									},
+																								},
+																							),
 
-																				app.Div().
-																					Class("pf-l-grid__item pf-m-12-col pf-m-12-col-on-md pf-m-7-col-on-xl").
-																					Body(
-																						&FileExplorer{
-																							CurrentPath:    c.CurrentPath,
-																							SetCurrentPath: c.SetCurrentPath,
+																						app.Div().
+																							Class("pf-v6-l-grid__item pf-m-12-col pf-m-12-col-on-md pf-m-7-col-on-xl").
+																							Body(
+																								&FileExplorer{
+																									CurrentPath:    c.CurrentPath,
+																									SetCurrentPath: c.SetCurrentPath,
 
-																							Index:        c.Index,
-																							RefreshIndex: c.RefreshIndex,
-																							WriteToPath:  c.WriteToPath,
+																									Index:        c.Index,
+																									RefreshIndex: c.RefreshIndex,
+																									WriteToPath:  c.WriteToPath,
 
-																							HTTPShareLink: c.HTTPShareLink,
-																							TFTPShareLink: c.TFTPShareLink,
-																							SharePath:     c.SharePath,
+																									HTTPShareLink: c.HTTPShareLink,
+																									TFTPShareLink: c.TFTPShareLink,
+																									SharePath:     c.SharePath,
 
-																							CreatePath:      c.CreatePath,
-																							CreateEmptyFile: c.CreateEmptyFile,
-																							DeletePath:      c.DeletePath,
-																							MovePath:        c.MovePath,
-																							CopyPath:        c.CopyPath,
+																									CreatePath:      c.CreatePath,
+																									CreateEmptyFile: c.CreateEmptyFile,
+																									DeletePath:      c.DeletePath,
+																									MovePath:        c.MovePath,
+																									CopyPath:        c.CopyPath,
 
-																							EditPathContents:    c.EditPathContents,
-																							SetEditPathContents: c.SetEditPathContents,
-																							EditPath:            c.EditPath,
+																									EditPathContents:    c.EditPathContents,
+																									SetEditPathContents: c.SetEditPathContents,
+																									EditPath:            c.EditPath,
 
-																							WebDAVAddress:  c.WebDAVAddress,
-																							WebDAVUsername: c.WebDAVUsername,
-																							WebDAVPassword: c.WebDAVPassword,
+																									WebDAVAddress:  c.WebDAVAddress,
+																									WebDAVUsername: c.WebDAVUsername,
+																									WebDAVPassword: c.WebDAVPassword,
 
-																							OperationIndex: c.OperationIndex,
+																									OperationIndex: c.OperationIndex,
 
-																							OperationCurrentPath:    c.OperationCurrentPath,
-																							OperationSetCurrentPath: c.OperationSetCurrentPath,
+																									OperationCurrentPath:    c.OperationCurrentPath,
+																									OperationSetCurrentPath: c.OperationSetCurrentPath,
 
-																							UseAdvertisedIP:    c.UseAdvertisedIP,
-																							SetUseAdvertisedIP: c.SetUseAdvertisedIP,
+																									UseAdvertisedIP:    c.UseAdvertisedIP,
+																									SetUseAdvertisedIP: c.SetUseAdvertisedIP,
 
-																							UseAdvertisedIPForWebDAV:    c.UseAdvertisedIPForWebDAV,
-																							SetUseAdvertisedIPForWebDAV: c.SetUseAdvertisedIPForWebDAV,
+																									UseAdvertisedIPForWebDAV:    c.UseAdvertisedIPForWebDAV,
+																									SetUseAdvertisedIPForWebDAV: c.SetUseAdvertisedIPForWebDAV,
 
-																							SetUseHTTPS: c.SetUseHTTPS,
-																							SetUseDavs:  c.SetUseDavs,
+																									SetUseHTTPS: c.SetUseHTTPS,
+																									SetUseDavs:  c.SetUseDavs,
 
-																							Nested: true,
+																									Nested: true,
 
-																							GetContentType: func(fi os.FileInfo) string {
-																								return fi.(gowebdav.File).ContentType()
-																							},
-																						},
+																									GetContentType: func(fi os.FileInfo) string {
+																										return fi.(gowebdav.File).ContentType()
+																									},
+																								},
+																							),
 																					),
 																			),
 																	),
 															),
-													),
+														),
 												),
 											app.Div().
-												Class("pf-c-drawer__panel").
+												Class("pf-v6-c-drawer__panel").
 												Body(
 													app.Div().
-														Class("pf-c-drawer__body pf-m-no-padding").
+														Class("pf-v6-c-drawer__body pf-m-no-padding").
 														Body(
 															&NotificationDrawer{
 																Notifications: notifications,
 																EmptyState: app.Div().
-																	Class("pf-c-empty-state").
+																	Class("pf-v6-c-empty-state").
 																	Body(
 																		app.Div().
-																			Class("pf-c-empty-state__content").
+																			Class("pf-v6-c-empty-state__content").
 																			Body(
 																				app.I().
-																					Class("fas fa-inbox pf-c-empty-state__icon").
+																					Class("fas fa-inbox pf-v6-c-empty-state__icon").
 																					Aria("hidden", true),
 																				app.H1().
-																					Class("pf-c-title pf-m-lg").
+																					Class("pf-v6-c-title pf-m-lg").
 																					Text("No events yet"),
 																				app.Div().
-																					Class("pf-c-empty-state__body").
+																					Class("pf-v6-c-empty-state__body").
 																					Text("Network boot a node to see events here."),
 																			),
 																	),
@@ -300,7 +304,7 @@ func (c *DataShell) Render() app.UI {
 						),
 
 					app.Ul().
-						Class("pf-c-alert-group pf-m-toast").
+						Class("pf-v6-c-alert-group pf-m-toast").
 						Body(
 							&UpdateNotification{
 								UpdateTitle: "An update for bofied is available",
@@ -312,7 +316,7 @@ func (c *DataShell) Render() app.UI {
 								globalError != nil,
 								func() app.UI {
 									return app.Li().
-										Class("pf-c-alert-group__item").
+										Class("pf-v6-c-alert-group__item").
 										Body(
 											&Status{
 												Error:       globalError,
@@ -345,7 +349,7 @@ func (c *DataShell) Render() app.UI {
 								app.Dt().Text("Backend version"),
 								app.Dd().Text("main"),
 							),
-						Footer: "Copyright © 2021 Felicitas Pojtinger and contributors (SPDX-License-Identifier: AGPL-3.0)",
+						Footer: "Copyright © 2024 Felicitas Pojtinger and contributors (SPDX-License-Identifier: AGPL-3.0)",
 					},
 				),
 		)

@@ -20,17 +20,17 @@ type Breadcrumbs struct {
 
 func (c *Breadcrumbs) Render() app.UI {
 	return app.Nav().
-		Class("pf-c-breadcrumb").
+		Class("pf-v6-c-breadcrumb").
 		Aria("label", "Current path").
 		Body(
 			app.Ol().
-				Class("pf-c-breadcrumb__list pf-u-font-weight-bold").
+				Class("pf-v6-c-breadcrumb__list pf-v6-u-font-weight-bold").
 				Body(
 					app.Li().
-						Class("pf-c-breadcrumb__item").
+						Class("pf-v6-c-breadcrumb__item").
 						Body(
 							app.Span().
-								Class("pf-c-breadcrumb__item-divider").
+								Class("pf-v6-c-breadcrumb__item-divider").
 								Body(
 									app.I().
 										Class("fas fa-angle-right").
@@ -38,7 +38,7 @@ func (c *Breadcrumbs) Render() app.UI {
 								),
 							app.Button().
 								Type("button").
-								Class("pf-c-breadcrumb__link").
+								Class("pf-v6-c-breadcrumb__link").
 								TabIndex(0).
 								OnClick(func(ctx app.Context, e app.Event) {
 									c.SetCurrentPath("/")
@@ -51,16 +51,16 @@ func (c *Breadcrumbs) Render() app.UI {
 						link := path.Join(append([]string{"/"}, c.PathComponents[:i+1]...)...)
 
 						// The last path part shouldn't be marked as a link
-						classes := "pf-c-breadcrumb__link"
+						classes := "pf-v6-c-breadcrumb__link"
 						if i == len(c.PathComponents)-1 {
 							classes += " pf-m-current"
 						}
 
 						return app.Li().
-							Class("pf-c-breadcrumb__item").
+							Class("pf-v6-c-breadcrumb__item").
 							Body(
 								app.Span().
-									Class("pf-c-breadcrumb__item-divider").
+									Class("pf-v6-c-breadcrumb__item-divider").
 									Body(
 										app.I().
 											Class("fas fa-angle-right").

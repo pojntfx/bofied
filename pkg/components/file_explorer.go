@@ -134,37 +134,37 @@ func (c *FileExplorer) Render() app.UI {
 	}
 
 	return app.Div().
-		Class("pf-u-h-100").
+		Class("pf-v6-u-h-100").
 		Body(
 			app.Div().
-				Class("pf-c-card pf-u-h-100").
+				Class("pf-v6-c-card pf-m-plain pf-v6-u-h-100").
 				Body(
 					app.Div().
-						Class("pf-c-card__title").
+						Class("pf-v6-c-card__title").
 						Body(
 							app.Div().
-								Class("pf-c-toolbar pf-u-pt-0").
+								Class("pf-v6-c-toolbar pf-v6-u-pt-0").
 								Body(
 									app.Div().
-										Class("pf-c-toolbar__content").
+										Class("pf-v6-c-toolbar__content").
 										Body(
 											app.Div().
-												Class("pf-c-toolbar__content-section pf-x-m-gap-md").
+												Class("pf-v6-c-toolbar__content-section pf-v6-x-m-gap-md").
 												Body(
 													app.Div().
-														Class("pf-c-toolbar__item pf-m-overflow-menu").
+														Class("pf-v6-c-toolbar__item pf-m-overflow-menu").
 														Body(
 															app.Div().
-																Class("pf-c-overflow-menu").
+																Class("pf-v6-c-overflow-menu").
 																Body(
 																	app.Div().
-																		Class("pf-c-overflow-menu__content").
+																		Class("pf-v6-c-overflow-menu__content").
 																		Body(
 																			app.Div().
-																				Class("pf-c-overflow-menu__group pf-m-button-group").
+																				Class("pf-v6-c-overflow-menu__group pf-m-button-group").
 																				Body(
 																					app.Div().
-																						Class("pf-c-overflow-menu__item").
+																						Class("pf-v6-c-overflow-menu__item").
 																						Body(
 																							&Breadcrumbs{
 																								PathComponents: pathComponents,
@@ -183,29 +183,29 @@ func (c *FileExplorer) Render() app.UI {
 																),
 														),
 													app.Div().
-														Class("pf-c-toolbar__item pf-m-pagination").
+														Class("pf-v6-c-toolbar__item pf-m-pagination").
 														Body(
 															app.Div().
-																Class("pf-c-pagination pf-m-compact").
+																Class("pf-v6-c-pagination pf-m-compact").
 																Body(
 																	app.Div().
-																		Class("pf-c-pagination pf-m-compact").
+																		Class("pf-v6-c-pagination pf-m-compact").
 																		Body(
 																			app.Div().
-																				Class("pf-c-overflow-menu").
+																				Class("pf-v6-c-overflow-menu").
 																				Body(
 																					app.Div().
-																						Class("pf-c-overflow-menu__content pf-u-display-flex pf-u-display-none-on-lg").
+																						Class("pf-v6-c-overflow-menu__content pf-v6-u-display-flex pf-v6-u-display-none-on-lg").
 																						Body(
 																							app.Div().
-																								Class("pf-c-overflow-menu__group pf-m-button-group").
+																								Class("pf-v6-c-overflow-menu__group pf-m-button-group").
 																								Body(
 																									app.Div().
-																										Class("pf-c-overflow-menu__item").
+																										Class("pf-v6-c-overflow-menu__item").
 																										Body(
 																											app.Div().
 																												Class(func() string {
-																													classes := "pf-c-dropdown"
+																													classes := "pf-v6-c-dropdown"
 
 																													if c.mobileMenuExpanded {
 																														classes += " pf-m-expanded"
@@ -215,22 +215,22 @@ func (c *FileExplorer) Render() app.UI {
 																												}()).
 																												Body(
 																													app.Button().
-																														Class("pf-c-dropdown__toggle pf-m-plain").
+																														Class("pf-v6-c-dropdown__toggle pf-m-plain").
 																														ID("page-default-nav-example-dropdown-kebab-1-button").
 																														Aria("expanded", c.mobileMenuExpanded).Type("button").
 																														Aria("label", "Actions").
 																														Body(
 																															app.I().
-																																Class("fas fa-ellipsis-v pf-u-display-none-on-lg").
+																																Class("fas fa-ellipsis-v pf-v6-u-display-none-on-lg").
 																																Aria("hidden", true),
 																															app.I().
-																																Class("fas fa-question-circle pf-u-display-none pf-u-display-inline-block-on-lg").
+																																Class("fas fa-question-circle pf-v6-u-display-none pf-v6-u-display-inline-block-on-lg").
 																																Aria("hidden", true),
 																														).OnClick(func(ctx app.Context, e app.Event) {
 																														c.mobileMenuExpanded = !c.mobileMenuExpanded
 																													}),
 																													app.Ul().
-																														Class("pf-c-dropdown__menu pf-m-align-right").
+																														Class("pf-v6-c-dropdown__menu pf-m-align-right").
 																														Aria("aria-labelledby", "page-default-nav-example-dropdown-kebab-1-button").
 																														Hidden(!c.mobileMenuExpanded).
 																														Body(
@@ -243,7 +243,7 @@ func (c *FileExplorer) Render() app.UI {
 																																			return app.Li().
 																																				Body(
 																																					app.Button().
-																																						Class("pf-c-button pf-c-dropdown__menu-item").
+																																						Class("pf-v6-c-button pf-v6-c-dropdown__menu-item").
 																																						Type("button").
 																																						OnClick(func(ctx app.Context, e app.Event) {
 																																							c.editPath()
@@ -260,7 +260,7 @@ func (c *FileExplorer) Render() app.UI {
 																																	return app.Li().
 																																		Body(
 																																			app.Button().
-																																				Class("pf-c-button pf-c-dropdown__menu-item").
+																																				Class("pf-v6-c-button pf-v6-c-dropdown__menu-item").
 																																				Type("button").
 																																				OnClick(func(ctx app.Context, e app.Event) {
 																																					c.sharePath()
@@ -275,7 +275,7 @@ func (c *FileExplorer) Render() app.UI {
 																																	return app.Li().
 																																		Body(
 																																			app.Button().
-																																				Class("pf-c-button pf-c-dropdown__menu-item").
+																																				Class("pf-v6-c-button pf-v6-c-dropdown__menu-item").
 																																				Type("button").
 																																				OnClick(func(ctx app.Context, e app.Event) {
 																																					c.sharePath()
@@ -290,7 +290,7 @@ func (c *FileExplorer) Render() app.UI {
 																																	return app.Li().
 																																		Body(
 																																			app.Button().
-																																				Class("pf-c-button pf-c-dropdown__menu-item").
+																																				Class("pf-v6-c-button pf-v6-c-dropdown__menu-item").
 																																				Type("button").
 																																				OnClick(func(ctx app.Context, e app.Event) {
 																																					c.deleteFile()
@@ -303,7 +303,7 @@ func (c *FileExplorer) Render() app.UI {
 																																c.selectedPath != "",
 																																func() app.UI {
 																																	return app.Li().
-																																		Class("pf-c-divider").
+																																		Class("pf-v6-c-divider").
 																																		Aria("role", "separator")
 																																},
 																															),
@@ -313,7 +313,7 @@ func (c *FileExplorer) Render() app.UI {
 																																	return app.Li().
 																																		Body(
 																																			app.Button().
-																																				Class("pf-c-dropdown__menu-item").
+																																				Class("pf-v6-c-dropdown__menu-item").
 																																				Type("button").
 																																				OnClick(func(ctx app.Context, e app.Event) {
 																																					c.moveTo()
@@ -328,7 +328,7 @@ func (c *FileExplorer) Render() app.UI {
 																																	return app.Li().
 																																		Body(
 																																			app.Button().
-																																				Class("pf-c-dropdown__menu-item").
+																																				Class("pf-v6-c-dropdown__menu-item").
 																																				Type("button").
 																																				OnClick(func(ctx app.Context, e app.Event) {
 																																					c.copyTo()
@@ -341,7 +341,7 @@ func (c *FileExplorer) Render() app.UI {
 																																c.selectedPath != "",
 																																func() app.UI {
 																																	return app.Li().
-																																		Class("pf-c-divider").
+																																		Class("pf-v6-c-divider").
 																																		Aria("role", "separator")
 																																},
 																															),
@@ -351,7 +351,7 @@ func (c *FileExplorer) Render() app.UI {
 																																	return app.Li().
 																																		Body(
 																																			app.Button().
-																																				Class("pf-c-dropdown__menu-item").
+																																				Class("pf-v6-c-dropdown__menu-item").
 																																				Type("button").
 																																				OnClick(func(ctx app.Context, e app.Event) {
 																																					c.rename()
@@ -364,7 +364,7 @@ func (c *FileExplorer) Render() app.UI {
 																																c.selectedPath != "",
 																																func() app.UI {
 																																	return app.Li().
-																																		Class("pf-c-divider").
+																																		Class("pf-v6-c-divider").
 																																		Aria("role", "separator")
 																																},
 																															),
@@ -372,7 +372,7 @@ func (c *FileExplorer) Render() app.UI {
 																													app.Li().
 																														Body(
 																															app.Button().
-																																Class("pf-c-button pf-c-dropdown__menu-item").
+																																Class("pf-v6-c-button pf-v6-c-dropdown__menu-item").
 																																Type("button").
 																																OnClick(func(ctx app.Context, e app.Event) {
 																																	c.createDirectory()
@@ -382,7 +382,7 @@ func (c *FileExplorer) Render() app.UI {
 																													app.Li().
 																														Body(
 																															app.Button().
-																																Class("pf-c-button pf-c-dropdown__menu-item").
+																																Class("pf-v6-c-button pf-v6-c-dropdown__menu-item").
 																																Type("button").
 																																OnClick(func(ctx app.Context, e app.Event) {
 																																	c.createEmptyFile()
@@ -392,7 +392,7 @@ func (c *FileExplorer) Render() app.UI {
 																													app.Li().
 																														Body(
 																															app.Button().
-																																Class("pf-c-button pf-c-dropdown__menu-item").
+																																Class("pf-v6-c-button pf-v6-c-dropdown__menu-item").
 																																Type("button").
 																																OnClick(func(ctx app.Context, e app.Event) {
 																																	c.uploadFile()
@@ -400,12 +400,12 @@ func (c *FileExplorer) Render() app.UI {
 																																Text("Upload file"),
 																														),
 																													app.Li().
-																														Class("pf-c-divider").
+																														Class("pf-v6-c-divider").
 																														Aria("role", "separator"),
 																													app.Li().
 																														Body(
 																															app.Button().
-																																Class("pf-c-button pf-c-dropdown__menu-item").
+																																Class("pf-v6-c-button pf-v6-c-dropdown__menu-item").
 																																Type("button").
 																																OnClick(func(ctx app.Context, e app.Event) {
 																																	c.refresh()
@@ -415,7 +415,7 @@ func (c *FileExplorer) Render() app.UI {
 																													app.Li().
 																														Body(
 																															app.Button().
-																																Class("pf-c-button pf-c-dropdown__menu-item").
+																																Class("pf-v6-c-button pf-v6-c-dropdown__menu-item").
 																																Type("button").
 																																OnClick(func(ctx app.Context, e app.Event) {
 																																	c.mountDirectory()
@@ -427,10 +427,10 @@ func (c *FileExplorer) Render() app.UI {
 																								),
 																						),
 																					app.Div().
-																						Class("pf-c-overflow-menu__content pf-u-display-none pf-u-display-flex-on-lg").
+																						Class("pf-v6-c-overflow-menu__content pf-v6-u-display-none pf-v6-u-display-flex-on-lg").
 																						Body(
 																							app.Div().
-																								Class("pf-c-overflow-menu__group pf-m-button-group").
+																								Class("pf-v6-c-overflow-menu__group pf-m-button-group").
 																								Body(
 																									app.If(
 																										c.selectedPath != "",
@@ -438,13 +438,13 @@ func (c *FileExplorer) Render() app.UI {
 																											return app.If(
 																												selectedPathContentType != "",
 																												func() app.UI {
-																													return app.Div().Class("pf-c-overflow-menu__item").
+																													return app.Div().Class("pf-v6-c-overflow-menu__item").
 																														Body(
 																															app.Button().
 																																Type("button").
 																																Aria("label", "Edit file").
 																																Title("Edit file").
-																																Class("pf-c-button pf-m-plain").
+																																Class("pf-v6-c-button pf-m-plain").
 																																OnClick(func(ctx app.Context, e app.Event) {
 																																	c.editPath()
 																																}).
@@ -461,13 +461,13 @@ func (c *FileExplorer) Render() app.UI {
 																									app.If(
 																										c.selectedPath != "",
 																										func() app.UI {
-																											return app.Div().Class("pf-c-overflow-menu__item").
+																											return app.Div().Class("pf-v6-c-overflow-menu__item").
 																												Body(
 																													app.Button().
 																														Type("button").
 																														Aria("label", "Share file").
 																														Title("Share file").
-																														Class("pf-c-button pf-m-plain").
+																														Class("pf-v6-c-button pf-m-plain").
 																														OnClick(func(ctx app.Context, e app.Event) {
 																															c.sharePath()
 																														}).
@@ -483,13 +483,13 @@ func (c *FileExplorer) Render() app.UI {
 																										c.selectedPath != "",
 																										func() app.UI {
 																											return app.Div().
-																												Class("pf-c-overflow-menu__item").
+																												Class("pf-v6-c-overflow-menu__item").
 																												Body(
 																													app.Button().
 																														Type("button").
 																														Aria("label", "Delete file").
 																														Title("Delete file").
-																														Class("pf-c-button pf-m-plain").
+																														Class("pf-v6-c-button pf-m-plain").
 																														OnClick(func(ctx app.Context, e app.Event) {
 																															c.deleteFile()
 																														}).
@@ -505,11 +505,11 @@ func (c *FileExplorer) Render() app.UI {
 																										c.selectedPath != "",
 																										func() app.UI {
 																											return app.Div().
-																												Class("pf-c-overflow-menu__control").
+																												Class("pf-v6-c-overflow-menu__control").
 																												Body(
 																													app.Div().
 																														Class(func() string {
-																															classes := "pf-c-dropdown"
+																															classes := "pf-v6-c-dropdown"
 																															if c.overflowMenuOpen {
 																																classes += " pf-m-expanded"
 																															}
@@ -518,7 +518,7 @@ func (c *FileExplorer) Render() app.UI {
 																														}()).
 																														Body(
 																															app.Button().
-																																Class("pf-c-dropdown__toggle pf-m-plain").
+																																Class("pf-v6-c-dropdown__toggle pf-m-plain").
 																																ID("toolbar-overflow-menu-button").
 																																Aria("expanded", c.overflowMenuOpen).
 																																Type("button").
@@ -532,14 +532,14 @@ func (c *FileExplorer) Render() app.UI {
 																																		Aria("hidden", true),
 																																),
 																															app.Ul().
-																																Class("pf-c-dropdown__menu").
+																																Class("pf-v6-c-dropdown__menu").
 																																Aria("labelledby", "toolbar-overflow-menu-button").
 																																Hidden(!c.overflowMenuOpen).
 																																Body(
 																																	app.Li().
 																																		Body(
 																																			app.Button().
-																																				Class("pf-c-dropdown__menu-item").
+																																				Class("pf-v6-c-dropdown__menu-item").
 																																				Type("button").
 																																				OnClick(func(ctx app.Context, e app.Event) {
 																																					c.moveTo()
@@ -549,7 +549,7 @@ func (c *FileExplorer) Render() app.UI {
 																																	app.Li().
 																																		Body(
 																																			app.Button().
-																																				Class("pf-c-dropdown__menu-item").
+																																				Class("pf-v6-c-dropdown__menu-item").
 																																				Type("button").
 																																				OnClick(func(ctx app.Context, e app.Event) {
 																																					c.copyTo()
@@ -557,12 +557,12 @@ func (c *FileExplorer) Render() app.UI {
 																																				Text("Copy to ..."),
 																																		),
 																																	app.Li().
-																																		Class("pf-c-divider").
+																																		Class("pf-v6-c-divider").
 																																		Aria("role", "separator"),
 																																	app.Li().
 																																		Body(
 																																			app.Button().
-																																				Class("pf-c-dropdown__menu-item").
+																																				Class("pf-v6-c-dropdown__menu-item").
 																																				Type("button").
 																																				OnClick(func(ctx app.Context, e app.Event) {
 																																					c.rename()
@@ -575,16 +575,16 @@ func (c *FileExplorer) Render() app.UI {
 																										},
 																									),
 																									app.Div().
-																										Class("pf-c-divider pf-m-vertical pf-m-inset-md pf-u-mr-sm").
+																										Class("pf-v6-c-divider pf-m-vertical pf-m-inset-md pf-v6-u-mr-sm").
 																										Aria("role", "separator"),
 																									app.Div().
-																										Class("pf-c-overflow-menu__item").
+																										Class("pf-v6-c-overflow-menu__item").
 																										Body(
 																											app.Button().
 																												Type("button").
 																												Aria("label", "Create directory").
 																												Title("Create directory").
-																												Class("pf-c-button pf-m-plain").
+																												Class("pf-v6-c-button pf-m-plain").
 																												OnClick(func(ctx app.Context, e app.Event) {
 																													c.createDirectory()
 																												}).
@@ -595,13 +595,13 @@ func (c *FileExplorer) Render() app.UI {
 																												),
 																										),
 																									app.Div().
-																										Class("pf-c-overflow-menu__item").
+																										Class("pf-v6-c-overflow-menu__item").
 																										Body(
 																											app.Button().
 																												Type("button").
 																												Aria("label", "Create empty file").
 																												Title("Create empty file").
-																												Class("pf-c-button pf-m-plain").
+																												Class("pf-v6-c-button pf-m-plain").
 																												OnClick(func(ctx app.Context, e app.Event) {
 																													c.createEmptyFile()
 																												}).
@@ -612,13 +612,13 @@ func (c *FileExplorer) Render() app.UI {
 																												),
 																										),
 																									app.Div().
-																										Class("pf-c-overflow-menu__item").
+																										Class("pf-v6-c-overflow-menu__item").
 																										Body(
 																											app.Button().
 																												Type("button").
 																												Aria("label", "Upload file").
 																												Title("Upload file").
-																												Class("pf-c-button pf-m-plain").
+																												Class("pf-v6-c-button pf-m-plain").
 																												OnClick(func(ctx app.Context, e app.Event) {
 																													c.uploadFile()
 																												}).
@@ -631,19 +631,19 @@ func (c *FileExplorer) Render() app.UI {
 																								),
 																						),
 																					app.Div().
-																						Class("pf-c-divider pf-m-vertical pf-m-inset-md pf-u-display-none pf-u-display-flex-on-lg").
+																						Class("pf-v6-c-divider pf-m-vertical pf-m-inset-md pf-v6-u-display-none pf-v6-u-display-flex-on-lg").
 																						Aria("role", "separator"),
 																					app.Div().
-																						Class("pf-c-overflow-menu__group pf-m-button-group pf-u-display-none pf-u-display-flex-on-lg").
+																						Class("pf-v6-c-overflow-menu__group pf-m-button-group pf-v6-u-display-none pf-v6-u-display-flex-on-lg").
 																						Body(
 																							app.Div().
-																								Class("pf-c-overflow-menu__item").
+																								Class("pf-v6-c-overflow-menu__item").
 																								Body(
 																									app.Button().
 																										Type("button").
 																										Aria("label", "Refresh").
 																										Title("Refresh").
-																										Class("pf-c-button pf-m-plain").
+																										Class("pf-v6-c-button pf-m-plain").
 																										OnClick(func(ctx app.Context, e app.Event) {
 																											c.refresh()
 																										}).
@@ -654,17 +654,17 @@ func (c *FileExplorer) Render() app.UI {
 																										),
 																								),
 																							app.Div().
-																								Class("pf-c-overflow-menu__item").
+																								Class("pf-v6-c-overflow-menu__item").
 																								Body(
 																									app.Button().
-																										Class("pf-c-button pf-m-control").
+																										Class("pf-v6-c-button pf-m-control").
 																										Type("button").
 																										OnClick(func(ctx app.Context, e app.Event) {
 																											c.mountDirectory()
 																										}).
 																										Body(
 																											app.Span().
-																												Class("pf-c-button__icon pf-m-start").
+																												Class("pf-v6-c-button__icon pf-m-start").
 																												Body(
 																													app.I().
 																														Class("fas fa-hdd").
@@ -683,7 +683,7 @@ func (c *FileExplorer) Render() app.UI {
 								),
 						),
 					app.Div().
-						Class("pf-c-card__body").
+						Class("pf-v6-c-card__body").
 						Body(
 							app.If(
 								len(c.Index) > 0,
@@ -704,14 +704,14 @@ func (c *FileExplorer) Render() app.UI {
 								func() app.UI {
 									return &EmptyState{
 										Action: app.Button().
-											Class("pf-c-button pf-m-primary").
+											Class("pf-v6-c-button pf-m-primary").
 											Type("button").
 											OnClick(func(ctx app.Context, e app.Event) {
 												c.uploadModalOpen = true
 											}).
 											Body(
 												app.Span().
-													Class("pf-c-button__icon pf-m-start").
+													Class("pf-v6-c-button__icon pf-m-start").
 													Body(
 														app.I().
 															Class("fas fa-cloud-upload-alt").
@@ -738,37 +738,37 @@ func (c *FileExplorer) Render() app.UI {
 				Title: "Mount Folder",
 				Body: []app.UI{
 					app.Div().
-						Class("pf-c-content").
+						Class("pf-v6-c-content").
 						Body(
 							app.P().
 								Text(`You can mount this folder as a WebDAV share using your system's file explorer. To do so, please use the following credentials:`),
 							app.Form().
-								Class("pf-c-form").
+								Class("pf-v6-c-form").
 								OnSubmit(func(ctx app.Context, e app.Event) {
 									e.PreventDefault()
 								}).
 								Body(
 									app.Div().
-										Class("pf-c-form__group").
+										Class("pf-v6-c-form__group").
 										Body(
 											app.Div().
-												Class("pf-c-form__group-label").
+												Class("pf-v6-c-form__group-label").
 												Body(
 													app.Label().
-														Class("pf-c-form__label").
+														Class("pf-v6-c-form__label").
 														For("webdav-address").
 														Body(
 															app.Span().
-																Class("pf-c-form__label-text").
+																Class("pf-v6-c-form__label-text").
 																Text("Address"),
 														),
 												),
 											app.Div().
-												Class("pf-c-form__group-control").
+												Class("pf-v6-c-form__group-control").
 												Body(
 													&CopyableInput{
 														Component: app.Input().
-															Class("pf-c-form-control").
+															Class("pf-v6-c-form-control").
 															ReadOnly(true).
 															Type("text").
 															Value(c.WebDAVAddress.String()).
@@ -780,26 +780,26 @@ func (c *FileExplorer) Render() app.UI {
 												),
 										),
 									app.Div().
-										Class("pf-c-form__group").
+										Class("pf-v6-c-form__group").
 										Body(
 											app.Div().
-												Class("pf-c-form__group-label").
+												Class("pf-v6-c-form__group-label").
 												Body(
 													app.Label().
-														Class("pf-c-form__label").
+														Class("pf-v6-c-form__label").
 														For("webdav-username").
 														Body(
 															app.Span().
-																Class("pf-c-form__label-text").
+																Class("pf-v6-c-form__label-text").
 																Text("Username"),
 														),
 												),
 											app.Div().
-												Class("pf-c-form__group-control").
+												Class("pf-v6-c-form__group-control").
 												Body(
 													&CopyableInput{
 														Component: app.Input().
-															Class("pf-c-form-control").
+															Class("pf-v6-c-form-control").
 															ReadOnly(true).
 															Type("text").
 															Value(c.WebDAVUsername).
@@ -811,26 +811,26 @@ func (c *FileExplorer) Render() app.UI {
 												),
 										),
 									app.Div().
-										Class("pf-c-form__group").
+										Class("pf-v6-c-form__group").
 										Body(
 											app.Div().
-												Class("pf-c-form__group-label").
+												Class("pf-v6-c-form__group-label").
 												Body(
 													app.Label().
-														Class("pf-c-form__label").
+														Class("pf-v6-c-form__label").
 														For("webdav-password").
 														Body(
 															app.Span().
-																Class("pf-c-form__label-text").
+																Class("pf-v6-c-form__label-text").
 																Text("Password (One-Time Token)"),
 														),
 												),
 											app.Div().
-												Class("pf-c-form__group-control").
+												Class("pf-v6-c-form__group-control").
 												Body(
 													&CopyableInput{
 														Component: app.Input().
-															Class("pf-c-form-control").
+															Class("pf-v6-c-form-control").
 															ReadOnly(true).
 															Type("text").
 															Value(c.WebDAVPassword).
@@ -852,17 +852,17 @@ func (c *FileExplorer) Render() app.UI {
 										Body: []app.UI{
 											app.Form().
 												NoValidate(true).
-												Class("pf-c-form pf-m-horizontal pf-u-mb-md").
+												Class("pf-v6-c-form pf-m-horizontal pf-v6-u-mb-md").
 												Body(
 													&FormGroup{
 														NoTopPadding: true,
 														Label: app.Label().
 															For("use-advertised-ip-for-webdav").
-															Class("pf-c-form__label").
+															Class("pf-v6-c-form__label").
 															Body(
 																app.
 																	Span().
-																	Class("pf-c-form__label-text").
+																	Class("pf-v6-c-form__label-text").
 																	Text("Use advertised IP"),
 															),
 														Input: &Switch{
@@ -881,11 +881,11 @@ func (c *FileExplorer) Render() app.UI {
 														NoTopPadding: true,
 														Label: app.Label().
 															For("use-davs").
-															Class("pf-c-form__label").
+															Class("pf-v6-c-form__label").
 															Body(
 																app.
 																	Span().
-																	Class("pf-c-form__label-text").
+																	Class("pf-v6-c-form__label-text").
 																	Text("Use secure protocol"),
 															),
 														Input: &Switch{
@@ -908,7 +908,7 @@ func (c *FileExplorer) Render() app.UI {
 				},
 				Footer: []app.UI{
 					app.Button().
-						Class("pf-c-button pf-m-primary").
+						Class("pf-v6-c-button pf-m-primary").
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.mountFolderModalOpen = false
 						}).
@@ -929,37 +929,37 @@ func (c *FileExplorer) Render() app.UI {
 				Title: `Share "` + path.Base(c.selectedPath) + `"`,
 				Body: []app.UI{
 					app.Div().
-						Class("pf-c-content").
+						Class("pf-v6-c-content").
 						Body(
 							app.P().
 								Text(`You should be able to access this path using the following addresses. Please note that, especially for the TFTP address, access is probably only possible from the LAN on which bofied is running:`),
 							app.Form().
-								Class("pf-c-form").
+								Class("pf-v6-c-form").
 								OnSubmit(func(ctx app.Context, e app.Event) {
 									e.PreventDefault()
 								}).
 								Body(
 									app.Div().
-										Class("pf-c-form__group").
+										Class("pf-v6-c-form__group").
 										Body(
 											app.Div().
-												Class("pf-c-form__group-label").
+												Class("pf-v6-c-form__group-label").
 												Body(
 													app.Label().
-														Class("pf-c-form__label").
+														Class("pf-v6-c-form__label").
 														For("http-address").
 														Body(
 															app.Span().
-																Class("pf-c-form__label-text").
+																Class("pf-v6-c-form__label-text").
 																Text("HTTP Address"),
 														),
 												),
 											app.Div().
-												Class("pf-c-form__group-control").
+												Class("pf-v6-c-form__group-control").
 												Body(
 													&CopyableInput{
 														Component: app.Input().
-															Class("pf-c-form-control").
+															Class("pf-v6-c-form-control").
 															ReadOnly(true).
 															Type("text").
 															Value(c.HTTPShareLink.String()).
@@ -971,26 +971,26 @@ func (c *FileExplorer) Render() app.UI {
 												),
 										),
 									app.Div().
-										Class("pf-c-form__group").
+										Class("pf-v6-c-form__group").
 										Body(
 											app.Div().
-												Class("pf-c-form__group-label").
+												Class("pf-v6-c-form__group-label").
 												Body(
 													app.Label().
-														Class("pf-c-form__label").
+														Class("pf-v6-c-form__label").
 														For("tftp-address").
 														Body(
 															app.Span().
-																Class("pf-c-form__label-text").
+																Class("pf-v6-c-form__label-text").
 																Text("TFTP Address"),
 														),
 												),
 											app.Div().
-												Class("pf-c-form__group-control").
+												Class("pf-v6-c-form__group-control").
 												Body(
 													&CopyableInput{
 														Component: app.Input().
-															Class("pf-c-form-control").
+															Class("pf-v6-c-form-control").
 															ReadOnly(true).
 															Type("text").
 															Value(c.TFTPShareLink.String()).
@@ -1012,17 +1012,17 @@ func (c *FileExplorer) Render() app.UI {
 										Body: []app.UI{
 											app.Form().
 												NoValidate(true).
-												Class("pf-c-form pf-m-horizontal pf-u-mb-md").
+												Class("pf-v6-c-form pf-m-horizontal pf-v6-u-mb-md").
 												Body(
 													&FormGroup{
 														NoTopPadding: true,
 														Label: app.Label().
 															For("use-advertised-ip").
-															Class("pf-c-form__label").
+															Class("pf-v6-c-form__label").
 															Body(
 																app.
 																	Span().
-																	Class("pf-c-form__label-text").
+																	Class("pf-v6-c-form__label-text").
 																	Text("Use advertised IP"),
 															),
 														Input: &Switch{
@@ -1041,11 +1041,11 @@ func (c *FileExplorer) Render() app.UI {
 														NoTopPadding: true,
 														Label: app.Label().
 															For("use-https").
-															Class("pf-c-form__label").
+															Class("pf-v6-c-form__label").
 															Body(
 																app.
 																	Span().
-																	Class("pf-c-form__label-text").
+																	Class("pf-v6-c-form__label-text").
 																	Text("Use secure protocol"),
 															),
 														Input: &Switch{
@@ -1068,7 +1068,7 @@ func (c *FileExplorer) Render() app.UI {
 				},
 				Footer: []app.UI{
 					app.Button().
-						Class("pf-c-button pf-m-primary").
+						Class("pf-v6-c-button pf-m-primary").
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.sharePathModalOpen = false
 						}).
@@ -1090,7 +1090,7 @@ func (c *FileExplorer) Render() app.UI {
 				Title: "Create Directory",
 				Body: []app.UI{
 					app.Form().
-						Class("pf-c-form").
+						Class("pf-v6-c-form").
 						ID("create-directory").
 						OnSubmit(func(ctx app.Context, e app.Event) {
 							e.PreventDefault()
@@ -1110,11 +1110,11 @@ func (c *FileExplorer) Render() app.UI {
 							&FormGroup{
 								Label: app.Label().
 									For("directory-name-input").
-									Class("pf-c-form__label").
+									Class("pf-v6-c-form__label").
 									Body(
 										app.
 											Span().
-											Class("pf-c-form__label-text").
+											Class("pf-v6-c-form__label-text").
 											Text("Directory name"),
 									),
 								Input: &Autofocused{
@@ -1123,7 +1123,7 @@ func (c *FileExplorer) Render() app.UI {
 										ID("directory-name-input").
 										Type("text").
 										Required(true).
-										Class("pf-c-form-control").
+										Class("pf-v6-c-form-control").
 										Value(c.newDirectoryName).
 										OnInput(func(ctx app.Context, e app.Event) {
 											c.newDirectoryName = ctx.JSSrc().Get("value").String()
@@ -1135,12 +1135,12 @@ func (c *FileExplorer) Render() app.UI {
 				},
 				Footer: []app.UI{
 					app.Button().
-						Class("pf-c-button pf-m-primary").
+						Class("pf-v6-c-button pf-m-primary").
 						Type("submit").
 						Form("create-directory").
 						Text("Create"),
 					app.Button().
-						Class("pf-c-button pf-m-link").
+						Class("pf-v6-c-button pf-m-link").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.newDirectoryName = ""
@@ -1163,7 +1163,7 @@ func (c *FileExplorer) Render() app.UI {
 				Title: "Create Empty File",
 				Body: []app.UI{
 					app.Form().
-						Class("pf-c-form").
+						Class("pf-v6-c-form").
 						ID("create-empty-file").
 						OnSubmit(func(ctx app.Context, e app.Event) {
 							e.PreventDefault()
@@ -1179,11 +1179,11 @@ func (c *FileExplorer) Render() app.UI {
 							&FormGroup{
 								Label: app.Label().
 									For("new-filename-input").
-									Class("pf-c-form__label").
+									Class("pf-v6-c-form__label").
 									Body(
 										app.
 											Span().
-											Class("pf-c-form__label-text").
+											Class("pf-v6-c-form__label-text").
 											Text("Filename"),
 									),
 								Input: &Autofocused{
@@ -1192,7 +1192,7 @@ func (c *FileExplorer) Render() app.UI {
 										ID("new-filename-input").
 										Type("text").
 										Required(true).
-										Class("pf-c-form-control").
+										Class("pf-v6-c-form-control").
 										Value(c.newEmptyFilename).
 										OnInput(func(ctx app.Context, e app.Event) {
 											c.newEmptyFilename = ctx.JSSrc().Get("value").String()
@@ -1204,12 +1204,12 @@ func (c *FileExplorer) Render() app.UI {
 				},
 				Footer: []app.UI{
 					app.Button().
-						Class("pf-c-button pf-m-primary").
+						Class("pf-v6-c-button pf-m-primary").
 						Type("submit").
 						Form("create-empty-file").
 						Text("Create"),
 					app.Button().
-						Class("pf-c-button pf-m-link").
+						Class("pf-v6-c-button pf-m-link").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.newEmptyFilename = ""
@@ -1234,7 +1234,7 @@ func (c *FileExplorer) Render() app.UI {
 				},
 				Footer: []app.UI{
 					app.Button().
-						Class("pf-c-button pf-m-danger").
+						Class("pf-v6-c-button pf-m-danger").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.DeletePath(c.selectedPath)
@@ -1244,7 +1244,7 @@ func (c *FileExplorer) Render() app.UI {
 						}).
 						Text("Delete"),
 					app.Button().
-						Class("pf-c-button pf-m-link").
+						Class("pf-v6-c-button pf-m-link").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.deletionConfirmModalOpen = false
@@ -1265,7 +1265,7 @@ func (c *FileExplorer) Render() app.UI {
 				Title: `Rename "` + path.Base(c.selectedPath) + `"`,
 				Body: []app.UI{
 					app.Form().
-						Class("pf-c-form").
+						Class("pf-v6-c-form").
 						ID("rename-path").
 						OnSubmit(func(ctx app.Context, e app.Event) {
 							e.PreventDefault()
@@ -1279,11 +1279,11 @@ func (c *FileExplorer) Render() app.UI {
 							&FormGroup{
 								Label: app.Label().
 									For("path-rename-input").
-									Class("pf-c-form__label").
+									Class("pf-v6-c-form__label").
 									Body(
 										app.
 											Span().
-											Class("pf-c-form__label-text").
+											Class("pf-v6-c-form__label-text").
 											Text("New name"),
 									),
 								Input: &Autofocused{
@@ -1292,7 +1292,7 @@ func (c *FileExplorer) Render() app.UI {
 										ID("path-rename-input").
 										Type("text").
 										Required(true).
-										Class("pf-c-form-control").
+										Class("pf-v6-c-form-control").
 										Value(c.newFileName).
 										OnInput(func(ctx app.Context, e app.Event) {
 											c.newFileName = ctx.JSSrc().Get("value").String()
@@ -1304,12 +1304,12 @@ func (c *FileExplorer) Render() app.UI {
 				},
 				Footer: []app.UI{
 					app.Button().
-						Class("pf-c-button pf-m-primary").
+						Class("pf-v6-c-button pf-m-primary").
 						Type("submit").
 						Form("rename-path").
 						Text("Rename"),
 					app.Button().
-						Class("pf-c-button pf-m-link").
+						Class("pf-v6-c-button pf-m-link").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.newFileName = ""
@@ -1382,7 +1382,7 @@ func (c *FileExplorer) Render() app.UI {
 						}
 
 						return app.Button().
-							Class("pf-c-button pf-m-primary").
+							Class("pf-v6-c-button pf-m-primary").
 							Type("Button").
 							OnClick(func(ctx app.Context, e app.Event) {
 								// Prefer selected path, fall back to current path if not selected
@@ -1403,7 +1403,7 @@ func (c *FileExplorer) Render() app.UI {
 							Text(`Move to "` + path.Base(newDirectory) + `"`)
 					}(),
 					app.Button().
-						Class("pf-c-button pf-m-link").
+						Class("pf-v6-c-button pf-m-link").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.movePathModalOpen = false
@@ -1476,7 +1476,7 @@ func (c *FileExplorer) Render() app.UI {
 						}
 
 						return app.Button().
-							Class("pf-c-button pf-m-primary").
+							Class("pf-v6-c-button pf-m-primary").
 							Type("Button").
 							OnClick(func(ctx app.Context, e app.Event) {
 								// Prefer selected path, fall back to current path if not selected
@@ -1497,7 +1497,7 @@ func (c *FileExplorer) Render() app.UI {
 							Text(`Copy to "` + path.Base(newDirectory) + `"`)
 					}(),
 					app.Button().
-						Class("pf-c-button pf-m-link").
+						Class("pf-v6-c-button pf-m-link").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.copyPathModalOpen = false
@@ -1520,7 +1520,7 @@ func (c *FileExplorer) Render() app.UI {
 				Title: "Upload",
 				Body: []app.UI{
 					app.Form().
-						Class("pf-c-form").
+						Class("pf-v6-c-form").
 						ID("upload").
 						OnSubmit(func(ctx app.Context, e app.Event) {
 							e.PreventDefault()
@@ -1558,11 +1558,11 @@ func (c *FileExplorer) Render() app.UI {
 							&FormGroup{
 								Label: app.Label().
 									For("upload-file-input").
-									Class("pf-c-form__label").
+									Class("pf-v6-c-form__label").
 									Body(
 										app.
 											Span().
-											Class("pf-c-form__label-text").
+											Class("pf-v6-c-form__label-text").
 											Text("File to upload"),
 									),
 								Input: app.Input().
@@ -1570,18 +1570,18 @@ func (c *FileExplorer) Render() app.UI {
 									ID("upload-file-input").
 									Type("file").
 									Required(true).
-									Class("pf-c-form-control"),
+									Class("pf-v6-c-form-control"),
 							},
 						),
 				},
 				Footer: []app.UI{
 					app.Button().
-						Class("pf-c-button pf-m-primary").
+						Class("pf-v6-c-button pf-m-primary").
 						Type("submit").
 						Form("upload").
 						Text("Upload"),
 					app.Button().
-						Class("pf-c-button pf-m-link").
+						Class("pf-v6-c-button pf-m-link").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
 							// Clear the input
@@ -1639,13 +1639,13 @@ func (c *FileExplorer) Render() app.UI {
 				},
 				Footer: []app.UI{
 					app.Button().
-						Class("pf-c-button pf-m-primary").
+						Class("pf-v6-c-button pf-m-primary").
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.saveEdits()
 						}).
 						Text("Save and close"),
 					app.Button().
-						Class("pf-c-button pf-m-link").
+						Class("pf-v6-c-button pf-m-link").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
 							if c.textEditorDirty() {
@@ -1673,7 +1673,7 @@ func (c *FileExplorer) Render() app.UI {
 				},
 				Footer: []app.UI{
 					app.Button().
-						Class("pf-c-button pf-m-danger").
+						Class("pf-v6-c-button pf-m-danger").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
 							if c.discardEditsModalTargetsRefresh {
@@ -1691,7 +1691,7 @@ func (c *FileExplorer) Render() app.UI {
 							return "Discard"
 						}()),
 					app.Button().
-						Class("pf-c-button pf-m-link").
+						Class("pf-v6-c-button pf-m-link").
 						Type("button").
 						OnClick(func(ctx app.Context, e app.Event) {
 							c.discardEditsModalOpen = false

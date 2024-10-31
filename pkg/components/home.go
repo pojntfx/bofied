@@ -17,7 +17,7 @@ func (c *Home) Render() app.UI {
 		Children: func(cpcp providers.SetupProviderChildrenProps) app.UI {
 			// This div is required so that there are no authorization loops
 			return app.Div().
-				Class("pf-x-ws-router").
+				Class("pf-v6-x-ws-router").
 				Body(
 					app.If(cpcp.Ready,
 						func() app.UI {

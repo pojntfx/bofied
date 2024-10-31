@@ -21,18 +21,18 @@ func (c *Status) Render() app.UI {
 
 	return app.If(c.Error != nil, func() app.UI {
 		return app.Div().
-			Class("pf-c-alert pf-m-danger").
+			Class("pf-v6-c-alert pf-m-danger").
 			Aria("label", c.ErrorText).
 			Body(
 				app.Div().
-					Class("pf-c-alert__icon").
+					Class("pf-v6-c-alert__icon").
 					Body(
 						app.I().
 							Class("fas fa-fw fa-exclamation-circle").
 							Aria("hidden", true),
 					),
 				app.P().
-					Class("pf-c-alert__title").
+					Class("pf-v6-c-alert__title").
 					Body(
 						app.Strong().Body(
 							app.Span().
@@ -42,10 +42,10 @@ func (c *Status) Render() app.UI {
 						app.Text(c.ErrorText),
 					),
 				app.Div().
-					Class("pf-c-alert__action").
+					Class("pf-v6-c-alert__action").
 					Body(
 						app.Button().
-							Class("pf-c-button pf-m-plain").
+							Class("pf-v6-c-button pf-m-plain").
 							Aria("label", "Ignore error").
 							OnClick(func(ctx app.Context, e app.Event) {
 								c.Ignore()
@@ -57,7 +57,7 @@ func (c *Status) Render() app.UI {
 							),
 					),
 				app.Div().
-					Class("pf-c-alert__description").
+					Class("pf-v6-c-alert__description").
 					Body(
 						app.P().Body(
 							app.Code().
@@ -67,10 +67,10 @@ func (c *Status) Render() app.UI {
 				app.If(c.Recover != nil,
 					func() app.UI {
 						return app.Div().
-							Class("pf-c-alert__action-group").
+							Class("pf-v6-c-alert__action-group").
 							Body(
 								app.Button().
-									Class("pf-c-button pf-m-link pf-m-inline").
+									Class("pf-v6-c-button pf-m-link pf-m-inline").
 									Type("button").
 									OnClick(func(ctx app.Context, e app.Event) {
 										c.Recover(ctx)
