@@ -31,7 +31,7 @@ func (c *Navbar) Render() app.UI {
 	avatarHash := md5.Sum([]byte(c.UserEmail))
 
 	return app.Header().
-		Class("pf-v6-c-masthead pf-m-display-stack pf-m-display-inline-on-sm").
+		Class("pf-v6-c-masthead pf-m-display-inline").
 		Body(
 			app.Div().
 				Class("pf-v6-c-masthead__main").
@@ -60,10 +60,10 @@ func (c *Navbar) Render() app.UI {
 								Class("pf-v6-c-toolbar__content").
 								Body(
 									app.Div().
-										Class("pf-v6-c-toolbar__content-section").
+										Class("pf-v6-c-toolbar__content-section pf-v6-u-align-items-center").
 										Body(
 											app.Div().
-												Class("pf-v6-c-toolbar__group pf-m-align-end").
+												Class("pf-v6-c-toolbar__group pf-m-align-end pf-v6-u-align-items-center").
 												Body(
 													app.Div().
 														Class(func() string {
@@ -123,10 +123,14 @@ func (c *Navbar) Render() app.UI {
 																		Aria("label", "Actions").
 																		Body(
 																			app.Span().
-																				Class("pf-v6-c-menu-toggle__text").
+																				Class("pf-v6-c-menu-toggle__text pf-v6-u-display-flex pf-v6-u-display-block-on-md").
 																				Body(
+																					app.Img().
+																						Src(fmt.Sprintf("https://www.gravatar.com/avatar/%v?s=150", hex.EncodeToString(avatarHash[:]))).
+																						Alt("Avatar image of user with email "+c.UserEmail).
+																						Class("pf-v6-c-avatar pf-m-sm pf-v6-u-display-none-on-md"),
 																					app.I().
-																						Class("fas fa-ellipsis-v pf-v6-u-display-none-on-lg").
+																						Class("fas fa-ellipsis-v pf-v6-u-display-none pf-v6-u-display-inline-block-on-md pf-v6-u-display-none-on-lg").
 																						Aria("hidden", true),
 																					app.I().
 																						Class("fas fa-question-circle pf-v6-u-display-none pf-v6-u-display-inline-block-on-lg").
@@ -224,8 +228,7 @@ func (c *Navbar) Render() app.UI {
 																		),
 																),
 														),
-													app.Div().
-														Class("pf-v6-c-toolbar__item pf-m-hidden pf-m-visible-on-md").
+													app.Div().Class("pf-v6-c-toolbar__item pf-m-hidden pf-m-visible-on-md").
 														Body(
 															app.Div().
 																Class(func() string {
@@ -239,58 +242,81 @@ func (c *Navbar) Render() app.UI {
 																}()).
 																Body(
 																	app.Button().
-																		Class("pf-v6-c-dropdown__toggle pf-m-plain").
-																		ID("page-layout-horizontal-nav-dropdown-kebab-2-button").
-																		Aria("expanded", c.UserMenuExpanded).
+																		Class("pf-v6-c-menu-toggle pf-m-plain").
 																		Type("button").
+																		Aria("expanded", c.UserMenuExpanded).
+																		Aria("label", "User actions").
 																		Body(
 																			app.Span().
-																				Class("pf-v6-c-dropdown__toggle-text").
-																				Text(c.UserEmail),
-																			app.
-																				Span().
-																				Class("pf-v6-c-dropdown__toggle-icon").
+																				Class("pf-v6-c-menu-toggle__icon pf-v6-u-display-flex").
 																				Body(
-																					app.I().
-																						Class("fas fa-caret-down").
-																						Aria("hidden", true),
+																					app.Img().
+																						Src(fmt.Sprintf("https://www.gravatar.com/avatar/%v?s=150", hex.EncodeToString(avatarHash[:]))).
+																						Alt("Avatar image of user with email "+c.UserEmail).
+																						Class("pf-v6-c-avatar pf-m-sm"),
 																				),
-																		).OnClick(func(ctx app.Context, e app.Event) {
-																		c.ToggleUserMenuExpanded()
-																	}),
-																	app.Ul().
-																		Class("pf-v6-c-dropdown__menu").
-																		Aria("labelledby", "page-layout-horizontal-nav-dropdown-kebab-2-button").
+																			app.Span().
+																				Class("pf-v6-c-menu-toggle__text").
+																				Text(c.UserEmail),
+																			app.Span().
+																				Class("pf-v6-c-menu-toggle__controls").
+																				Body(
+																					app.Span().
+																						Class("pf-v6-c-menu-toggle__toggle-icon").
+																						Body(
+																							app.I().
+																								Class("fas fa-caret-down").
+																								Aria("hidden", true),
+																						),
+																				),
+																		).
+																		OnClick(func(ctx app.Context, e app.Event) {
+																			c.ToggleUserMenuExpanded()
+																		}),
+
+																	app.Div().
+																		Class("pf-v6-c-menu pf-v6-x-u-position-absolute").
 																		Hidden(!c.UserMenuExpanded).
 																		Body(
-																			app.Li().Body(
-																				app.Button().
-																					Class("pf-v6-c-button pf-v6-c-dropdown__menu-item").
-																					Type("button").
-																					Body(
-																						app.Span().
-																							Class("pf-v6-c-button__icon pf-m-start").
-																							Body(
-																								app.I().
-																									Class("fas fa-sign-out-alt").
-																									Aria("hidden", true),
-																							),
-																						app.Text("Logout"),
-																					).
-																					OnClick(func(ctx app.Context, e app.Event) {
-																						c.Logout(ctx)
-																					}),
-																			),
+																			app.Div().
+																				Class("pf-v6-c-menu__content").
+																				Body(
+																					app.Ul().
+																						Role("menu").
+																						Class("pf-v6-c-menu__list").
+																						Body(
+																							app.Li().
+																								Class("pf-v6-c-menu__list-item").
+																								Role("none").
+																								Body(
+																									app.Button().
+																										Class("pf-v6-c-menu__item").
+																										Type("button").
+																										Aria("role", "menuitem").
+																										Body(
+																											app.Span().
+																												Class("pf-v6-c-menu__item-main").
+																												Body(
+																													app.Span().
+																														Class("pf-v6-c-menu__item-icon").
+																														Body(
+																															app.I().
+																																Class("fas fa-sign-out-alt").
+																																Aria("hidden", true),
+																														),
+																													app.Span().
+																														Class("pf-v6-c-menu__item-text").
+																														Text("Logout"),
+																												),
+																										).
+																										OnClick(func(ctx app.Context, e app.Event) {
+																											c.Logout(ctx)
+																										}),
+																								),
+																						),
+																				),
 																		),
 																),
-														),
-													app.Div().
-														Class("pf-v6-c-toolbar__item").
-														Body(
-															app.Img().
-																Class("pf-v6-c-avatar").
-																Src(fmt.Sprintf("https://www.gravatar.com/avatar/%v?s=150", hex.EncodeToString(avatarHash[:]))).
-																Alt("Avatar image"),
 														),
 												),
 										),

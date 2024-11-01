@@ -183,7 +183,7 @@ For more information, please visit https://github.com/pojntfx/bofied.`,
 
 	cmd.PersistentFlags().BoolP(pureConfigKey, "p", false, "Prevent usage of stdlib in configuration file, even if enabled in `Configuration` function")
 
-	cmd.PersistentFlags().String(starterURLKey, "https://github.com/pojntfx/ipxe-binaries/releases/download/latest/ipxe.tar.gz", "Download URL to a starter .tar.gz archive; the default chainloads https://netboot.xyz/")
+	cmd.PersistentFlags().String(starterURLKey, "https://github.com/pojntfx/ipxe-binaries/releases/latest/download/ipxe.tar.gz", "Download URL to a starter .tar.gz archive; the default chainloads https://netboot.xyz/")
 	cmd.PersistentFlags().BoolP(skipStarterDownloadKey, "s", false, "Don't initialize by downloading the starter on the first run")
 
 	// Bind env variables

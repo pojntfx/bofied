@@ -52,3 +52,10 @@
 .pf-v6-x-u-position-absolute {
   position: absolute;
 }
+
+@media (max-width: 48rem) {
+  .pf-v6-c-menu.pf-v6-x-u-position-absolute {
+    left: 0;
+    width: 100%;
+  }
+}
