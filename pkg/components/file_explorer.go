@@ -855,7 +855,8 @@ func (c *FileExplorer) Render() app.UI {
 												Class("pf-v6-c-form pf-m-horizontal pf-v6-u-mb-md").
 												Body(
 													&FormGroup{
-														NoTopPadding: true,
+														NoTopPadding:     true,
+														NoControlWrapper: true,
 														Label: app.Label().
 															For("use-advertised-ip-for-webdav").
 															Class("pf-v6-c-form__label").
@@ -878,7 +879,8 @@ func (c *FileExplorer) Render() app.UI {
 														},
 													},
 													&FormGroup{
-														NoTopPadding: true,
+														NoTopPadding:     true,
+														NoControlWrapper: true,
 														Label: app.Label().
 															For("use-davs").
 															Class("pf-v6-c-form__label").
@@ -1015,7 +1017,8 @@ func (c *FileExplorer) Render() app.UI {
 												Class("pf-v6-c-form pf-m-horizontal pf-v6-u-mb-md").
 												Body(
 													&FormGroup{
-														NoTopPadding: true,
+														NoTopPadding:     true,
+														NoControlWrapper: true,
 														Label: app.Label().
 															For("use-advertised-ip").
 															Class("pf-v6-c-form__label").
@@ -1038,7 +1041,8 @@ func (c *FileExplorer) Render() app.UI {
 														},
 													},
 													&FormGroup{
-														NoTopPadding: true,
+														NoTopPadding:     true,
+														NoControlWrapper: true,
 														Label: app.Label().
 															For("use-https").
 															Class("pf-v6-c-form__label").

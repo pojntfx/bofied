@@ -5,10 +5,11 @@ import "github.com/maxence-charriere/go-app/v10/pkg/app"
 type FormGroup struct {
 	app.Compo
 
-	Required     bool
-	Label        app.UI
-	Input        app.UI
-	NoTopPadding bool
+	Required         bool
+	Label            app.UI
+	Input            app.UI
+	NoTopPadding     bool
+	NoControlWrapper bool
 }
 
 func (c *FormGroup) Render() app.UI {
@@ -38,12 +39,20 @@ func (c *FormGroup) Render() app.UI {
 			app.Div().
 				Class("pf-v6-c-form__group-control").
 				Body(
-					app.
-						Span().
-						Class("pf-v6-c-form-control").
-						Body(
-							c.Input,
-						),
+					app.If(
+						c.NoControlWrapper,
+						func() app.UI {
+							return c.Input
+						},
+					).Else(
+						func() app.UI {
+							return app.
+								Span().
+								Class("pf-v6-c-form-control").
+								Body(
+									c.Input,
+								)
+						}),
 				),
 		)
 }

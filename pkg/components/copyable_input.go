@@ -16,7 +16,11 @@ func (c *CopyableInput) Render() app.UI {
 			app.Div().
 				Class("pf-v6-c-clipboard-copy__group").
 				Body(
-					c.Component,
+					app.Span().
+						Class("pf-v6-c-form-control").
+						Body(
+							c.Component,
+						),
 					app.Button().
 						Class("pf-v6-c-button pf-m-control").
 						Type("button").

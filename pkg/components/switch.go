@@ -34,7 +34,7 @@ func (c *Switch) Render() app.UI {
 			app.Span().
 				Class("pf-v6-c-switch__toggle"),
 			app.If(
-				c.OnMessage != "",
+				c.OnMessage != "" && c.Open,
 				func() app.UI {
 					return app.Span().
 						Class("pf-v6-c-switch__label pf-m-on").
@@ -44,7 +44,7 @@ func (c *Switch) Render() app.UI {
 				},
 			),
 			app.If(
-				c.OffMessage != "",
+				c.OffMessage != "" && !c.Open,
 				func() app.UI {
 					return app.Span().
 						Class("pf-v6-c-switch__label pf-m-off").
