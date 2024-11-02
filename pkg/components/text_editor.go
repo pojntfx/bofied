@@ -35,62 +35,68 @@ func (c *TextEditor) Render() app.UI {
 				Class("pf-v6-c-code-editor__header").
 				Body(
 					app.Div().
-						Class("pf-v6-c-code-editor__controls").
+						Class("pf-v6-c-code-editor__header-content").
 						Body(
-							app.If(
-								c.Format != nil,
-								func() app.UI {
-									return app.Button().
-										Class("pf-v6-c-button pf-m-control").
-										Type("button").
-										Aria("label", "Format").
-										Title("Format").
-										OnClick(func(ctx app.Context, e app.Event) {
-											c.Format()
-										}).
-										Body(
-											app.I().
-												Class("fas fa-align-left").
-												Aria("hidden", true),
-										)
-								},
-							),
-							app.If(
-								c.Refresh != nil,
-								func() app.UI {
-									return app.Button().
-										Class("pf-v6-c-button pf-m-control").
-										Type("button").
-										Aria("label", "Refresh").
-										Title("Refresh").
-										OnClick(func(ctx app.Context, e app.Event) {
-											c.Refresh()
-										}).
-										Body(
-											app.I().
-												Class("fas fas fa-sync").
-												Aria("hidden", true),
-										)
-								},
-							),
-							app.If(
-								c.Save != nil,
-								func() app.UI {
-									return app.Button().
-										Class("pf-v6-c-button pf-m-control").
-										Type("button").
-										Aria("label", "Save").
-										Title("Save").
-										OnClick(func(ctx app.Context, e app.Event) {
-											c.Save()
-										}).
-										Body(
-											app.I().
-												Class("fas fas fa-save").
-												Aria("hidden", true),
-										)
-								},
-							),
+							app.Div().
+								Class("pf-v6-c-code-editor__controls").
+								Body(
+									app.If(
+										c.Format != nil,
+										func() app.UI {
+											return app.Button().
+												Class("pf-v6-c-button pf-m-plain").
+												Type("button").
+												Aria("label", "Format").
+												Title("Format").
+												OnClick(func(ctx app.Context, e app.Event) {
+													c.Format()
+												}).
+												Body(
+													app.I().
+														Class("fas fa-align-left").
+														Aria("hidden", true),
+												)
+										},
+									),
+									app.If(
+										c.Refresh != nil,
+										func() app.UI {
+											return app.Button().
+												Class("pf-v6-c-button pf-m-plain").
+												Type("button").
+												Aria("label", "Refresh").
+												Title("Refresh").
+												OnClick(func(ctx app.Context, e app.Event) {
+													c.Refresh()
+												}).
+												Body(
+													app.I().
+														Class("fas fas fa-sync").
+														Aria("hidden", true),
+												)
+										},
+									),
+									app.If(
+										c.Save != nil,
+										func() app.UI {
+											return app.Button().
+												Class("pf-v6-c-button pf-m-plain").
+												Type("button").
+												Aria("label", "Save").
+												Title("Save").
+												OnClick(func(ctx app.Context, e app.Event) {
+													c.Save()
+												}).
+												Body(
+													app.I().
+														Class("fas fas fa-save").
+														Aria("hidden", true),
+												)
+										},
+									),
+								),
+							app.Div().
+								Class("pf-v6-c-code-editor__header-main"),
 						),
 					app.If(
 						c.Language != "",
