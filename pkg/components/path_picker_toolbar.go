@@ -25,13 +25,13 @@ type PathPickerToolbar struct {
 
 func (c *PathPickerToolbar) Render() app.UI {
 	return app.Div().
-		Class("pf-v6-c-toolbar pf-v6-u-pt-0").
+		Class("pf-v6-c-toolbar pf-v6-u-py-0").
 		Body(
 			app.Div().
 				Class("pf-v6-c-toolbar__content pf-v6-x-m-gap-md").
 				Body(
 					app.Div().
-						Class("pf-v6-c-toolbar__content-section").
+						Class("pf-v6-c-toolbar__content-section pf-v6-u-align-items-center").
 						Body(
 							app.Div().
 								Class("pf-v6-c-toolbar__item pf-m-overflow-menu").

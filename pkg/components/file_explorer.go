@@ -143,13 +143,13 @@ func (c *FileExplorer) Render() app.UI {
 						Class("pf-v6-c-card__title").
 						Body(
 							app.Div().
-								Class("pf-v6-c-toolbar pf-v6-u-pt-0").
+								Class("pf-v6-c-toolbar pf-v6-u-py-0").
 								Body(
 									app.Div().
 										Class("pf-v6-c-toolbar__content").
 										Body(
 											app.Div().
-												Class("pf-v6-c-toolbar__content-section pf-v6-x-m-gap-md").
+												Class("pf-v6-c-toolbar__content-section pf-v6-x-m-gap-md pf-v6-u-align-items-center").
 												Body(
 													app.Div().
 														Class("pf-v6-c-toolbar__item pf-m-overflow-menu").
