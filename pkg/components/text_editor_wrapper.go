@@ -20,7 +20,7 @@ func (c *TextEditorWrapper) Render() app.UI {
 		Class("pf-v6-c-card pf-m-plain pf-v6-u-h-100").
 		Body(
 			app.Div().
-				Class("pf-v6-c-card__header pf-v6-x-m-gap-md").
+				Class("pf-v6-c-card__header").
 				Body(
 					app.If(
 						c.HelpLink != "",
@@ -34,16 +34,28 @@ func (c *TextEditorWrapper) Render() app.UI {
 										Target("_blank").
 										Href(c.HelpLink).
 										Body(
-											app.I().
-												Class("fas fa-question-circle").
-												Aria("hidden", true),
+											app.Span().
+												Class("pf-v6-c-menu-toggle__text").
+												Body(
+													app.I().
+														Class("fas fa-question-circle").
+														Aria("hidden", true),
+												),
 										),
 								)
 						},
 					),
 					app.Div().
-						Class("pf-v6-c-card__title").
-						Text(c.Title),
+						Class("pf-v6-c-card__header-main").
+						Body(
+							app.Div().
+								Class("pf-v6-c-card__title").
+								Body(
+									app.H2().
+										Class("pf-v6-c-card__title-text").
+										Text(c.Title),
+								),
+						),
 				),
 			app.Div().
 				Class("pf-v6-c-card__body").
