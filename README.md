@@ -1,6 +1,6 @@
-# bofied
+<img alt="Project icon" style="vertical-align: middle;" src="./docs/icon.svg" width="128" height="128" align="left">
 
-https://user-images.githubusercontent.com/28832235/117546130-42745500-b029-11eb-804d-134ff5049ccc.mp4
+# bofied
 
 Modern network boot server.
 

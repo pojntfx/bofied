@@ -12,9 +12,13 @@ type AboutModal struct {
 
 	ID string
 
-	LogoSrc string
-	LogoAlt string
-	Title   string
+	LogoDarkSrc string
+	LogoDarkAlt string
+
+	LogoLightSrc string
+	LogoLightAlt string
+
+	Title string
 
 	Body   app.UI
 	Footer string
@@ -48,9 +52,14 @@ func (c *AboutModal) Render() app.UI {
 										Class("pf-v6-c-about-modal-box__brand").
 										Body(
 											app.Img().
-												Class("pf-v6-c-about-modal-box__brand-image").
-												Src(c.LogoSrc).
-												Alt(c.LogoAlt),
+												Class("pf-v6-c-about-modal-box__brand-image pf-v6-c-brand--dark").
+												Src(c.LogoDarkSrc).
+												Alt(c.LogoDarkAlt),
+
+											app.Img().
+												Class("pf-v6-c-about-modal-box__brand-image pf-v6-c-brand--light").
+												Src(c.LogoLightSrc).
+												Alt(c.LogoLightAlt),
 										),
 									app.Div().
 										Class("pf-v6-c-about-modal-box__close").

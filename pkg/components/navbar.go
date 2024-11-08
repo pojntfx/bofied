@@ -39,15 +39,15 @@ func (c *Navbar) Render() app.UI {
 					app.Div().
 						Class("pf-v6-c-masthead__brand").
 						Body(
-							app.A().
-								Href("#").
-								Class("pf-v6-c-page__header-brand-link").
-								Body(
-									app.Img().
-										Class("pf-v6-c-brand pf-v6-x-c-brand--nav").
-										Src("/web/logo.svg").
-										Alt("Logo"),
-								),
+							app.Img().
+								Class("pf-v6-c-brand pf-v6-x-c-brand--nav pf-v6-c-brand--dark").
+								Src("/web/logo-dark.png").
+								Alt("bofied Logo (dark variant)"),
+
+							app.Img().
+								Class("pf-v6-c-brand pf-v6-x-c-brand--nav pf-v6-c-brand--light").
+								Src("/web/logo-light.png").
+								Alt("bofied Logo (light variant)"),
 						),
 				),
 			app.Div().

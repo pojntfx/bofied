@@ -33,7 +33,12 @@ func (c *Home) Render() app.UI {
 									// Configuration shell
 									if ipcp.Error != nil {
 										return &SetupShell{
-											LogoSrc:          "/web/logo.svg",
+											LogoDarkSrc: "/web/logo-dark.png",
+											LogoDarkAlt: "bofied Logo (dark variant)",
+
+											LogoLightSrc: "/web/logo-light.png",
+											LogoLightAlt: "bofied Logo (light variant)",
+
 											Title:            "Log in to bofied",
 											ShortDescription: "Modern network boot server.",
 											LongDescription:  `bofied is a network boot server. It provides everything you need to PXE boot a node, from a (proxy)DHCP server for PXE service to a TFTP and HTTP server to serve boot files.`,
@@ -145,7 +150,12 @@ func (c *Home) Render() app.UI {
 						func() app.UI {
 							// Configuration shell
 							return &SetupShell{
-								LogoSrc:          "/web/logo.svg",
+								LogoDarkSrc: "/web/logo-dark.png",
+								LogoDarkAlt: "bofied Logo (dark variant)",
+
+								LogoLightSrc: "/web/logo-light.png",
+								LogoLightAlt: "bofied Logo (light variant)",
+
 								Title:            "Log in to bofied",
 								ShortDescription: "Modern network boot server.",
 								LongDescription:  `bofied is a network boot server. It provides everything you need to PXE boot a node, from a (proxy)DHCP server for PXE service to a TFTP and HTTP server to serve boot files.`,

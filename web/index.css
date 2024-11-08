@@ -59,3 +59,15 @@
     width: 100%;
   }
 }
+
+@media (prefers-color-scheme: light) {
+  .pf-v6-c-brand--dark {
+    display: none;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .pf-v6-c-brand--light {
+    display: none;
+  }
+}

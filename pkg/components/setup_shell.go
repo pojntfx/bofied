@@ -7,7 +7,12 @@ import (
 type SetupShell struct {
 	app.Compo
 
-	LogoSrc          string
+	LogoDarkSrc string
+	LogoDarkAlt string
+
+	LogoLightSrc string
+	LogoLightAlt string
+
 	Title            string
 	ShortDescription string
 	LongDescription  string
@@ -83,9 +88,14 @@ func (c *SetupShell) Render() app.UI {
 								Class("pf-v6-c-login__header").
 								Body(
 									app.Img().
-										Class("pf-v6-c-brand pf-v6-x-c-brand--main").
-										Src(c.LogoSrc).
-										Alt("Logo"),
+										Class("pf-v6-c-brand pf-v6-x-c-brand--main pf-v6-c-brand--dark").
+										Src(c.LogoDarkSrc).
+										Alt(c.LogoDarkAlt),
+
+									app.Img().
+										Class("pf-v6-c-brand pf-v6-x-c-brand--main pf-v6-c-brand--light").
+										Src(c.LogoLightSrc).
+										Alt(c.LogoLightAlt),
 								),
 							app.Main().
 								Class("pf-v6-c-login__main").

@@ -338,9 +338,13 @@ func (c *DataShell) Render() app.UI {
 
 						ID: "about-modal-title",
 
-						LogoSrc: "/web/logo.svg",
-						LogoAlt: "Logo",
-						Title:   "bofied",
+						LogoDarkSrc: "/web/logo-dark.png",
+						LogoDarkAlt: "bofied Logo (dark variant)",
+
+						LogoLightSrc: "/web/logo-light.png",
+						LogoLightAlt: "bofied Logo (light variant)",
+
+						Title: "bofied",
 
 						Body: app.Dl().
 							Body(
