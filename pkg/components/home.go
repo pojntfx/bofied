@@ -7,6 +7,8 @@ import (
 
 type Home struct {
 	app.Compo
+
+	removeEventListener func()
 }
 
 func (c *Home) Render() app.UI {
@@ -183,5 +185,46 @@ func (c *Home) Render() app.UI {
 					),
 				)
 		},
+	}
+}
+
+func (c *Home) OnMount(ctx app.Context) {
+	darkModeMediaQuery := app.Window().Call("matchMedia", "(prefers-color-scheme: dark)")
+
+	updateTheme := func() {
+		app.
+			Window().
+			Get("document").
+			Get("documentElement").
+			Get("classList").
+			Call("toggle", "pf-v6-theme-dark", darkModeMediaQuery.Get("matches"))
+	}
+
+	updateThemeEventListener := app.FuncOf(func(this app.Value, args []app.Value) any {
+		updateTheme()
+
+		return nil
+	})
+
+	darkModeMediaQuery.Call(
+		"addEventListener",
+		"change",
+		updateThemeEventListener,
+	)
+
+	c.removeEventListener = func() {
+		darkModeMediaQuery.Call(
+			"removeEventListener",
+			"change",
+			updateThemeEventListener,
+		)
+	}
+
+	updateTheme()
+}
+
+func (c *Home) OnDismount() {
+	if c.removeEventListener != nil {
+		c.removeEventListener()
 	}
 }
