@@ -139,9 +139,8 @@ func (c *FileExplorer) Render() app.UI {
 			app.Div().
 				Class("pf-v6-c-card pf-m-plain pf-v6-u-h-100").
 				Body(
-					app.Div().
-						Class("pf-v6-c-card__title").
-						Body(
+					app.Div().Class("pf-v6-c-card__header").Body(
+						app.Div().Class("pf-v6-c-card__actions").Body(
 							app.Div().
 								Class("pf-v6-c-toolbar pf-v6-u-py-0").
 								Body(
@@ -151,37 +150,6 @@ func (c *FileExplorer) Render() app.UI {
 											app.Div().
 												Class("pf-v6-c-toolbar__content-section pf-v6-x-m-gap-md pf-v6-u-align-items-center").
 												Body(
-													app.Div().
-														Class("pf-v6-c-toolbar__item pf-m-overflow-menu").
-														Body(
-															app.Div().
-																Class("pf-v6-c-overflow-menu").
-																Body(
-																	app.Div().
-																		Class("pf-v6-c-overflow-menu__content").
-																		Body(
-																			app.Div().
-																				Class("pf-v6-c-overflow-menu__group pf-m-button-group").
-																				Body(
-																					app.Div().
-																						Class("pf-v6-c-overflow-menu__item").
-																						Body(
-																							&Breadcrumbs{
-																								PathComponents: pathComponents,
-
-																								CurrentPath:    c.CurrentPath,
-																								SetCurrentPath: c.SetCurrentPath,
-
-																								SelectedPath: c.selectedPath,
-																								SetSelectedPath: func(s string) {
-																									c.selectedPath = s
-																								},
-																							},
-																						),
-																				),
-																		),
-																),
-														),
 													app.Div().
 														Class("pf-v6-c-toolbar__item pf-m-pagination").
 														Body(
@@ -682,47 +650,63 @@ func (c *FileExplorer) Render() app.UI {
 										),
 								),
 						),
-					app.Div().
-						Class("pf-v6-c-card__body").
-						Body(
-							app.If(
-								len(c.Index) > 0,
-								func() app.UI {
-									return &FileGrid{
-										Index: c.Index,
+						app.Div().Class("pf-v6-c-card__header-main").Body(
+							app.Div().Class("pf-v6-c-card__title").Body(
+								&Breadcrumbs{
+									PathComponents: pathComponents,
 
-										SelectedPath: c.selectedPath,
-										SetSelectedPath: func(s string) {
-											c.selectedPath = s
-										},
+									CurrentPath:    c.CurrentPath,
+									SetCurrentPath: c.SetCurrentPath,
 
-										CurrentPath:    c.CurrentPath,
-										SetCurrentPath: c.SetCurrentPath,
-									}
-								},
-							).Else(
-								func() app.UI {
-									return &EmptyState{
-										Action: app.Button().
-											Class("pf-v6-c-button pf-m-primary").
-											Type("button").
-											OnClick(func(ctx app.Context, e app.Event) {
-												c.uploadModalOpen = true
-											}).
-											Body(
-												app.Span().
-													Class("pf-v6-c-button__icon pf-m-start").
-													Body(
-														app.I().
-															Class("fas fa-cloud-upload-alt").
-															Aria("hidden", true),
-													),
-												app.Text("Upload File"),
-											),
-									}
+									SelectedPath: c.selectedPath,
+									SetSelectedPath: func(s string) {
+										c.selectedPath = s
+									},
+
+									ItemClass: "pf-v6-c-card__title-text",
 								},
 							),
 						),
+					),
+					app.Div().Class("pf-v6-c-card__body").Body(
+						app.If(
+							len(c.Index) > 0,
+							func() app.UI {
+								return &FileGrid{
+									Index: c.Index,
+
+									SelectedPath: c.selectedPath,
+									SetSelectedPath: func(s string) {
+										c.selectedPath = s
+									},
+
+									CurrentPath:    c.CurrentPath,
+									SetCurrentPath: c.SetCurrentPath,
+								}
+							},
+						).Else(
+							func() app.UI {
+								return &EmptyState{
+									Action: app.Button().
+										Class("pf-v6-c-button pf-m-primary").
+										Type("button").
+										OnClick(func(ctx app.Context, e app.Event) {
+											c.uploadModalOpen = true
+										}).
+										Body(
+											app.Span().
+												Class("pf-v6-c-button__icon pf-m-start").
+												Body(
+													app.I().
+														Class("fas fa-cloud-upload-alt").
+														Aria("hidden", true),
+												),
+											app.Text("Upload File"),
+										),
+								}
+							},
+						),
+					),
 				),
 
 			&Modal{
