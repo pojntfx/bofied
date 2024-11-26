@@ -16,6 +16,8 @@ type Breadcrumbs struct {
 
 	SelectedPath    string
 	SetSelectedPath func(string)
+
+	ItemClass string
 }
 
 func (c *Breadcrumbs) Render() app.UI {
@@ -27,7 +29,7 @@ func (c *Breadcrumbs) Render() app.UI {
 				Class("pf-v6-c-breadcrumb__list pf-v6-u-font-weight-bold").
 				Body(
 					app.Li().
-						Class("pf-v6-c-breadcrumb__item").
+						Class("pf-v6-c-breadcrumb__item", c.ItemClass).
 						Body(
 							app.Span().
 								Class("pf-v6-c-breadcrumb__item-divider").
@@ -57,7 +59,7 @@ func (c *Breadcrumbs) Render() app.UI {
 						}
 
 						return app.Li().
-							Class("pf-v6-c-breadcrumb__item").
+							Class("pf-v6-c-breadcrumb__item", c.ItemClass).
 							Body(
 								app.Span().
 									Class("pf-v6-c-breadcrumb__item-divider").
