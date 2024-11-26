@@ -285,12 +285,19 @@ func (c *DataShell) Render() app.UI {
 																		app.Div().
 																			Class("pf-v6-c-empty-state__content").
 																			Body(
-																				app.I().
-																					Class("fas fa-inbox pf-v6-c-empty-state__icon").
-																					Aria("hidden", true),
-																				app.H1().
-																					Class("pf-v6-c-title pf-m-lg").
-																					Text("No events yet"),
+																				app.Div().
+																					Class("pf-v6-c-empty-state__header").
+																					Body(
+																						app.I().
+																							Class("fas fa-inbox pf-v6-c-empty-state__icon").
+																							Aria("hidden", true),
+																						app.Div().
+																							Class("pf-v6-c-empty-state__title").Body(
+																							app.H2().
+																								Class("pf-v6-c-empty-state__title-text").
+																								Text("No events yet"),
+																						),
+																					),
 																				app.Div().
 																					Class("pf-v6-c-empty-state__body").
 																					Text("Network boot a node to see events here."),
