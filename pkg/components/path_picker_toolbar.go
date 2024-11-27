@@ -94,9 +94,13 @@ func (c *PathPickerToolbar) Render() app.UI {
 																							c.OpenCreateDirectoryModal()
 																						}).
 																						Body(
-																							app.I().
-																								Class("fas fa-folder-plus").
-																								Aria("hidden", true),
+																							app.Span().
+																								Class("pf-v6-c-button__icon").
+																								Body(
+																									app.I().
+																										Class("fas fa-folder-plus").
+																										Aria("hidden", true),
+																								),
 																						),
 																				),
 																		),
@@ -119,9 +123,13 @@ func (c *PathPickerToolbar) Render() app.UI {
 																					c.RefreshIndex()
 																				}).
 																				Body(
-																					app.I().
-																						Class("fas fas fa-sync").
-																						Aria("hidden", true),
+																					app.Span().
+																						Class("pf-v6-c-button__icon").
+																						Body(
+																							app.I().
+																								Class("fas fas fa-sync").
+																								Aria("hidden", true),
+																						),
 																				),
 																		),
 																),

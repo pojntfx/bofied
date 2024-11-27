@@ -53,9 +53,13 @@ func (c *UpdateNotification) Render() app.UI {
 											c.updateIgnored = true
 										}).
 										Body(
-											app.I().
-												Class("fas fa-times").
-												Aria("hidden", true),
+											app.Span().
+												Class("pf-v6-c-button__icon").
+												Body(
+													app.I().
+														Class("fas fa-times").
+														Aria("hidden", true),
+												),
 										),
 								),
 							app.If(

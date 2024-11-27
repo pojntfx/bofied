@@ -35,7 +35,7 @@ func (c *TextEditorWrapper) Render() app.UI {
 										Href(c.HelpLink).
 										Body(
 											app.Span().
-												Class("pf-v6-c-menu-toggle__text").
+												Class("pf-v6-c-menu-toggle__text pf-v6-c-button__icon").
 												Body(
 													app.I().
 														Class("fas fa-question-circle").
@@ -100,9 +100,13 @@ func (c *TextEditorWrapper) Render() app.UI {
 													c.Ignore()
 												}).
 												Body(
-													app.I().
-														Class("fas fa-times").
-														Aria("hidden", true),
+													app.Span().
+														Class("pf-v6-c-button__icon").
+														Body(
+															app.I().
+																Class("fas fa-times").
+																Aria("hidden", true),
+														),
 												),
 										),
 									app.Div().

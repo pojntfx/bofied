@@ -32,9 +32,13 @@ func (c *CopyableInput) Render() app.UI {
 							app.Window().JSValue().Get("document").Call("execCommand", "copy")
 						}).
 						Body(
-							app.I().
-								Class("fas fa-copy").
-								Aria("hidden", true),
+							app.Span().
+								Class("pf-v6-c-button__icon").
+								Body(
+									app.I().
+										Class("fas fa-copy").
+										Aria("hidden", true),
+								),
 						),
 				),
 		)

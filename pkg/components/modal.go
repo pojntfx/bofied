@@ -76,9 +76,13 @@ func (c *Modal) Render() app.UI {
 											c.Close()
 										}).
 										Body(
-											app.I().
-												Class("fas fa-times").
-												Aria("hidden", true),
+											app.Span().
+												Class("pf-v6-c-button__icon").
+												Body(
+													app.I().
+														Class("fas fa-times").
+														Aria("hidden", true),
+												),
 										),
 								),
 							app.Header().

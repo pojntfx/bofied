@@ -97,9 +97,13 @@ func (c *Navbar) Render() app.UI {
 																	app.Span().
 																		Class("pf-v6-c-button__icon").
 																		Body(
-																			app.I().
-																				Class("fas fa-bell").
-																				Aria("hidden", true),
+																			app.Span().
+																				Class("pf-v6-c-button__icon").
+																				Body(
+																					app.I().
+																						Class("fas fa-bell").
+																						Aria("hidden", true),
+																				),
 																		),
 																),
 														),

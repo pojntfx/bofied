@@ -52,9 +52,13 @@ func (c *TextEditor) Render() app.UI {
 													c.Format()
 												}).
 												Body(
-													app.I().
-														Class("fas fa-align-left").
-														Aria("hidden", true),
+													app.Span().
+														Class("pf-v6-c-button__icon").
+														Body(
+															app.I().
+																Class("fas fa-align-left").
+																Aria("hidden", true),
+														),
 												)
 										},
 									),
@@ -70,9 +74,13 @@ func (c *TextEditor) Render() app.UI {
 													c.Refresh()
 												}).
 												Body(
-													app.I().
-														Class("fas fas fa-sync").
-														Aria("hidden", true),
+													app.Span().
+														Class("pf-v6-c-button__icon").
+														Body(
+															app.I().
+																Class("fas fas fa-sync").
+																Aria("hidden", true),
+														),
 												)
 										},
 									),
@@ -88,9 +96,13 @@ func (c *TextEditor) Render() app.UI {
 													c.Save()
 												}).
 												Body(
-													app.I().
-														Class("fas fas fa-save").
-														Aria("hidden", true),
+													app.Span().
+														Class("pf-v6-c-button__icon").
+														Body(
+															app.I().
+																Class("fas fas fa-save").
+																Aria("hidden", true),
+														),
 												)
 										},
 									),
