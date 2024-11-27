@@ -71,3 +71,7 @@
     display: none;
   }
 }
+
+.pf-v6-x-dropdown-menu {
+  z-index: 100;
+}
