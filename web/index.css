@@ -75,3 +75,11 @@
 .pf-v6-x-dropdown-menu {
   z-index: 100;
 }
+
+.pf-v6-c-breadcrumb__list {
+  flex-wrap: nowrap;
+}
+
+.pf-v6-c-breadcrumb__link {
+  white-space: nowrap;
+}
