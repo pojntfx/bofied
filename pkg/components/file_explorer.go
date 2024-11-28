@@ -154,6 +154,60 @@ func (c *FileExplorer) Render() app.UI {
 															app.If(
 																c.selectedPath != "",
 																func() app.UI {
+																	return app.Div().
+																		Class("pf-v6-c-toolbar__item pf-v6-u-display-none pf-v6-u-display-flex-on-lg").
+																		Body(
+																			app.Button().
+																				Type("button").
+																				Aria("label", "Share file").
+																				Title("Share file").
+																				Class("pf-v6-c-button pf-m-plain").
+																				OnClick(func(ctx app.Context, e app.Event) {
+																					c.sharePath()
+																				}).
+																				Body(
+																					app.Span().
+																						Class("pf-v6-c-button__icon").
+																						Body(
+																							app.I().
+																								Class("fas fa-share-alt").
+																								Aria("hidden", true),
+																						),
+																				),
+																		)
+																},
+															),
+
+															app.If(
+																c.selectedPath != "",
+																func() app.UI {
+																	return app.Div().
+																		Class("pf-v6-c-toolbar__item pf-v6-u-display-none pf-v6-u-display-flex-on-lg").
+																		Body(
+																			app.Button().
+																				Type("button").
+																				Aria("label", "Delete file").
+																				Title("Delete file").
+																				Class("pf-v6-c-button pf-m-plain").
+																				OnClick(func(ctx app.Context, e app.Event) {
+																					c.deleteFile()
+																				}).
+																				Body(
+																					app.Span().
+																						Class("pf-v6-c-button__icon").
+																						Body(
+																							app.I().
+																								Class("fas fa-trash").
+																								Aria("hidden", true),
+																						),
+																				),
+																		)
+																},
+															),
+
+															app.If(
+																c.selectedPath != "",
+																func() app.UI {
 																	return app.Div().Class("pf-v6-c-toolbar__item").
 																		Body(
 																			app.Div().
@@ -230,7 +284,7 @@ func (c *FileExplorer) Render() app.UI {
 																												},
 																											),
 																											app.Li().
-																												Class("pf-v6-c-menu__list-item").
+																												Class("pf-v6-c-menu__list-item pf-v6-u-display-inherit pf-v6-u-display-none-on-lg").
 																												Role("none").
 																												Body(
 																													app.Button().
@@ -258,7 +312,7 @@ func (c *FileExplorer) Render() app.UI {
 																														}),
 																												),
 																											app.Li().
-																												Class("pf-v6-c-menu__list-item").
+																												Class("pf-v6-c-menu__list-item pf-v6-u-display-inherit pf-v6-u-display-none-on-lg").
 																												Role("none").
 																												Body(
 																													app.Button().
@@ -287,7 +341,16 @@ func (c *FileExplorer) Render() app.UI {
 																												),
 
 																											app.Li().
-																												Class("pf-v6-c-divider").
+																												Class(func() string {
+																													base := "pf-v6-c-divider"
+
+																													// Always show the divider if we have an editable file selected, else make it responsive
+																													if selectedPathContentType == "" {
+																														base += " pf-v6-u-display-inherit pf-v6-u-display-none-on-lg"
+																													}
+
+																													return base
+																												}()).
 																												Role("separator"),
 
 																											app.Li().
@@ -358,6 +421,128 @@ func (c *FileExplorer) Render() app.UI {
 																															c.rename()
 																														}),
 																												),
+
+																											app.Li().
+																												Class("pf-v6-c-divider pf-v6-u-display-inherit pf-v6-u-display-none-on-lg").
+																												Role("separator"),
+
+																											app.Li().
+																												Class("pf-v6-c-menu__list-item pf-v6-u-display-inherit pf-v6-u-display-none-on-lg").
+																												Role("none").
+																												Body(
+																													app.Button().
+																														Class("pf-v6-c-menu__item").
+																														Type("button").
+																														Aria("role", "menuitem").
+																														Body(
+																															app.Span().
+																																Class("pf-v6-c-menu__item-main").
+																																Body(
+																																	app.Span().
+																																		Class("pf-v6-c-menu__item-icon").
+																																		Body(
+																																			app.I().
+																																				Class("fas fa-folder-plus").
+																																				Aria("hidden", true),
+																																		),
+																																	app.Span().
+																																		Class("pf-v6-c-menu__item-text").
+																																		Text("Create directory"),
+																																),
+																														).
+																														OnClick(func(ctx app.Context, e app.Event) {
+																															c.createDirectory()
+																														}),
+																												),
+																											app.Li().
+																												Class("pf-v6-c-menu__list-item pf-v6-u-display-inherit pf-v6-u-display-none-on-lg").
+																												Role("none").
+																												Body(
+																													app.Button().
+																														Class("pf-v6-c-menu__item").
+																														Type("button").
+																														Aria("role", "menuitem").
+																														Body(
+																															app.Span().
+																																Class("pf-v6-c-menu__item-main").
+																																Body(
+																																	app.Span().
+																																		Class("pf-v6-c-menu__item-icon").
+																																		Body(
+																																			app.I().
+																																				Class("fas fa-pen-square").
+																																				Aria("hidden", true),
+																																		),
+																																	app.Span().
+																																		Class("pf-v6-c-menu__item-text").
+																																		Text("Create empty file"),
+																																),
+																														).
+																														OnClick(func(ctx app.Context, e app.Event) {
+																															c.createEmptyFile()
+																														}),
+																												),
+																											app.Li().
+																												Class("pf-v6-c-menu__list-item pf-v6-u-display-inherit pf-v6-u-display-none-on-lg").
+																												Role("none").
+																												Body(
+																													app.Button().
+																														Class("pf-v6-c-menu__item").
+																														Type("button").
+																														Aria("role", "menuitem").
+																														Body(
+																															app.Span().
+																																Class("pf-v6-c-menu__item-main").
+																																Body(
+																																	app.Span().
+																																		Class("pf-v6-c-menu__item-icon").
+																																		Body(
+																																			app.I().
+																																				Class("fas fa-cloud-upload-alt").
+																																				Aria("hidden", true),
+																																		),
+																																	app.Span().
+																																		Class("pf-v6-c-menu__item-text").
+																																		Text("Upload file"),
+																																),
+																														).
+																														OnClick(func(ctx app.Context, e app.Event) {
+																															c.uploadFile()
+																														}),
+																												),
+
+																											app.Li().
+																												Class("pf-v6-c-divider pf-v6-u-display-inherit pf-v6-u-display-none-on-lg").
+																												Role("separator"),
+
+																											app.Li().
+																												Class("pf-v6-c-menu__list-item pf-v6-u-display-inherit pf-v6-u-display-none-on-lg").
+																												Role("none").
+																												Body(
+																													app.Button().
+																														Class("pf-v6-c-menu__item").
+																														Type("button").
+																														Aria("role", "menuitem").
+																														Body(
+																															app.Span().
+																																Class("pf-v6-c-menu__item-main").
+																																Body(
+																																	app.Span().
+																																		Class("pf-v6-c-menu__item-icon").
+																																		Body(
+																																			app.I().
+																																				Class("fas fas fa-sync").
+																																				Aria("hidden", true),
+																																		),
+																																	app.Span().
+																																		Class("pf-v6-c-menu__item-text").
+																																		Text("Refresh"),
+																																),
+																														).
+																														OnClick(func(ctx app.Context, e app.Event) {
+																															c.refresh()
+																														}),
+																												),
 																										),
 																								),
 																						),
@@ -369,12 +554,12 @@ func (c *FileExplorer) Render() app.UI {
 															app.If(
 																c.selectedPath != "",
 																func() app.UI {
-																	return app.Hr().Class("pf-v6-c-divider pf-m-vertical")
+																	return app.Hr().Class("pf-v6-c-divider pf-m-vertical pf-v6-u-display-none pf-v6-u-display-flex-on-lg")
 																},
 															),
 
 															app.Div().
-																Class("pf-v6-c-toolbar__item").
+																Class("pf-v6-c-toolbar__item pf-v6-u-display-none pf-v6-u-display-flex-on-lg").
 																Body(
 																	app.Button().
 																		Type("button").
@@ -395,7 +580,7 @@ func (c *FileExplorer) Render() app.UI {
 																		),
 																),
 															app.Div().
-																Class("pf-v6-c-toolbar__item").
+																Class("pf-v6-c-toolbar__item pf-v6-u-display-none pf-v6-u-display-flex-on-lg").
 																Body(
 																	app.Button().
 																		Type("button").
@@ -416,7 +601,7 @@ func (c *FileExplorer) Render() app.UI {
 																		),
 																),
 															app.Div().
-																Class("pf-v6-c-toolbar__item").
+																Class("pf-v6-c-toolbar__item pf-v6-u-display-none pf-v6-u-display-flex-on-lg").
 																Body(
 																	app.Button().
 																		Type("button").
@@ -437,10 +622,10 @@ func (c *FileExplorer) Render() app.UI {
 																		),
 																),
 
-															app.Hr().Class("pf-v6-c-divider pf-m-vertical"),
+															app.Hr().Class("pf-v6-c-divider pf-m-vertical pf-v6-u-display-none pf-v6-u-display-flex-on-lg"),
 
 															app.Div().
-																Class("pf-v6-c-toolbar__item").
+																Class("pf-v6-c-toolbar__item pf-v6-u-display-none pf-v6-u-display-flex-on-lg").
 																Body(
 																	app.Button().
 																		Type("button").
