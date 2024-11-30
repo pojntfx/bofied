@@ -1,20 +1,25 @@
 # Build container
-FROM debian AS build
+FROM golang:bookworm AS build
 
 # Setup environment
 RUN mkdir -p /data
 WORKDIR /data
 
+# Install native dependencies
+RUN apt update
+RUN apt install -y protobuf-compiler
+
 # Build the release
 COPY . .
-RUN ./Hydrunfile
+RUN make depend
+RUN make build/cli
 
 # Extract the release
 RUN mkdir -p /out
-RUN cp out/release/bofied-backend/bofied-backend.linux-$(uname -m) /out/bofied-backend
+RUN cp out/bofied-backend /out/bofied-backend
 
 # Release container
-FROM debian
+FROM debian:bookworm
 
 # Add certificates
 RUN apt update
