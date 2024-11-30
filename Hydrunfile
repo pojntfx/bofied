@@ -1,31 +1,97 @@
 #!/bin/bash
 
-# Install native dependencies
-apt update
-apt install -y curl make sudo build-essential protobuf-compiler
+set -e
 
-# Fix certificate authorities on armv7
-export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+# Test CLI
+if [ "$1" = "test/cli" ]; then
+    # Install native dependencies
+    apt update
+    apt install -y make git protobuf-compiler
 
-# Install Go
-VERSION=1.16.4
-FILE=/tmp/go.tar.gz
-if [ "$(uname -m)" = 'x86_64' ]; then
-    curl -L -o ${FILE} https://golang.org/dl/go${VERSION}.linux-amd64.tar.gz
-elif [ "$(uname -m)" = 'armv7l' ]; then
-    curl -L -o ${FILE} https://golang.org/dl/go${VERSION}.linux-armv6l.tar.gz
-else
-    curl -L -o ${FILE} https://golang.org/dl/go${VERSION}.linux-arm64.tar.gz
+    # Configure Git
+    git config --global --add safe.directory '*'
+
+    # Generate dependencies
+    make depend/cli
+
+    # Run tests
+    make test/cli
+
+    exit 0
 fi
-tar -C /usr/local -xzf ${FILE}
-export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
 
-# Install dependencies
-USER=root make depend
+# Test PWA
+if [ "$1" = "test/pwa" ]; then
+    # Install native dependencies
+    apt update
+    apt install -y make git protobuf-compiler
 
-# Make release
-if [ "$1" = 'frontend' ]; then
-    make release-frontend release-frontend-github-pages
-else
-    make release-backend
+    # Configure Git
+    git config --global --add safe.directory '*'
+
+    # Generate dependencies
+    make depend/pwa
+
+    # Run tests
+    make test/pwa
+
+    exit 0
+fi
+
+# Build CLI
+if [ "$1" = "build/cli" ]; then
+    # Install native dependencies
+    apt update
+    apt install -y curl make git protobuf-compiler
+
+    # Install bagop
+    curl -L -o /tmp/bagop "https://github.com/pojntfx/bagop/releases/latest/download/bagop.linux-$(uname -m)"
+    install /tmp/bagop /usr/local/bin
+
+    # Configure Git
+    git config --global --add safe.directory '*'
+
+    # Generate dependencies
+    make depend/cli
+
+    # Build
+    CGO_ENABLED=0 bagop -j "$(nproc)" -b "$2" -x '(android/*|ios/*|plan9/*|aix/*|linux/loong64|freebsd/riscv64|wasip1/wasm)' -p "make build/cli/$2 DST=\$DST" -d out
+
+    exit 0
+fi
+
+# Build PWA
+if [ "$1" = "build/pwa" ]; then
+    # Install native dependencies
+    apt update
+    apt install -y make git protobuf-compiler
+
+    # Configure Git
+    git config --global --add safe.directory '*'
+
+    # Generate dependencies
+    make depend/pwa
+
+    # Build
+    make build/pwa
+
+    exit 0
+fi
+
+# Build PWA (GitHub pages)
+if [ "$1" = "build/pwa-github-pages" ]; then
+    # Install native dependencies
+    apt update
+    apt install -y make git protobuf-compiler
+
+    # Configure Git
+    git config --global --add safe.directory '*'
+
+    # Generate dependencies
+    make depend/pwa
+
+    # Build
+    make build/pwa-github-pages
+
+    exit 0
 fi

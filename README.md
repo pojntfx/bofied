@@ -385,7 +385,7 @@ To build and start a development version of bofied locally, run the following:
 $ git clone https://github.com/pojntfx/bofied.git
 $ cd bofied
 $ make depend
-$ BOFIED_BACKEND_OIDCISSUER=https://pojntfx.eu.auth0.com/ BOFIED_BACKEND_OIDCCLIENTID=myoidcclientid BOFIED_BACKEND_ADVERTISEDIP=192.168.178.147 make dev
+$ BOFIED_BACKEND_OIDCISSUER=https://pojntfx.eu.auth0.com/ BOFIED_BACKEND_OIDCCLIENTID=myoidcclientid BOFIED_BACKEND_ADVERTISEDIP=192.168.178.147 make -j dev
 ```
 
 The backend should now be started and the frontend be available on [http://localhost:15225/](http://localhost:15225/). Whenever you change a source file, the back- and frontend will automatically be re-compiled.
