@@ -38,13 +38,6 @@ jobs:
             cmd: ./Hydrunfile build/cli bofied-backend
             dst: out/*
             runner: ubuntu-latest
-          - id: go.bofied-frontend
-            src: .
-            os: golang:bookworm
-            flags: -e '-v /tmp/ccache:/root/.cache/go-build'
-            cmd: ./Hydrunfile build/cli bofied-frontend
-            dst: out/*
-            runner: ubuntu-latest
           
           # PWAs
           - id: pwa.bofied
