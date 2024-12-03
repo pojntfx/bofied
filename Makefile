@@ -25,20 +25,20 @@ endif
 
 build/pwa:
 	GOOS=js GOARCH=wasm go build -o web/app.wasm cmd/bofied-frontend/main.go
-	go run ./cmd/bofied-frontend/main.go --build
 	rm -rf $(OUTPUT_DIR)/bofied-frontend/
 	mkdir -p $(OUTPUT_DIR)/bofied-frontend/web
+	go run ./cmd/bofied-frontend/main.go --build
 	cp -r web/* $(OUTPUT_DIR)/bofied-frontend/web
-	tar -cvzf $(OUTPUT_DIR)/frontend.tar.gz -C $(OUTPUT_DIR)/bofied-frontend/web .
+	tar -cvzf $(OUTPUT_DIR)/frontend.tar.gz -C $(OUTPUT_DIR)/bofied-frontend .
 
 # Special target for GitHub pages builds
 build/pwa-github-pages:
 	GOOS=js GOARCH=wasm go build -o web/app.wasm cmd/bofied-frontend/main.go
-	go run ./cmd/bofied-frontend/main.go --build --path bofied
 	rm -rf $(OUTPUT_DIR)/bofied-frontend/
 	mkdir -p $(OUTPUT_DIR)/bofied-frontend/web
+	go run ./cmd/bofied-frontend/main.go --build --path bofied
 	cp -r web/* $(OUTPUT_DIR)/bofied-frontend/web
-	tar -cvzf $(OUTPUT_DIR)/frontend.tar.gz -C $(OUTPUT_DIR)/bofied-frontend/web .
+	tar -cvzf $(OUTPUT_DIR)/frontend.tar.gz -C $(OUTPUT_DIR)/bofied-frontend .
 
 # Install
 install: install/cli install/pwa
@@ -75,7 +75,7 @@ run/pwa:
 dev: dev/cli dev/pwa
 
 dev/cli: $(addprefix dev/cli/,$(clis))
-$(addprefix dev/cli/,$(clis)):
+$(addprefix dev/cli/,$(clis)): $(addprefix build/cli/,$(clis))
 	sudo setcap cap_net_bind_service+ep $(OUTPUT_DIR)/$(subst dev/cli/,,$@)
 	$(OUTPUT_DIR)/$(subst dev/cli/,,$@) $(ARGS)
 
