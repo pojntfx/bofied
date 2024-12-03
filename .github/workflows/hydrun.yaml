@@ -38,7 +38,7 @@ jobs:
             cmd: ./Hydrunfile build/cli bofied-backend
             dst: out/*
             runner: ubuntu-latest
-          
+
           # PWAs
           - id: pwa.bofied
             src: .
@@ -93,7 +93,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pages: write
+      id-token: write
     needs: build-linux
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
 
     steps:
       - name: Checkout
