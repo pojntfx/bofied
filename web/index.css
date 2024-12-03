@@ -1,3 +1,55 @@
+:root {
+  --pf-x-base-color: Highlight;
+
+  --pf-t--global--color--brand--100: color-mix(
+    in srgb,
+    var(--pf-x-base-color) 80%,
+    white
+  );
+  --pf-t--global--color--brand--200: var(--pf-x-base-color);
+  --pf-t--global--color--brand--300: color-mix(
+    in srgb,
+    var(--pf-x-base-color) 80%,
+    black
+  );
+  --pf-t--global--color--severity--none--100: var(
+    --pf-t--global--color--brand--100
+  );
+  --pf-t--global--text--color--link--100: var(
+    --pf-t--global--color--brand--100
+  );
+  --pf-t--global--text--color--link--200: var(
+    --pf-t--global--color--brand--200
+  );
+  --pf-t--global--text--color--link--300: var(
+    --pf-t--global--color--brand--300
+  );
+
+  --pf-t--global--dark--color--brand--100: color-mix(
+    in srgb,
+    var(--pf-x-base-color) 80%,
+    white
+  );
+  --pf-t--global--dark--color--brand--200: var(--pf-x-base-color);
+  --pf-t--global--dark--color--brand--300: color-mix(
+    in srgb,
+    var(--pf-x-base-color) 80%,
+    black
+  );
+  --pf-t--global--dark--color--severity--none--100: var(
+    --pf-t--global--dark--color--brand--100
+  );
+  --pf-t--global--dark--text--color--link--100: var(
+    --pf-t--global--dark--color--brand--100
+  );
+  --pf-t--global--dark--text--color--link--200: var(
+    --pf-t--global--dark--color--brand--200
+  );
+  --pf-t--global--dark--text--color--link--300: var(
+    --pf-t--global--dark--color--brand--300
+  );
+}
+
 .pf-v6-x-c-brand--main {
   max-width: 12.5rem;
 }
