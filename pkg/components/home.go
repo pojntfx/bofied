@@ -44,11 +44,11 @@ func (c *Home) Render() app.UI {
 											Title:            "Log in to bofied",
 											ShortDescription: "Modern network boot server.",
 											LongDescription:  `bofied is a network boot server. It provides everything you need to PXE boot a node, from a (proxy)DHCP server for PXE service to a TFTP and HTTP server to serve boot files.`,
-											HelpLink:         "https://github.com/pojntfx/bofied#Usage",
+											HelpLink:         "https://github.com/pojntfx/bofied#tutorial",
 											Links: map[string]string{
 												"License":       "https://github.com/pojntfx/bofied/blob/main/LICENSE",
 												"Source Code":   "https://github.com/pojntfx/bofied",
-												"Documentation": "https://github.com/pojntfx/bofied#Usage",
+												"Documentation": "https://github.com/pojntfx/bofied#tutorial",
 											},
 
 											BackendURL:      cpcp.BackendURL,
@@ -161,11 +161,11 @@ func (c *Home) Render() app.UI {
 								Title:            "Log in to bofied",
 								ShortDescription: "Modern network boot server.",
 								LongDescription:  `bofied is a network boot server. It provides everything you need to PXE boot a node, from a (proxy)DHCP server for PXE service to a TFTP and HTTP server to serve boot files.`,
-								HelpLink:         "https://github.com/pojntfx/bofied#Usage",
+								HelpLink:         "https://github.com/pojntfx/bofied#tutorial",
 								Links: map[string]string{
 									"License":       "https://github.com/pojntfx/bofied/blob/main/LICENSE",
 									"Source Code":   "https://github.com/pojntfx/bofied",
-									"Documentation": "https://github.com/pojntfx/bofied#Usage",
+									"Documentation": "https://github.com/pojntfx/bofied#tutorial",
 								},
 
 								BackendURL:      cpcp.BackendURL,

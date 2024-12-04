@@ -184,7 +184,7 @@ func (c *Navbar) Render() app.UI {
 																									app.A().
 																										Class("pf-v6-c-menu__item").
 																										Target("_blank").
-																										Href("https://github.com/pojntfx/bofied#Usage").
+																										Href("https://github.com/pojntfx/bofied#tutorial").
 																										Aria("role", "menuitem").
 																										Body(
 																											app.Span().

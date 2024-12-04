@@ -8,16 +8,15 @@ Modern network boot server.
 
 [![hydrun CI](https://github.com/pojntfx/bofied/actions/workflows/hydrun.yaml/badge.svg)](https://github.com/pojntfx/bofied/actions/workflows/hydrun.yaml)
 [![Docker CI](https://github.com/pojntfx/bofied/actions/workflows/docker.yaml/badge.svg)](https://github.com/pojntfx/bofied/actions/workflows/docker.yaml)
+![Go Version](https://img.shields.io/badge/go%20version-%3E=1.22-61CFDD.svg)
 [![Go Reference](https://pkg.go.dev/badge/github.com/pojntfx/bofied.svg)](https://pkg.go.dev/github.com/pojntfx/bofied)
 [![Matrix](https://img.shields.io/matrix/bofied:matrix.org)](https://matrix.to/#/#bofied:matrix.org?via=matrix.org)
-[![Docker Pulls](https://img.shields.io/docker/pulls/pojntfx/bofied-backend?label=docker%20pulls)](https://hub.docker.com/r/pojntfx/bofied-backend)
-[![Binary Downloads](https://img.shields.io/github/downloads/pojntfx/bofied/total?label=binary%20downloads)](https://github.com/pojntfx/bofied/releases)
 
 ## Overview
 
 bofied is a network boot server. It provides everything you need to PXE boot a node, from a (proxy)DHCP server for PXE service to a TFTP and HTTP server to serve boot files.
 
-It enables you to ...
+It enables you to:
 
 - **Boot nodes from the network**: Using (proxy)DHCP for PXE service, it can configure nodes which are set to network boot
 - **Serve boot files**: The integrated TFTP and HTTP servers can provide the iPXE network bootloader, Linux distros or other boot files
@@ -53,7 +52,7 @@ The frontend is also available on [GitHub releases](https://github.com/pojntfx/b
 
 [<img src="https://github.com/alphahorizonio/webnetesctl/raw/main/img/launch.png" width="240">](https://pojntfx.github.io/bofied/)
 
-## Usage
+## Tutorial
 
 ### 1. Setting up Authentication
 
@@ -373,7 +372,6 @@ bofied exposes a streaming gRPC and gRPC-Web API for monitoring network boot, wh
 - [pin/tftp](https://github.com/pin/tftp) provides the TFTP functionality for bofied.
 - [studio-b12/gowebdav](https://github.com/studio-b12/gowebdav) provides the WebDAV client for the bofied frontend.
 - The [yaegi Go interpreter](https://github.com/traefik/yaegi) is used to securely evaluate the config script.
-- All the rest of the authors who worked on the dependencies used! Thanks a lot!
 
 ## Contributing
 
@@ -388,7 +386,7 @@ $ make depend
 $ BOFIED_BACKEND_OIDCISSUER=https://pojntfx.eu.auth0.com/ BOFIED_BACKEND_OIDCCLIENTID=myoidcclientid BOFIED_BACKEND_ADVERTISEDIP=192.168.178.147 make -j dev
 ```
 
-The backend should now be started and the frontend be available on [http://localhost:15225/](http://localhost:15225/). Whenever you change a source file, the back- and frontend will automatically be re-compiled.
+The backend should now be started and the frontend be available on [http://localhost:15225/](http://localhost:15225/).
 
 Have any questions or need help? Chat with us [on Matrix](https://matrix.to/#/#bofied:matrix.org?via=matrix.org)!
 
@@ -402,6 +400,6 @@ If you want to have persistent inventory of services and nodes on your network o
 
 ## License
 
-bofied (c) 2021 Felicitas Pojtinger and contributors
+bofied (c) 2024 Felicitas Pojtinger and contributors
 
-SPDX-License-Identifier: AGPL-3.0
+SPDX-License-Identifier: AGPL-3.0-or-later
