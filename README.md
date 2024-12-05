@@ -71,6 +71,8 @@ To self-host, see [contributing](#contributing). A `.tar.gz` archive of the fron
 
 ## Tutorial
 
+> TL;DR: Setup OIDC authentication, configure the backend, start the backend, open up a port on the firewall, and connect using the frontend
+
 ### 1. Setting up Authentication
 
 bofied uses [OpenID Connect](https://en.wikipedia.org/wiki/OpenID_Connect) for authentication, which means you can use almost any authentication provider, both self-hosted and as a service, that you want to. We've created a short tutorial video which shows how to set up [Auth0](https://auth0.com/) for this purpose, but feel free to use something like [Ory](https://github.com/ory/hydra) if you prefer a self-hosted solution:
@@ -103,17 +105,17 @@ $ ip -4 a
 
 In the following, we'll assume that `192.168.178.147` is the IP address of this node.
 
-### 4 (Option 1): Starting the Backend (Containerized)
+### 4. Starting the Backend
 
-Using Docker (or an alternative like Podman), you can now easily start & configure the backend; see the [Reference](#reference) for more configuration parameters:
+Next up is starting the backend. It is available both in containerized and static binary form; see the [Reference](#reference) for more configuration parameters:
 
 <details>
-  <summary>Expand containerized installation instructions</summary>
+  <summary>Expand containerized instructions</summary>
 
 Run the following:
 
-```shell
-$ docker run \
+```console
+$ sudo podman run \
     --name bofied-backend \
     -d \
     --restart always \
@@ -124,28 +126,30 @@ $ docker run \
     -e BOFIED_BACKEND_OIDCCLIENTID=myoidcclientid \
     -e BOFIED_BACKEND_ADVERTISEDIP=192.168.178.147 \
     pojntfx/bofied-backend
+$ sudo podman generate systemd --new bofied-backend | sudo tee /lib/systemd/system/bofied-backend.service
+
+$ sudo systemctl daemon-reload
+
+$ sudo systemctl enable --now bofied-backend
 ```
 
 The logs are available like so:
 
-```shell
-$ docker logs bofied-backend
+```console
+$ journalctl -u bofied-backend
 ```
 
 </details>
 
-### 4 (Option 2): Starting the Backend (Natively)
-
-If you prefer a native setup, a non-containerized installation is also possible.
-
 <details>
-  <summary>Expand native installation instructions</summary>
+  <summary>Expand native instructions</summary>
 
 First, set up a config file at `~/.local/share/bofied/etc/bofied/bofied-backend-config.yaml`; see the [Reference](#reference) for more configuration parameters:
 
-```shell
-$ mkdir -p ~/.local/share/bofied/etc/bofied/
-$ cat <<EOT >~/.local/share/bofied/etc/bofied/bofied-backend-config.yaml
+```console
+$ sudo su
+# mkdir -p ~/.local/share/bofied/etc/bofied/
+# cat <<EOT >~/.local/share/bofied/etc/bofied/bofied-backend-config.yaml
 oidcIssuer: https://pojntfx.eu.auth0.com/
 oidcClientID: myoidcclientid
 advertisedIP: 192.168.178.147
@@ -154,11 +158,10 @@ EOT
 
 Now, create a systemd service for it:
 
-```shell
-$ mkdir -p ~/.config/systemd/user/
-$ cat <<EOT >~/.config/systemd/user/bofied-backend.service
+```console
+$ sudo tee /etc/systemd/system/bofied-backend.service<<'EOT'
 [Unit]
-Description=bofied
+Description=bofied Backend
 
 [Service]
 ExecStart=/usr/local/bin/bofied-backend -c \${HOME}/.local/share/bofied/etc/bofied/bofied-backend-config.yaml
@@ -170,24 +173,24 @@ EOT
 
 Finally, reload systemd and enable the service:
 
-```shell
-$ systemctl --user daemon-reload
-$ systemctl --user enable --now bofied-backend
+```console
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable --now bofied-backend
 ```
 
 You can get the logs like so:
 
-```shell
-$ journalctl --user -u bofied-backend
+```console
+$ journalctl -u bofied-backend
 ```
 
-  </details>
+</details>
 
 ### 5. Setting up the Firewall
 
 You might also have to open up the ports on your firewall:
 
-```shell
+```console
 $ for port in 67/udp 4011/udp 69/udp 15256/tcp 15257/tcp; do sudo firewall-cmd --permanent --add-port=${port}; done
 ```
 
@@ -197,7 +200,7 @@ Now that the backend is running, head over to [https://pojntfx.github.io/bofied/
 
 [<img src="https://github.com/alphahorizonio/webnetesctl/raw/main/img/launch.png" width="240">](https://pojntfx.github.io/bofied/)
 
-Alternatively, as described in [About the Frontend](#about-the-frontend), you can also choose to self-host. Once you're on the page, you should be presented with the following setup page:
+Alternatively, as described in [Frontend](#frontend), you can also choose to self-host. Once you're on the page, you should be presented with the following setup page:
 
 ![Setup page](./assets/setup.png)
 
@@ -245,7 +248,7 @@ Click on an image to see a larger version.
 
 ### Command Line Arguments
 
-```shell
+```console
 $ bofied-backend --help
 bofied is a network boot server. It provides everything you need to PXE boot a node, from a (proxy)DHCP server for PXE service to a TFTP and HTTP server to serve boot files.
 
@@ -266,7 +269,7 @@ Flags:
       --proxyDHCPListenAddress string      Listen address for proxyDHCP server (default ":4011")
   -p, --pureConfig Configuration           Prevent usage of stdlib in configuration file, even if enabled in Configuration function
   -s, --skipStarterDownload                Don't initialize by downloading the starter on the first run
-      --starterURL string                  Download URL to a starter .tar.gz archive; the default chainloads https://netboot.xyz/ (default "https://github.com/pojntfx/ipxe-binaries/releases/download/latest/ipxe.tar.gz")
+      --starterURL string                  Download URL to a starter .tar.gz archive; the default chainloads https://netboot.xyz/ (default "https://github.com/pojntfx/ipxe-binaries/releases/latest/download/ipxe.tar.gz")
       --tftpListenAddress string           Listen address for TFTP server (default ":69")
   -d, --workingDir string                  Working directory (default "/home/pojntfx/.local/share/bofied/var/lib/bofied")
 ```
@@ -402,7 +405,7 @@ To contribute, please use the [GitHub flow](https://guides.github.com/introducti
 
 To build and start a development version of bofied locally, run the following:
 
-```shell
+```console
 $ git clone https://github.com/pojntfx/bofied.git
 $ cd bofied
 $ make depend
