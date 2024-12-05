@@ -28,29 +28,46 @@ It enables you to:
 
 ### Containerized
 
-You can get the Docker container like so:
+You can get the OCI image like so:
 
-```shell
-$ docker pull pojntfx/bofied-backend
+```console
+$ podman pull ghcr.io/pojntfx/bofied-backend
 ```
 
 ### Natively
 
-If you prefer a native installation, static binaries are also available on [GitHub releases](https://github.com/pojntfx/bofied/releases).
+Static binaries are available on [GitHub releases](https://github.com/pojntfx/bofied/releases).
 
-You can install them like so:
+On Linux, you can install them like so:
 
-```shell
-$ curl -L -o /tmp/bofied-backend https://github.com/pojntfx/bofied/releases/latest/download/bofied-backend.linux-$(uname -m)
+```console
+$ curl -L -o /tmp/bofied-backend "https://github.com/pojntfx/bofied/releases/latest/download/bofied-backend.linux-$(uname -m)"
 $ sudo install /tmp/bofied-backend /usr/local/bin
-$ sudo setcap cap_net_bind_service+ep /usr/local/bin/bofied-backend # This allows rootless execution
+$ sudo setcap cap_net_admin+ep /usr/local/bin/bofied-backend # This allows rootless execution
 ```
 
-### About the Frontend
+On macOS, you can use the following:
 
-The frontend is also available on [GitHub releases](https://github.com/pojntfx/bofied/releases) in the form of a static `.tar.gz` archive; to deploy it, simply upload it to a CDN or copy it to a web server. For most users, this shouldn't be necessary though; thanks to [@maxence-charriere](https://github.com/maxence-charriere)'s [go-app package](https://go-app.dev/), bofied is a progressive web app. By simply visiting the [public deployment](https://pojntfx.github.io/bofied/) once, it will be available for offline use whenever you need it:
+```console
+$ curl -L -o /tmp/bofied-backend "https://github.com/pojntfx/bofied/releases/latest/download/bofied-backend.darwin-$(uname -m)"
+$ sudo install /tmp/bofied-backend /usr/local/bin
+```
 
-[<img src="https://github.com/alphahorizonio/webnetesctl/raw/main/img/launch.png" width="240">](https://pojntfx.github.io/bofied/)
+On Windows, the following should work (using PowerShell as administrator):
+
+```console
+PS> Invoke-WebRequest https://github.com/pojntfx/bofied-backend/releases/latest/download/bofied-backend.windows-x86_64.exe -OutFile \Windows\System32\bofied-backend.exe
+```
+
+You can find binaries for more operating systems and architectures on [GitHub releases](https://github.com/pojntfx/bofied/releases).
+
+### Frontend
+
+The frontend is publicly accessible and can be opened in any browser. It's a [PWA](https://en.wikipedia.org/wiki/Progressive_web_app), meaning it will continue to work offline after your first visit:
+
+<a href="https://pojntfx.github.io/bofied/"><img src="https://github.com/pojntfx/webnetesctl/raw/main/img/launch.png" alt="PWA badge" width="200"/></a>
+
+To self-host, see [contributing](#contributing). A `.tar.gz` archive of the frontend, ready for deployment on any static web server, is available on [GitHub releases](https://github.com/pojntfx/bofied/releases).
 
 ## Tutorial
 
