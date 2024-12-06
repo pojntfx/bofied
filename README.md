@@ -6,6 +6,8 @@ Modern network boot server.
 
 <br/>
 
+https://user-images.githubusercontent.com/28832235/117546130-42745500-b029-11eb-804d-134ff5049ccc.mp4
+
 [![hydrun CI](https://github.com/pojntfx/bofied/actions/workflows/hydrun.yaml/badge.svg)](https://github.com/pojntfx/bofied/actions/workflows/hydrun.yaml)
 [![Docker CI](https://github.com/pojntfx/bofied/actions/workflows/docker.yaml/badge.svg)](https://github.com/pojntfx/bofied/actions/workflows/docker.yaml)
 ![Go Version](https://img.shields.io/badge/go%20version-%3E=1.22-61CFDD.svg)
@@ -202,13 +204,13 @@ Now that the backend is running, head over to [https://pojntfx.github.io/bofied/
 
 Alternatively, as described in [Frontend](#frontend), you can also choose to self-host. Once you're on the page, you should be presented with the following setup page:
 
-![Setup page](./assets/setup.png)
+![Setup page](./docs/screenshot-setup.png)
 
 You'll have to enter your own information here; the `Backend URL` is the URL on which the backend (`http://localhost:15256/` by default) runs, the `OIDC Issuer`, `Client ID` and `Redirect URL` are the same values that you've set the backend up with above.
 
 Finally, click on `Login`, and if everything worked out fine you should be presented with the initial launch screen:
 
-![Initial page](./assets/initial.png)
+![Initial page](./docs/screenshot-initial.png)
 
 🚀 **That's it**! We hope you enjoy using bofied.
 
@@ -216,32 +218,32 @@ Finally, click on `Login`, and if everything worked out fine you should be prese
 
 Click on an image to see a larger version.
 
-<a display="inline" href="./assets/syntax-validation.png?raw=true">
-<img src="./assets/syntax-validation.png" width="45%" alt="Screenshot of syntax validation" title="Screenshot of syntax validation">
+<a display="inline" href="./docs/screenshot-syntax-validation.png?raw=true">
+<img src="./docs/screenshot-syntax-validation.png" width="45%" alt="Screenshot of syntax validation" title="Screenshot of syntax validation">
 </a>
 
-<a display="inline" href="./assets/monitoring.png?raw=true">
-<img src="./assets/monitoring.png" width="45%" alt="Screenshot of monitoring" title="Screenshot of monitoring">
+<a display="inline" href="./docs/screenshot-monitoring.png?raw=true">
+<img src="./docs/screenshot-monitoring.png" width="45%" alt="Screenshot of monitoring" title="Screenshot of monitoring">
 </a>
 
-<a display="inline" href="./assets/file-operations-2.png?raw=true">
-<img src="./assets/file-operations-2.png" width="45%" alt="Screenshot 2 of file operations" title="Screenshot 2 of file operations">
+<a display="inline" href="./docs/screenshot-file-operations-2.png?raw=true">
+<img src="./docs/screenshot-file-operations-2.png" width="45%" alt="Screenshot 2 of file operations" title="Screenshot 2 of file operations">
 </a>
 
-<a display="inline" href="./assets/file-operations-3.png?raw=true">
-<img src="./assets/file-operations-3.png" width="45%" alt="Screenshot 3 of file operations" title="Screenshot 3 of file operations">
+<a display="inline" href="./docs/screenshot-file-operations-3.png?raw=true">
+<img src="./docs/screenshot-file-operations-3.png" width="45%" alt="Screenshot 3 of file operations" title="Screenshot 3 of file operations">
 </a>
 
-<a display="inline" href="./assets/sharing.png?raw=true">
-<img src="./assets/sharing.png" width="45%" alt="Screenshot of sharing" title="Screenshot of sharing">
+<a display="inline" href="./docs/screenshot-sharing.png?raw=true">
+<img src="./docs/screenshot-sharing.png" width="45%" alt="Screenshot of sharing" title="Screenshot of sharing">
 </a>
 
-<a display="inline" href="./assets/text-editor.png?raw=true">
-<img src="./assets/text-editor.png" width="45%" alt="Screenshot of the text editor" title="Screenshot of the text editor">
+<a display="inline" href="./docs/screenshot-text-editor.png?raw=true">
+<img src="./docs/screenshot-text-editor.png" width="45%" alt="Screenshot of the text editor" title="Screenshot of the text editor">
 </a>
 
-<a display="inline" href="./assets/about-modal.png?raw=true">
-<img src="./assets/about-modal.png" width="45%" alt="Screenshot of about modal" title="Screenshot of about modal">
+<a display="inline" href="./docs/screenshot-about-modal.png?raw=true">
+<img src="./docs/screenshot-about-modal.png" width="45%" alt="Screenshot of about modal" title="Screenshot of about modal">
 </a>
 
 ## Reference
@@ -377,15 +379,15 @@ When bofied is first started, it automatically downloads [pojntfx/ipxe-binaries]
 
 In addition to using the frontend to manage boot files, you can also mount them using [WebDAV](https://en.wikipedia.org/wiki/WebDAV). You can the required credentials by using the `Mount directory` button in the frontend:
 
-![Mount directory modal](./assets/mount-directory.png)
+![Mount directory modal](./docs/screenshot-mount-directory.png)
 
 Using a file manager like [Files](https://en.wikipedia.org/wiki/GNOME_Files), you can now mount the folder:
 
-![GNOME Files WebDAV mounting](./assets/gnome-files-webdav-mounting.png)
+![GNOME Files WebDAV mounting](./docs/screenshot-gnome-files-webdav-mounting.png)
 
 When transfering large files, using WebDAV directly is the recommended method.
 
-![GNOME Files WebDAV listing](./assets/gnome-files-webdav-listing.png)
+![GNOME Files WebDAV listing](./docs/screenshot-gnome-files-webdav-listing.png)
 
 ### gRPC API
 
