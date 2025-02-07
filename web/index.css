@@ -1,6 +1,28 @@
 :root {
-  --pf-x-base-color: Highlight;
+  --pf-x-base-color: #0066cc;
+}
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --pf-x-base-color: #92c5f9;
+  }
+}
+
+@supports (color: AccentColor) {
+  :root {
+    --pf-x-base-color: color-mix(in srgb, AccentColor 60%, black);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  @supports (color: AccentColor) {
+    :root {
+      --pf-x-base-color: oklch(from AccentColor max(0.85, l) c h);
+    }
+  }
+}
+
+:root {
   --pf-t--global--color--brand--100: color-mix(
     in srgb,
     var(--pf-x-base-color) 80%,
@@ -12,6 +34,25 @@
     var(--pf-x-base-color) 80%,
     black
   );
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --pf-t--global--color--brand--100: color-mix(
+      in srgb,
+      var(--pf-x-base-color) 80%,
+      black
+    );
+    --pf-t--global--color--brand--200: var(--pf-x-base-color);
+    --pf-t--global--color--brand--300: color-mix(
+      in srgb,
+      var(--pf-x-base-color) 80%,
+      white
+    );
+  }
+}
+
+:root {
   --pf-t--global--color--severity--none--100: var(
     --pf-t--global--color--brand--100
   );
@@ -24,7 +65,6 @@
   --pf-t--global--text--color--link--300: var(
     --pf-t--global--color--brand--300
   );
-
   --pf-t--global--dark--color--brand--100: color-mix(
     in srgb,
     var(--pf-x-base-color) 80%,
@@ -36,6 +76,25 @@
     var(--pf-x-base-color) 80%,
     black
   );
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --pf-t--global--dark--color--brand--100: color-mix(
+      in srgb,
+      var(--pf-x-base-color) 80%,
+      black
+    );
+    --pf-t--global--dark--color--brand--200: var(--pf-x-base-color);
+    --pf-t--global--dark--color--brand--300: color-mix(
+      in srgb,
+      var(--pf-x-base-color) 80%,
+      white
+    );
+  }
+}
+
+:root {
   --pf-t--global--dark--color--severity--none--100: var(
     --pf-t--global--dark--color--brand--100
   );
